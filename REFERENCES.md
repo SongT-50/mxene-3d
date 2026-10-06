@@ -1,0 +1,12 @@
+# References
+
+1. Barsoum, M. W. (2000). The MN+1AXN phases: A new class of solids; thermodynamically stable nanolaminates. Progress in Solid State Chemistry, 28, 201-281. https://doi.org/10.1016/S0079-6786(00)00006-6
+2. Naguib, M., Kurtoglu, M., Presser, V., Lu, J., Niu, J., Heon, M., Hultman, L., Gogotsi, Y., & Barsoum, M. W. (2011). Two-dimensional nanocrystals produced by exfoliation of Ti3AlC2. Advanced Materials, 23, 4248-4253. https://doi.org/10.1002/adma.201102306
+3. Ghidiu, M., Lukatskaya, M. R., Zhao, M.-Q., Gogotsi, Y., & Barsoum, M. W. (2014). Conductive two-dimensional titanium carbide 'clay' with high volumetric capacitance. Nature, 516, 78-81. https://doi.org/10.1038/nature13970
+4. Anasori, B., Lukatskaya, M. R., & Gogotsi, Y. (2017). 2D metal carbides and nitrides (MXenes) for energy storage. Nature Reviews Materials, 2, 16098. https://doi.org/10.1038/natrevmats.2016.98
+5. Alhabeb, M., Maleski, K., Anasori, B., Lelyukh, P., Clark, L., Sin, S., & Gogotsi, Y. (2017). Guidelines for synthesis and processing of two-dimensional titanium carbide (Ti3C2Tx MXene). Chemistry of Materials, 29, 7633-7644. https://doi.org/10.1021/acs.chemmater.7b02847
+6. Hantanasirisakul, K., Zhao, M.-Q., Urbankowski, P., Halim, J., Anasori, B., Kota, S., Ren, C. E., Barsoum, M. W., & Gogotsi, Y. (2016). Fabrication of Ti3C2Tx MXene transparent thin films with tunable optoelectronic properties. Advanced Electronic Materials, 2, 1600050. https://doi.org/10.1002/aelm.201600050
+7. Mashtalir, O., Naguib, M., Mochalin, V. N., Dall'Agnese, Y., Heon, M., Barsoum, M. W., & Gogotsi, Y. (2013). Intercalation and delamination of layered carbides and carbonitrides. Nature Communications, 4, 1716. https://doi.org/10.1038/ncomms2664
+8. Naguib, M., Unocic, R. R., Armstrong, B. L., & Nanda, J. (2015). Large-scale delamination of multi-layers transition metal carbides and carbonitrides "MXenes". Dalton Transactions, 44, 9353-9358. https://doi.org/10.1039/C5DT01247C
+9. Li, M., Lu, J., Luo, K., Li, Y., Chang, K., Chen, K., et al. (2019). Element replacement approach by reaction with Lewis acidic molten salts to synthesize nanolaminated MAX phases and MXenes. Journal of the American Chemical Society, 141, 4730-4737. https://doi.org/10.1021/jacs.9b00574
+10. Kamysbayev, V., Filatov, A. S., Hu, H., Rui, X., Lagunas, F., Wang, D., Klie, R. F., & Talapin, D. V. (2020). Covalent surface modifications and superconductivity of two-dimensional metal carbide MXenes. Science, 369, 979-983. https://doi.org/10.1126/science.aba8311
