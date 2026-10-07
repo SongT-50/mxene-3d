@@ -33,3 +33,9 @@ This is a teaching model, not a structure refinement. Lattice parameters and z-c
 ## Source
 `src/app.js` (scene + content) and `src/template.html` (layout) → `python build.py` → `index.html`.
 Code: MIT. References: see [REFERENCES.md](REFERENCES.md).
+
+## License
+
+MIT — see [LICENSE](LICENSE).
+
+Third-party: three.js (vendor/three.min.js, vendor/OrbitControls.js) is © 2010-2022 three.js authors, MIT License. Its copyright notice is kept at the top of `vendor/three.min.js` and inside `index.html`.
