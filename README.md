@@ -30,6 +30,9 @@ Each step has a key-facts panel, equations, a schematic chart and numbered refer
 ## Honest limits
 This is a teaching model, not a structure refinement. Lattice parameters and z-coordinates are approximate. The O/OH/F mix and placement are illustrative. Gaps between layers are exaggerated for visibility. Flake sizes and film views are schematic.
 
+## Changes
+- **v1.1 (2026-10-08)** — atom colours in the 3D view now match the legend. three.js r147 was treating the legend hex colours as linear values, so every atom rendered paler (Al orange looked pale yellow, C near-black looked mid-grey). Fixed by turning on three.js colour management; no geometry or text changed.
+
 ## Source
 `src/app.js` (scene + content) and `src/template.html` (layout) → `python build.py` → `index.html`.
 Code: MIT. References: see [REFERENCES.md](REFERENCES.md).

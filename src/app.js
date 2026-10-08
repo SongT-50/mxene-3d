@@ -2,6 +2,10 @@
 // Units in the atomic scene: 1 = 1 Å. Crystal c-axis -> three.js +y.
 (function () {
   "use strict";
+  // 2026-10-08 fix: with r147's default legacy colour mode the sRGB hex codes below were treated as linear values and
+  // then re-encoded to sRGB on output, so every atom rendered paler than its legend swatch (Al orange -> pale yellow,
+  // C near-black -> mid grey). Switching legacy mode off makes THREE.Color convert hex sRGB -> linear, so 3D == legend.
+  if (THREE.ColorManagement) THREE.ColorManagement.legacyMode = false;
   const VIDEO = /[?&]video/.test(location.search);
   if (VIDEO) document.body.classList.add("video");
   // ---------------- crystallography (idealized, approximate) ----------------
