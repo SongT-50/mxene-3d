@@ -21,7 +21,9 @@ Nine steps based on Kim *et al.*, *J. Am. Chem. Soc.* 2026, [doi:10.1021/jacs.6c
 8. **Merging, filling — and the TiC limit**
 9. **Toward larger single crystals** — the stated future target, not a reported result
 
-Sources: `src-vapor/` → `python build_vapor.py`. References: `REFERENCES-vapor.md` (8/8 checked against Crossref/OpenAlex). Checks: two independent AI review passes on the science (Claude critic, OpenAI Codex) and two Codex passes on the storyline; all findings were checked against the paper text before being applied.
+Also: a "where we are" locator and, for steps 2, 7 and 8, SEM images from the paper (Fig. 1b/d/f, 2f–h, 3a; CC BY 4.0, cropped and resized, attribution shown next to each image).
+
+Sources: `src-vapor/` (`sem_data.js` holds the SEM crops) → `python build_vapor.py`. References: `REFERENCES-vapor.md` (8/8 checked against Crossref/OpenAlex). Checks: two independent AI review passes on the science (Claude critic, OpenAI Codex) and two Codex passes on the storyline; all findings were checked against the paper text before being applied.
 
 **Correction (v1.2, 2026-10-10) to the Ti₃AlC₂ explainer:** the in-plane positions of the B/C close-packed sites used 120°-basis fractions with a 60° Cartesian basis, so atoms sat off the hollow sites (nearest in-plane offset 0.333a instead of 0.577a). Fixed in `src/app.js`; found by the Codex review of the new explainer, which reuses the same code.
 

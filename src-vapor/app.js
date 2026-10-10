@@ -46,9 +46,10 @@
       facts: [["Precursors", "Ti powder or sponge · TiCl₄ · CH₄ (5% in Ar)"], ["Furnace", "horizontal, 1-inch work tube"], ["Carrier tube", "quartz, 10 mm I.D. × 4 cm"], ["Temperatures studied", "750–1000 °C"], ["Reported optimum", "875 °C (2 h) · 850 °C (24 h)"], ["After growth", "collected without washing"]],
       chart: "program", note: "Set-up and program from the Experimental Section of [1]; gas streams and sizes in the view are schematic. Ti sponge (Kroll process) is reported as nearly 4000× cheaper than high-purity Ti foil [1]. Earlier gas-phase routes: CVD on Ti foil, TiCl₄ + CH₄ at 950 °C [2]; fluidized bed and two-zone furnace at 770 °C [3, 4]; organohalide precursors [5].", refs: [0, 1, 2, 3, 4] },
     { id: "modes", ladder: 0, short: "Same Ti, three loadings — confinement decides where MXene grows.", title: "Change the Ti loading, change the growth", scale: "carrier cross-sections · mm (schematic)", scene: "modes",
-      cam: [MD, 22, 228], look: [MD, -12, 0], dive: [MD + 33, 18, 0],
+      cam: [MD, 22, 250], look: [MD, -10, 0], dive: [MD + 33, 18, 0],
       text: "Three ways of loading the same Ti powder: <b>(a)</b> in a crucible, MXene forms only as a thin carpet with microspheres on the Ti top surface, while the Ti underneath is mostly etched; <b>(b)</b> in a narrow quartz carrier tube, black MXene spherulites deposit on a quartz plate facing the Ti, in addition to MXene on the Ti bed; <b>(c)</b> with Ti spread along the tube wall, the whole volume fills with MXene after 24 h. A quartz plate above a crucible without a carrier tube (control) gets only a Ti film with TiC particles, no MXene on the quartz." + NEXT("why does a smaller volume make the difference?"),
       facts: [["(a) Ti in crucible", "carpet + microspheres on the Ti top surface"], ["(b) carrier tube + quartz", "spherulites on the quartz facing the Ti (within 1 h), plus MXene on the Ti bed"], ["(c) Ti on inner wall", "carrier filled with MXene after 24 h"], ["Control (no carrier tube, quartz above)", "Ti film + TiC particles on the quartz, no MXene there"], ["Explanation", "confinement raises TiClₓ concentration and shortens diffusion"]],
+      sem: [["f1b", "Fig. 1b — (a) Ti in crucible: MXene carpet and microspheres on the Ti top surface (circles: fractured microspheres)"], ["f1d", "Fig. 1d — (b) MXene spherulites on the quartz substrate"], ["f1f", "Fig. 1f — (c) Ti on the carrier wall, 24 h: intergrown spherulites"]],
       note: "Redrawn after Figure 1 of [1]; sizes and deposit amounts are schematic. In the open tube, laminar flow carries TiCl₄ near the tube bottom, so in (a) TiClₓ meets CH₄ mainly at the Ti top surface [1].", refs: [0, 1] },
     { id: "supply", ladder: 3, short: "Hot Ti turns TiCl₄ into TiCl₂, which piles up in the small gap.", title: "Confinement builds up TiCl₂ next to the Ti", scale: "gap between Ti and quartz · Å (schematic)", scene: "mol",
       cam: [MX + 30, 30, 84], look: [MX, 14, 0], dive: [MX, 15, 0],
@@ -77,11 +78,13 @@
       cam: [MZ + 6, 30, 235], look: [MZ, 2, 0],
       text: "Flakes do not grow as one sheet. Each nucleus sprouts lamellae (likely a few layers thick) in many directions, forming a <b>spherulite</b> — a ball of flakes whose lateral size approaches its radius. At 950 °C (left to right): tiny particle aggregates first, <b>~300 nm</b> spherulites after 2 h, <b>2–3 µm</b> after 24 h. With time they open up and flake edges turn toward the incoming TiCl₂/CH₄ flux." + NEXT("many spherulites meet."),
       facts: [["Early stage", "tiny particle aggregates (size not stated)"], ["2 h (950 °C)", "~300 nm diameter"], ["24 h (950 °C)", "2–3 µm"], ["Flakes", "likely few layers; edge ≈ spherulite radius"], ["Similar to", "MoS₂ / MoSe₂ spherulites"]],
+      sem: [["f2f", "Fig. 2f — early stage: tiny particle aggregates (950 °C)"], ["f2g", "Fig. 2g — after 2 h: ~300 nm spherulites"], ["f2h", "Fig. 2h — after 24 h: larger spherulites (note the 500 nm scale bar)"]],
       chart: "size", note: "Schematic; the three stages are not drawn to scale and the animation compresses 24 h. SEM evidence: Figure 2f–h of [1]. Note: 24 h powder grown at 950 °C is TiC-dominated (Fig. 3b of [1]); 850 °C is the reported 24 h optimum.", refs: [0] },
     { id: "merge", ladder: 1, short: "Spherulites merge and fill the tube — but long runs grow TiC.", title: "Merging, filling — and the TiC limit", scale: "µm (schematic)", scene: "meso",
       cam: [MZ + 70, 110, 300], look: [MZ, 0, 0],
       text: "Neighbouring spherulites expand and <b>merge</b>; with Ti on the carrier wall the tube fills with bulk MXene after 24 h, in swirl-like domains with flakes tens of micrometres across. The network is mesoporous: <b>44.7 m²/g</b> for bulk powder, <b>361 m²/g</b> for small spherulites. But longer and hotter is not simply better: long runs also grow cubic <b>TiC</b>, likely in spherulite cores where TiCl₂ runs short (cut-away, front)." + NEXT("where this route could go."),
       facts: [["24 h, Ti on tube wall", "tube volume filled with MXene"], ["BET surface area", "44.7 m²/g (bulk) · 361 m²/g (small spherulites)"], ["Pore volume (QSDFT)", "0.12 · 0.71 cm³/g"], ["24 h optimum", "850 °C (840 °C: lower yield; 950 °C: TiC-dominated)"], ["TiC", "screened out during delamination"]],
+      sem: [["f3a", "Fig. 3a — bulk Ti₂CCl₂ from lateral growth in a confined volume: swirl-like merged domains"]],
       chart: "window", note: "Values as reported in [1] (Fig. 3, Fig. S14). The TiC core is the authors' suggested location, drawn schematically. They suggest flat crystals or slightly higher Cl activity to avoid TiC completely.", refs: [0] },
     { id: "future", ladder: 3, short: "Next goal: large, flat single flakes — not yet achieved.", title: "Toward larger single crystals", scale: "atomic · Å (future target)", scene: "crystal",
       cam: [26, 24, 60], look: [0, -1, 0],
@@ -366,6 +369,23 @@
   addLab("spherulites merge into a porous network", 4.2, [MZ, 62, 0], ["merge"]);
   addLab("cut-away: possible TiC location (not directly mapped)", 3.6, [MZ, -40, 70], ["merge"]);
 
+  // ---------------- "you are here" locator (schematic carrier tube in the furnace) ----------------
+  const LOC = { exp: ["furnace", "the whole hot zone"], modes: ["carrier", "the carrier tube (loading)"], supply: ["gap", "gap between Ti powder and quartz"], threshold: ["gap", "near the quartz, inside the gap"], growth: ["gap", "one nucleus in the gap"], crystal: ["gap", "inside one flake"], sph: ["plate", "deposit on the quartz plate"], merge: ["fill", "the carrier filling up (24 h)"] };
+  function locator([where, what]) {
+    const hl = "#1f7a68";
+    let s = `<svg viewBox="0 0 220 92"><rect x="4" y="14" width="212" height="56" rx="8" fill="#fbe9dc" stroke="${where === "furnace" ? hl : "#e0b89c"}" stroke-width="${where === "furnace" ? 3 : 1}"/>`;
+    s += `<line x1="4" y1="24" x2="216" y2="24" stroke="#c8dbe6" stroke-width="1.5"/><line x1="4" y1="60" x2="216" y2="60" stroke="#c8dbe6" stroke-width="1.5"/>`;
+    s += `<rect x="66" y="30" width="88" height="26" rx="5" fill="#eef5f8" stroke="${where === "carrier" ? hl : "#8fb0c2"}" stroke-width="${where === "carrier" ? 3 : 1.2}"/>`;
+    for (let i = 0; i < 22; i++) s += `<circle cx="${70 + i * 3.8}" cy="${52 - (i % 2)}" r="1.8" fill="#a3a7ae"/>`;
+    s += `<rect x="76" y="37" width="68" height="2.5" fill="#c8dbe6" stroke="#8fb0c2" stroke-width=".6"/>`;
+    if (where === "plate" || where === "fill") s += `<rect x="78" y="39.5" width="64" height="${where === "fill" ? 10 : 2}" fill="#1b1d22" opacity="${where === "fill" ? 0.75 : 1}"/>`;
+    const C = { gap: [110, 45, 6], plate: [110, 41, 6], fill: [110, 45, 12] }[where];
+    if (C) s += `<circle cx="${C[0]}" cy="${C[1]}" r="${C[2]}" fill="none" stroke="${hl}" stroke-width="2.5"/><line x1="${C[0] + C[2] * 0.7}" y1="${C[1] - C[2] * 0.7}" x2="186" y2="8" stroke="${hl}" stroke-width="1.2"/>`;
+    s += `<text x="8" y="10" font-size="8.5" fill="#5d6472" font-family="ui-monospace,Consolas,monospace">where we are</text>`;
+    s += `<text x="110" y="84" font-size="9.5" fill="#1d2129" text-anchor="middle">${what}</text></svg>`;
+    return s;
+  }
+
   // ---------------- UI ----------------
   const list = document.getElementById("steps");
   STEPS.forEach((st, i) => { const li = document.createElement("li"); li.innerHTML = `<span class="n">${String(i + 1).padStart(2, "0")}</span>${st.title}`; li.onclick = () => go(i); list.appendChild(li); });
@@ -402,6 +422,9 @@
     document.getElementById("facts").innerHTML = st.facts.map(([x, y]) => `<tr><td>${x}</td><td>${y}</td></tr>`).join("");
     document.getElementById("eq").innerHTML = st.eq ? `<div class="eq">${st.eq}</div>` : "";
     const ch = document.getElementById("chart"); ch.style.display = st.chart ? "" : "none"; ch.innerHTML = st.chart ? CH[st.chart]() : "";
+    const sb = document.getElementById("semBox");
+    sb.innerHTML = st.sem && window.SEM ? `<h2>From the paper (SEM)</h2><div class="sem">${st.sem.map(([k, c]) => `<figure><img src="${window.SEM[k]}" alt="${c}"><figcaption>${c}</figcaption></figure>`).join("")}<div class="src">SEM images: Kim, H. et al., J. Am. Chem. Soc. 2026, doi:10.1021/jacs.6c10774 — CC BY 4.0. Cropped and resized; no other changes.</div></div>` : "";
+    const loc = document.getElementById("locator"); loc.style.display = LOC[st.id] ? "" : "none"; loc.innerHTML = LOC[st.id] ? locator(LOC[st.id]) : "";
     document.getElementById("snote").innerHTML = st.note + (st.refs ? ` <span style="white-space:nowrap">[${st.refs.map((r) => r + 1).join(", ")}]</span>` : "");
     REFS.forEach((_, r) => (document.getElementById("ref" + r).style.fontWeight = st.refs && st.refs.includes(r) ? "700" : "400"));
     try { history.replaceState(null, "", "#" + (cur + 1)); } catch (e) {}
