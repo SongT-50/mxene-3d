@@ -7,6 +7,9 @@ Rotate the crystal, etch out the aluminium, watch terminations cap the surface, 
 
 ![preview](preview.png)
 
+### Also: MXene Atlas (early stage, 2026-10-11)
+An evidence-linked map of MXene properties — composition, etchant, delamination, sample form and measured values, each linked to its source sentence: https://songt-50.github.io/mxene-3d/atlas/ (guide: `atlas/guide.html`). Early stage, AI-checked only; the `atlas/` files are not MIT — see `atlas/README.md`.
+
 ### New (2026-10-10): the bottom-up route — vapor-phase synthesis of Ti₂CCl₂
 ▶ **Open it:** https://songt-50.github.io/mxene-3d/vapor.html (or download `vapor.html`)
 

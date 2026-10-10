@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MXene Atlas — start here</title>
+<style>
+:root{--paper:#fbfaf7;--ink:#1d2129;--ink-dim:#5d6472;--line:#dfe1e6;--accent:#1f5f9e;--warn:#9a5b00}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.6}
+main{max-width:820px;margin:0 auto;padding:36px 20px 48px}
+h1{font-size:26px;margin:0 0 4px}
+.sub{color:var(--ink-dim);margin:0 0 22px}
+h2{font-size:17px;margin:28px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--line)}
+.open{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 8px}
+.open a{display:block;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fff;text-decoration:none;color:var(--ink)}
+.open a:hover{border-color:var(--accent)}
+.open b{display:block;color:var(--accent);font-size:16px}
+.open span{font-size:13.5px;color:var(--ink-dim)}
+ul{padding-left:20px;margin:6px 0} li{margin:4px 0}
+.note{background:#fff7e8;border:1px solid #f0d9a8;border-radius:8px;padding:10px 14px;font-size:14px;color:#5a4410}
+footer{margin-top:34px;font-size:12px;color:var(--ink-dim);border-top:1px solid var(--line);padding-top:10px}
+@media (max-width:640px){.open{grid-template-columns:1fr}}
+@media print{.open a{border-color:#999}}
+</style>
+</head>
+<body>
+<main>
+<h1>MXene Atlas — start here</h1>
+<p class="sub">An early-stage, evidence-linked map of MXene properties from open-access experimental papers — about 2,600 values from about 650 papers. Each value links to the sentence it came from and to any measurement conditions extracted with it; completeness and accuracy have not yet been confirmed by an expert.</p>
+
+<div class="open">
+  <a href="index.html"><b>① Map →</b><span>the main page: filter, read source sentences, ask questions</span></a>
+  <a href="explore.html"><b>② Explore mode (3D) →</b><span>a periodic-table island showing where data exists — and where it does not yet</span></a>
+</div>
+
+<div class="note"><b>Status, honestly:</b> values have been checked against their source sentences by two AI judges only — <b>no human expert check yet</b>, so nothing is labelled “verified”. Measurement conditions differ between papers, so values should not be compared directly. Your corrections are exactly what this needs.</div>
+
+<h2>How to open</h2>
+<ul>
+  <li>Open the links above in any modern browser (Chrome, Edge, Safari or Firefox); the map also works on a phone, though a larger screen is easier.</li>
+  <li>The 3D network on the Map page loads a public graphics library, so give it a few seconds on the first visit.</li>
+</ul>
+
+<h2>① Map (index.en.html) — what you can do</h2>
+<ul>
+  <li><b>Pick a property and unit</b> (capacitance F/g, conductivity S/cm, EMI shielding, surface area, d-spacing, work function, thermal conductivity …). One dot = one sample under one condition.</li>
+  <li><b>Click any dot</b> to see the original sentence, the measurement conditions and the paper (DOI).</li>
+  <li><b>Filter by structure</b>: click an element in the periodic table, or a composition (Ti₃C₂, V₂C, Nb₂C …).</li>
+  <li><b>Follow the 3D network</b>: composition → etchant → delamination → sample form → measured property; thicker lines = more values. Click a paper dot for its sentences.</li>
+  <li><b>Ask a question</b> such as “high conductivity MXene”, “LiF/HCl vs HF, conductivity” or “non-Ti, high capacitance” — it lists which etchant and form were used for the samples with matching reported values. These are source candidates, not a promise that a recipe gives that value — please check the conditions of each.</li>
+  <li><b>Find by target value</b>: type the value you need, and see how the samples associated with those reports were made.</li>
+  <li><b>Sample tabs</b>: “Strict” keeps pure MXene (no dopant, intercalant or composite); “All” shows everything.</li>
+</ul>
+
+<h2>② Explore mode (explore.en.html) — what you can do</h2>
+<ul>
+  <li><b>Towers</b> on the periodic-table island show how many values were collected for each composition — height is the amount of data, not material quality.</li>
+  <li><b>Fog</b> marks compositions with no value yet in the papers collected — not that no value exists. It is a guide to the gaps: where additional papers or measurements could expand the atlas.</li>
+  <li><b>Property planet</b>: choose a property and a planet rises above the island, with beams to the compositions that have values. Click it for the top values.</li>
+  <li><b>Click a tower</b> for its source sentences and DOIs; view a simple sketch of its layer stacking; collect findings with <b>Discovery notes</b> and download them as text.</li>
+  <li><b>“To fill when data arrives”</b> lists questions the atlas could not yet answer for lack of papers.</li>
+</ul>
+
+<h2>Feedback that would help most</h2>
+<ul>
+  <li>Values or conditions that look wrong — please identify the data point; a screenshot of its source panel is enough.</li>
+  <li>Definitions we should change, e.g. what counts as pure MXene versus composite or intercalated material.</li>
+  <li>Important properties, compositions or papers that are missing.</li>
+</ul>
+
+<footer>© 2026 Tae-Eun Song · All rights reserved · Please do not copy or redistribute without permission · Values and sentences come from open-access papers; each dot links to its source. Related: <a href="https://songt-50.github.io/mxene-3d/">MXene 3D explainers</a> (top-down Ti₃AlC₂ → Ti₃C₂Tₓ and vapor-phase Ti₂CCl₂).</footer>
+</main>
+</body>
+</html>
