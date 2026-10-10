@@ -1,0 +1,1058 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>얇은 판 위의 지도</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+/* 판형 = 잡지 특집. 인쇄용 라이트 한 가지. 본문 넓은 화면 2단 · 폰 1단. */
+:root{
+  --paper:#fbfaf7; --sheet:#ffffff; --ink:#1d1d24; --ink2:#55555f; --ink3:#8a8a93; --line:#e6e2d8;
+  --coral:#d2553f; --teal:#1f7a72; --mustard:#c8962a; --navy:#2b3a67;
+  --blush:#f8e6df; --mint:#dff0ea; --cream:#f6eed9; --sky:#e3e9f6;
+  --serif:'Noto Serif KR',Georgia,serif; --sans:'Noto Sans KR',-apple-system,'Segoe UI',system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.85;word-break:keep-all;overflow-wrap:anywhere}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px 80px}
+svg{display:block;max-width:100%;height:auto}
+h1,h2,h3{font-family:var(--serif);font-weight:900;letter-spacing:-.01em;text-wrap:balance}
+a{color:var(--navy)}
+a:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
+
+/* 표지 */
+.cover{min-height:92vh;display:grid;align-content:center;gap:1.2rem;padding:3rem 0 2rem;border-bottom:1px solid var(--line)}
+.cover .issue{font-size:.85rem;letter-spacing:.2em;color:var(--coral);font-weight:700}
+.cover h1{font-size:clamp(2.6rem,9vw,5.6rem);line-height:1.08;margin:0}
+.cover h1 em{font-style:normal;color:var(--teal)}
+.cover .deck{font-family:var(--serif);font-size:clamp(1.1rem,2.6vw,1.45rem);color:var(--ink2);max-width:36rem;margin:0}
+.cover .by{font-size:.9rem;color:var(--ink3)}
+.cover figure{margin:0}
+
+/* 읽는 법 · 차례 */
+.howto{display:grid;gap:2rem;padding:3.5rem 0;border-bottom:1px solid var(--line)}
+@media(min-width:900px){.howto{grid-template-columns:1.1fr .9fr;gap:3.5rem}}
+.howto h2{font-size:1.9rem;margin:0 0 1rem}
+.howto ol{margin:0;padding-left:1.2rem} .howto li{margin-bottom:.6rem}
+.toc ol{list-style:none;margin:0;padding:0}
+.toc li{display:grid;grid-template-columns:3rem minmax(0,1fr);gap:.4rem;padding:.55rem 0;border-bottom:1px dotted var(--line)}
+.toc .n{font-family:var(--serif);font-weight:900;font-size:1.3rem;color:var(--coral)}
+.toc a{text-decoration:none;color:var(--ink);font-weight:500}
+.toc a:hover{color:var(--teal)}
+.honest{background:var(--cream);border-left:6px solid var(--mustard);padding:1.1rem 1.3rem;border-radius:4px;margin-top:1.4rem}
+.honest strong{color:#7a5a12}
+
+/* 장 */
+.chapter{padding:4.5rem 0 2rem;border-bottom:1px solid var(--line)}
+.opener{display:grid;gap:1.2rem;margin-bottom:2.5rem}
+.opener figure{margin:0;background:var(--sheet);border-radius:18px;overflow:hidden;border:1px solid var(--line)}
+.kicker{font-size:.85rem;font-weight:700;letter-spacing:.25em;color:var(--coral)}
+.opener h2{font-size:clamp(2rem,6vw,3.4rem);line-height:1.15;margin:.2rem 0 0}
+.hook{font-family:var(--serif);font-size:clamp(1.15rem,2.8vw,1.55rem);line-height:1.6;color:var(--ink2);margin:0;max-width:44rem}
+figcaption{font-size:.85rem;color:var(--ink3);padding:.6rem 1rem .8rem;line-height:1.5}
+.prose p{margin:0 0 1.05em}
+.prose p:first-of-type::first-letter{font-family:var(--serif);font-weight:900;font-size:3.1em;float:left;line-height:.9;margin:.08em .12em 0 0;color:var(--teal)}
+@media(min-width:900px){
+  .prose{column-count:2;column-gap:3rem;column-rule:1px solid var(--line)}
+  .prose .span{column-span:all}
+}
+.pull{margin:2rem 0;padding:1.4rem 1.6rem;font-family:var(--serif);font-weight:700;font-size:clamp(1.3rem,3.2vw,1.9rem);line-height:1.5;border-radius:6px;break-inside:avoid}
+.pull.c{background:var(--blush);color:#8f2f1f}
+.pull.t{background:var(--mint);color:#11564f}
+.pull.n{background:var(--sky);color:var(--navy)}
+.pull.m{background:var(--cream);color:#6e5110}
+.pull small{display:block;font-family:var(--sans);font-weight:400;font-size:.85rem;margin-top:.5rem;opacity:.8}
+.prose figure{margin:1.6rem 0;background:var(--sheet);border:1px solid var(--line);border-radius:12px;overflow:hidden;break-inside:avoid}
+.prose h3{font-size:1.35rem;margin:1.6rem 0 .6rem;break-after:avoid}
+.prose ul,.prose ol{padding-left:1.2rem;margin:0 0 1em} .prose li{margin-bottom:.35rem}
+sup.fn{font-size:.68em;color:var(--coral);font-weight:700;margin-left:1px}
+.term{border-bottom:1px dashed var(--ink3)}
+.summary{margin:2.5rem 0 1.5rem;background:var(--ink);color:#f3f1ea;border-radius:14px;padding:1.5rem 1.6rem}
+.summary h3{font-size:1.15rem;margin:0 0 .7rem;color:#f2c96b;letter-spacing:.1em}
+.summary ul{margin:0;padding-left:1.2rem} .summary li{margin-bottom:.45rem}
+.notes{font-size:.82rem;color:var(--ink2);line-height:1.6;border-top:1px solid var(--line);padding-top:.8rem}
+.notes h4{font-size:.85rem;margin:0 0 .4rem;letter-spacing:.15em;color:var(--ink3)}
+.notes ol{margin:0;padding-left:1.4rem} .notes li{margin-bottom:.3rem}
+.notes code{font-family:Consolas,monospace;font-size:.95em;overflow-wrap:anywhere}
+
+/* 6장 성질 카드 */
+.props{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));margin:1.6rem 0}
+.prop{background:var(--sheet);border:1px solid var(--line);border-radius:12px;padding:1rem 1.1rem;border-top:5px solid var(--teal)}
+.prop.fail{border-top-color:var(--coral)} .prop.thin{border-top-color:var(--ink3)}
+.prop h4{font-family:var(--serif);font-size:1.12rem;margin:0 0 .2rem}
+.prop .easy{font-size:.88rem;color:var(--ink2);margin:0 0 .5rem}
+.prop .res{font-size:.92rem;margin:0}
+.prop .tag{display:inline-block;font-size:.75rem;font-weight:700;padding:0 .5rem;border-radius:99px;margin-bottom:.4rem}
+.tag.ok{background:var(--mint);color:#11564f} .tag.no{background:var(--blush);color:#8f2f1f} .tag.wait{background:#ecebe6;color:var(--ink2)}
+
+/* 3장 순서 */
+.steps{counter-reset:s;list-style:none;padding:0!important;margin:1.2rem 0}
+.steps li{counter-increment:s;position:relative;padding:.2rem 0 .7rem 2.6rem;break-inside:avoid}
+.steps li::before{content:counter(s);position:absolute;left:0;top:.15rem;width:1.9rem;height:1.9rem;border-radius:50%;background:var(--teal);color:#fff;font-weight:700;text-align:center;line-height:1.9rem;font-size:.9rem}
+
+/* 쉬운 말 사전 · 줄거리 */
+.gloss{margin-top:1.4rem;background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:1rem 1.2rem}
+.gloss h3{font-size:1.1rem;margin:0 0 .5rem}
+.gloss dl{margin:0;display:grid;grid-template-columns:minmax(0,7.5rem) minmax(0,1fr);gap:.25rem .8rem;font-size:.92rem;line-height:1.6}
+.gloss dt{font-weight:700;color:var(--navy)} .gloss dd{margin:0;color:var(--ink2)}
+.story{margin-top:1.4rem;background:var(--mint);border-radius:10px;padding:1rem 1.2rem}
+.story h3{font-size:1.1rem;margin:0 0 .4rem;color:#11564f}
+.story ol{margin:0;padding-left:1.3rem;font-size:.95rem} .story li{margin-bottom:.3rem}
+.fill{list-style:none;padding:0!important;margin:1rem 0}
+.fill li{background:var(--sheet);border:1px solid var(--line);border-left:6px solid var(--mustard);border-radius:6px;padding:.7rem .9rem;margin-bottom:.7rem;break-inside:avoid}
+.fill b{color:#6e5110}
+
+footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);font-size:.85rem;color:var(--ink3)}
+@media print{.cover{min-height:auto}.chapter{break-before:page}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===== 표지 ===== -->
+<header class="cover">
+  <div class="issue">MXene 특집 · 2026년 10월</div>
+  <h1>얇은 판 위에<br>그린 <em>지도</em></h1>
+  <p class="deck">수만 편의 논문에 흩어진 MXene 의 숫자들. 숫자마다 원래 문장을 붙이고, AI 채점자 둘에게 다시 확인시키고, 그 채점자까지 함정 문제로 시험해 한 장의 지도로 모은 이야기.</p>
+  <figure>
+    <svg viewBox="0 0 1000 420" role="img" aria-label="겹겹이 쌓인 얇은 판 다섯 장">
+      <defs>
+        <linearGradient id="gA" x1="0" x2="1"><stop offset="0" stop-color="#1f7a72"/><stop offset="1" stop-color="#2b3a67"/></linearGradient>
+        <linearGradient id="gB" x1="0" x2="1"><stop offset="0" stop-color="#d2553f"/><stop offset="1" stop-color="#c8962a"/></linearGradient>
+      </defs>
+      <g opacity=".95">
+        <path d="M500 300 L820 360 L500 420 L180 360 Z" fill="#e6e2d8"/>
+        <path d="M500 250 L820 310 L500 370 L180 310 Z" fill="url(#gA)" opacity=".85"/>
+        <path d="M500 200 L820 260 L500 320 L180 260 Z" fill="url(#gB)" opacity=".85"/>
+        <path d="M500 150 L820 210 L500 270 L180 210 Z" fill="url(#gA)" opacity=".9"/>
+        <path d="M500 100 L820 160 L500 220 L180 160 Z" fill="url(#gB)" opacity=".9"/>
+        <path d="M500 50 L820 110 L500 170 L180 110 Z" fill="url(#gA)"/>
+      </g>
+      <g fill="#fbfaf7" opacity=".9">
+        <circle cx="500" cy="80" r="7"/><circle cx="560" cy="92" r="7"/><circle cx="620" cy="104" r="7"/><circle cx="440" cy="92" r="7"/><circle cx="380" cy="104" r="7"/>
+        <circle cx="500" cy="104" r="7"/><circle cx="560" cy="116" r="7"/><circle cx="440" cy="116" r="7"/><circle cx="680" cy="116" r="7"/><circle cx="320" cy="116" r="7"/>
+        <circle cx="500" cy="128" r="7"/><circle cx="560" cy="140" r="7"/><circle cx="440" cy="140" r="7"/><circle cx="500" cy="152" r="7"/>
+      </g>
+      <g font-family="Noto Serif KR,serif" font-size="22" fill="#1d1d24">
+        <text x="850" y="120">6.05</text><text x="868" y="200">34.21%</text><text x="840" y="280">1.41 nm</text>
+        <text x="40" y="150">4.53 eV</text><text x="60" y="240">16.7</text>
+      </g>
+    </svg>
+    <figcaption>그림 0 · MXene 은 이렇게 아주 얇은 판이 겹겹이 쌓인 물질이다. 옆에 떠 있는 숫자들은 이 책에 실제로 나오는 값이다.</figcaption>
+  </figure>
+  <p class="by">글·그림 MXene 지도 작업실 · 숫자는 모두 작업 기록에서 옮겼다 · <a href="index.en.html" lang="en" hreflang="en">English</a></p>
+</header>
+
+<!-- ===== 이 책을 읽는 법 ===== -->
+<section class="howto" id="howto">
+  <div>
+    <h2>이 책을 읽는 법</h2>
+    <ol>
+      <li>각 장은 <b>큰 그림 한 장</b>과 <b>한 문장</b>으로 시작한다. 그 한 문장만 읽고 넘어가도 줄거리는 따라온다.</li>
+      <li>어려운 낱말은 처음 나올 때 바로 옆에서 한 줄로 풀었다.</li>
+      <li>장 끝의 검은 상자 <b>«한 장 요약」</b>은 그 장을 세 줄로 줄인 것이다.</li>
+      <li>프로그램 이름·파일 이름·작업 번호 같은 것은 본문에 쓰지 않고, 장 맨 아래 작은 <b>주석</b>으로 보냈다. 출처를 따라가고 싶은 사람만 보면 된다.</li>
+      <li>숫자는 모두 실제 작업 기록에 적힌 것이다. 기록에 없는 숫자는 쓰지 않았다.</li>
+    </ol>
+    <div class="honest"><strong>먼저 밝혀 둘 것.</strong> 이 지도는 아직 «검증됨」이 아니다. 값을 채점한 두 채점자가 <b>둘 다 AI</b> 이기 때문이다. AI 둘은 같은 종류의 실수를 함께 할 수 있다. 사람 전문가가 확인한 뒤에야 «검증됨」이라고 쓸 것이다. 이 이야기는 9장에서 다시 한다.</div>
+    <div class="story"><h3>줄거리를 여섯 줄로</h3><ol>
+      <li><b>숫자에 원문 문장을 붙인다.</b> 값 하나마다 «논문의 이 문장에서 왔다」를 함께 적는다.</li>
+      <li><b>AI 채점자 둘이 원문을 다시 읽는다.</b> Claude 와 Codex. 서로의 답은 보지 않는다.</li>
+      <li><b>채점자부터 시험한다.</b> 숫자를 바꾸고, 이름을 바꾸고, 칸을 비우고, 성질 이름을 바꾼 «함정 답안」을 몰래 섞는다. 함정을 못 잡는 채점자는 믿지 않는다.</li>
+      <li><b>채점 기준은 결과를 보기 전에 정해 둔다.</b> 시험 전에 정답 기준표를 봉투에 넣어 봉하는 것과 같다.</li>
+      <li><b>표시를 단다.</b> ● 둘 다 맞다 · ◐ 논문엔 있는데 빈칸으로 둠 · ✕ 하나라도 틀리다 · ○ 그 밖.</li>
+      <li><b>그래도 아직 «검증됨」은 아니다.</b> 사람 전문가가 볼 때까지는.</li>
+    </ol></div>
+    <div class="gloss"><h3>쉬운 말 사전</h3><dl>
+      <dt>조성</dt><dd>어떤 원소가 어떤 비율로 들어 있나. 예: Ti₃C₂ 는 타이타늄 3, 탄소 2.</dd>
+      <dt>시료</dt><dd>실험에 실제로 쓴 물질 한 덩어리. 같은 조성이라도 만든 법이 다르면 다른 시료다.</dd>
+      <dt>원문</dt><dd>값이 처음 실린 논문의 문장 그대로.</dd>
+      <dt>채점자</dt><dd>원문을 다시 읽고 «이 값이 맞게 옮겨졌나」를 판정하는 AI.</dd>
+      <dt>함정 문제</dt><dd>채점자 몰래 일부러 고쳐 넣은 답안. 채점자를 시험하는 데 쓴다.</dd>
+      <dt>회차</dt><dd>성질 하나(또는 논문 묶음 하나)를 처음부터 끝까지 한 번 채점한 것.</dd>
+      <dt>가운데값</dt><dd>값들을 크기 순으로 줄 세웠을 때 한가운데 오는 값. 튀는 값에 덜 흔들린다.</dd>
+      <dt>nm · Å</dt><dd>길이 단위. 1 nm 는 10억분의 1 m, 1 Å 는 그 10분의 1.</dd>
+      <dt>eV</dt><dd>전자 하나를 다룰 때 쓰는 아주 작은 에너지 단위.</dd>
+    </dl></div>
+  </div>
+  <nav class="toc" aria-label="차례">
+    <h2>차례</h2>
+    <ol>
+      <li><span class="n">1</span><a href="#ch1">아주 얇은 판, MXene</a></li>
+      <li><span class="n">2</span><a href="#ch2">수만 편 논문 속 흩어진 숫자</a></li>
+      <li><span class="n">3</span><a href="#ch3">숫자에 원문 문장을 붙이다</a></li>
+      <li><span class="n">4</span><a href="#ch4">채점자 둘과 함정 문제</a></li>
+      <li><span class="n">5</span><a href="#ch5">틀린 것과 빠뜨린 것</a></li>
+      <li><span class="n">6</span><a href="#ch6">지도에 무엇이 모였나 — 성질 열 가지</a></li>
+      <li><span class="n">7</span><a href="#ch7">10월 9일 — 지도가 넓어지고, 지도를 시험하다</a></li>
+      <li><span class="n">8</span><a href="#ch8">규칙을 고칠 때, 논문을 고를 때 — 우리가 지킨 약속</a></li>
+      <li><span class="n">9</span><a href="#ch9">아직 모르는 것 · 자료가 오면 채울 것</a></li>
+      <li><span class="n">10</span><a href="#ch10">이 지도는 어디서 왔고, 어디로 가나</a></li>
+    </ol>
+  </nav>
+</section>
+
+<!-- ===== 1장 ===== -->
+<section class="chapter" id="ch1">
+  <div class="opener">
+    <figure>
+      <svg viewBox="0 0 1000 380" role="img" aria-label="MXene 판의 옆모습: 금속 원자 줄 사이에 탄소 원자 줄, 겉에 끝 원자, 판과 판 사이 간격 약 1나노미터">
+        <rect width="1000" height="380" fill="#f6eed9"/>
+        <!-- 판 1 -->
+        <g>
+          <g fill="#c8962a"><circle cx="150" cy="70" r="11"/><circle cx="230" cy="70" r="11"/><circle cx="310" cy="70" r="11"/><circle cx="390" cy="70" r="11"/><circle cx="470" cy="70" r="11"/><circle cx="550" cy="70" r="11"/><circle cx="630" cy="70" r="11"/></g>
+          <g fill="#2b3a67"><circle cx="110" cy="100" r="17"/><circle cx="190" cy="100" r="17"/><circle cx="270" cy="100" r="17"/><circle cx="350" cy="100" r="17"/><circle cx="430" cy="100" r="17"/><circle cx="510" cy="100" r="17"/><circle cx="590" cy="100" r="17"/><circle cx="670" cy="100" r="17"/></g>
+          <g fill="#3d3d44"><circle cx="150" cy="128" r="10"/><circle cx="230" cy="128" r="10"/><circle cx="310" cy="128" r="10"/><circle cx="390" cy="128" r="10"/><circle cx="470" cy="128" r="10"/><circle cx="550" cy="128" r="10"/><circle cx="630" cy="128" r="10"/></g>
+          <g fill="#2b3a67"><circle cx="110" cy="156" r="17"/><circle cx="190" cy="156" r="17"/><circle cx="270" cy="156" r="17"/><circle cx="350" cy="156" r="17"/><circle cx="430" cy="156" r="17"/><circle cx="510" cy="156" r="17"/><circle cx="590" cy="156" r="17"/><circle cx="670" cy="156" r="17"/></g>
+          <g fill="#c8962a"><circle cx="150" cy="186" r="11"/><circle cx="230" cy="186" r="11"/><circle cx="310" cy="186" r="11"/><circle cx="390" cy="186" r="11"/><circle cx="470" cy="186" r="11"/><circle cx="550" cy="186" r="11"/><circle cx="630" cy="186" r="11"/></g>
+        </g>
+        <!-- 판 2 -->
+        <g transform="translate(0,150)">
+          <g fill="#c8962a"><circle cx="150" cy="70" r="11"/><circle cx="230" cy="70" r="11"/><circle cx="310" cy="70" r="11"/><circle cx="390" cy="70" r="11"/><circle cx="470" cy="70" r="11"/><circle cx="550" cy="70" r="11"/><circle cx="630" cy="70" r="11"/></g>
+          <g fill="#2b3a67"><circle cx="110" cy="100" r="17"/><circle cx="190" cy="100" r="17"/><circle cx="270" cy="100" r="17"/><circle cx="350" cy="100" r="17"/><circle cx="430" cy="100" r="17"/><circle cx="510" cy="100" r="17"/><circle cx="590" cy="100" r="17"/><circle cx="670" cy="100" r="17"/></g>
+          <g fill="#3d3d44"><circle cx="150" cy="128" r="10"/><circle cx="230" cy="128" r="10"/><circle cx="310" cy="128" r="10"/><circle cx="390" cy="128" r="10"/><circle cx="470" cy="128" r="10"/><circle cx="550" cy="128" r="10"/><circle cx="630" cy="128" r="10"/></g>
+          <g fill="#2b3a67"><circle cx="110" cy="156" r="17"/><circle cx="190" cy="156" r="17"/><circle cx="270" cy="156" r="17"/><circle cx="350" cy="156" r="17"/><circle cx="430" cy="156" r="17"/><circle cx="510" cy="156" r="17"/><circle cx="590" cy="156" r="17"/><circle cx="670" cy="156" r="17"/></g>
+          <g fill="#c8962a"><circle cx="150" cy="186" r="11"/><circle cx="230" cy="186" r="11"/><circle cx="310" cy="186" r="11"/><circle cx="390" cy="186" r="11"/><circle cx="470" cy="186" r="11"/><circle cx="550" cy="186" r="11"/><circle cx="630" cy="186" r="11"/></g>
+        </g>
+        <!-- 간격 표시 -->
+        <g stroke="#d2553f" stroke-width="3" fill="none"><path d="M720 100 L720 250"/><path d="M710 100 L730 100"/><path d="M710 250 L730 250"/></g>
+        <g font-family="Noto Sans KR,sans-serif" font-size="22" fill="#1d1d24">
+          <text x="742" y="180" fill="#d2553f" font-weight="700">판 사이 ≈ 1 nm</text>
+          <text x="742" y="208" font-size="17" fill="#55555f">머리카락 굵기의 10만분의 1쯤</text>
+          <circle cx="760" cy="290" r="12" fill="#2b3a67"/><text x="782" y="297">금속 원자</text>
+          <circle cx="760" cy="325" r="9" fill="#3d3d44"/><text x="782" y="332">탄소·질소 원자</text>
+          <circle cx="760" cy="358" r="9" fill="#c8962a"/><text x="782" y="365">겉에 붙은 끝 원자</text>
+        </g>
+      </svg>
+      <figcaption>그림 1-1 · MXene 판을 옆에서 본 모습(그림은 개념도다). 금속 원자 줄 사이에 탄소나 질소가 끼어 있고, 겉에는 끝 원자가 붙는다. 이런 판이 책장처럼 쌓인다.</figcaption>
+    </figure>
+    <div class="kicker">1장</div>
+    <h2>아주 얇은 판, MXene</h2>
+    <p class="hook">책장처럼 겹겹이 쌓인 아주 얇은 판. 판과 판 사이 간격은 보통 1 nm 안팎, 머리카락 굵기의 10만분의 1쯤이다.</p>
+  </div>
+
+  <div class="prose">
+    <p>MXene(맥신)은 아주 얇은 판이다. 금속 원자 줄과 탄소(또는 질소) 원자 줄이 샌드위치처럼 번갈아 놓여 있다. 이런 판이 책장처럼 여러 장 쌓인다. 판 사이 간격은 X선을 쏘아 재는데, 보통 1 nm 안팎이다.</p>
+    <p>가장 많이 연구된 것은 타이타늄(Ti)과 탄소(C)로 된 <b>Ti₃C₂Tₓ</b> 다. 끝의 Tₓ 는 판 겉면에 붙은 원자들을 뜻한다. 겉면을 어떻게 처리하느냐에 따라 성질이 꽤 달라진다. 6장에서 보겠지만, 같은 Ti₃C₂ 라도 처리에 따라 어떤 값은 3 eV(전자 하나를 다룰 때 쓰는 아주 작은 에너지 단위) 넘게 벌어진다.</p>
+    <p>만드는 법은 대략 이렇다. 판이 되기 전의 단단한 결정(<span class="term">전구체</span>)을 약품에 담가 한 층을 녹여 낸다(<span class="term">식각</span>). 그러면 판이 드러나고, 그 판을 한 장씩 떼어 낸다(<span class="term">박리</span>). 약품도 여러 가지다. 불산(HF), 불화리튬과 염산을 섞은 것, 녹인 소금 등.</p>
+    <p>종류는 얼마나 될까. 실험실에서 실제로 만든 금속–탄소 조합만 50가지가 넘는다. 원소를 섞은 것, 겉면이 다른 것까지 세면 100가지 가까이 된다. 컴퓨터 계산으로만 예측한 후보는 1,000가지가 넘는다.<sup class="fn">1</sup></p>
+    <blockquote class="pull t span">"MXene 은 물질이 아주 많다. 어느 성질에 어느 조성을 써야 하는지, 구조와 제조 방법을 구조적으로 정리할 수 있을까?"<small>— 이 지도는 2026년 10월 6일, 이 질문 하나에서 시작했다.<sup class="fn">2</sup></small></blockquote>
+    <p>MXene 이 이름을 알린 것은 전기를 담는 힘, 곧 <span class="term">정전용량</span> 덕분이었다. 정전용량은 축전기처럼 전기를 얼마나 모아 둘 수 있나를 뜻한다. 2013년 학술지 «Science», 2014년 «Nature» 에 실린 대표 성과가 모두 Ti₃C₂Tₓ 의 정전용량이었다. 특히 같은 부피에 얼마나 담나(<b>부피당</b> 값)가 핵심이었다.<sup class="fn">3</sup></p>
+    <p>그 뒤로 연구는 사방으로 뻗었다. 전기가 얼마나 잘 흐르나, 전자파를 얼마나 막나, 빛을 받으면 얼마나 뜨거워지나, 열을 얼마나 잘 나르나. 이런 것을 <b>성질</b>이라 부른다. 성질 하나마다 논문이 쌓였다.</p>
+    <p>질문을 던진 사람은 한때 MXene 으로 논문을 썼던 연구자다. 다만 본인 말로는 «물질 자체를 연구한 게 아니라 구조를 만드는 데 썼다」. 그래서 이 지도에 필요한 재료 지식은 작업하면서 하나씩 쌓아 왔다.<sup class="fn">4</sup></p>
+    <p>질문은 단순했지만 답은 그렇지 않았다. 다음 장에서 그 이유를 본다.</p>
+  </div>
+
+  <div class="summary"><h3>한 장 요약</h3><ul>
+    <li>MXene 은 금속과 탄소(또는 질소)로 된 아주 얇은 판이 쌓인 물질이다. 판 사이는 1 nm 안팎.</li>
+    <li>실험으로 만든 조합만 50가지가 넘고, 계산 후보는 1,000가지가 넘는다.</li>
+    <li>«어느 성질엔 어느 MXene 을 어떻게 만들어야 하나」라는 질문에서 이 지도가 시작됐다.</li>
+  </ul></div>
+  <aside class="notes"><h4>주석</h4><ol>
+    <li>조합 수: <code>intelligence/wiki/mxene-atlas.md</code> 핵심 요약 3번(근거 <code>evidence/q2_synthesized_count_agent3.md</code>). 판 사이 간격 1 nm 안팎 설명: <code>presentations/mxene-atlas-status-2026-10-07/how-judging-works.html</code> §5.</li>
+    <li>질문 원문: <code>intelligence/mxene-atlas/PURPOSE-and-direction-2026-10-07.md</code> §1. 시작일과 «인생의 전환점일 수도」라는 말: 위키 타임라인 2026-10-06 줄.</li>
+    <li>«왜 정전용량부터」: 위키 타임라인 2026-10-07 줄(Science 2013 · Nature 2014 clay, 핵심은 F/cm³).</li>
+    <li>위키 «우리 프로젝트 연관」 정정 줄(2026-10-07) · 결정 D14.</li>
+  </ol></aside>
+</section>
+
+<!-- ===== 2장 ===== -->
+<section class="chapter" id="ch2">
+  <div class="opener">
+    <figure>
+      <svg viewBox="0 0 1000 380" role="img" aria-label="쌓인 논문 더미 위로 숫자들이 흩어져 날아다니는 그림">
+        <rect width="1000" height="380" fill="#e3e9f6"/>
+        <g stroke="#c9c4b6" stroke-width="2">
+          <rect x="300" y="250" width="240" height="110" fill="#ffffff" transform="rotate(-6 420 305)"/>
+          <rect x="330" y="225" width="240" height="110" fill="#fbfaf7" transform="rotate(4 450 280)"/>
+          <rect x="290" y="200" width="240" height="110" fill="#ffffff" transform="rotate(-3 410 255)"/>
+          <rect x="340" y="170" width="240" height="120" fill="#fbfaf7" transform="rotate(7 460 230)"/>
+          <rect x="310" y="140" width="240" height="130" fill="#ffffff" transform="rotate(-2 430 205)"/>
+        </g>
+        <g stroke="#d6d1c3" stroke-width="5" stroke-linecap="round">
+          <path d="M335 175 L520 170"/><path d="M335 195 L500 192"/><path d="M335 215 L525 212"/><path d="M335 235 L470 233"/>
+        </g>
+        <g font-family="Noto Serif KR,serif" font-weight="700">
+          <text x="80" y="90" font-size="34" fill="#d2553f" transform="rotate(-8 80 90)">6.05 m²/g</text>
+          <text x="640" y="80" font-size="30" fill="#1f7a72" transform="rotate(6 640 80)">34.21%</text>
+          <text x="700" y="190" font-size="36" fill="#2b3a67" transform="rotate(-4 700 190)">4.53 eV</text>
+          <text x="90" y="230" font-size="28" fill="#c8962a" transform="rotate(5 90 230)">1.15 nm</text>
+          <text x="660" y="300" font-size="26" fill="#d2553f" transform="rotate(-6 660 300)">16.7 m²/g</text>
+          <text x="140" y="330" font-size="24" fill="#2b3a67" transform="rotate(3 140 330)">37.15%</text>
+          <text x="420" y="60" font-size="24" fill="#55555f">?</text><text x="600" y="140" font-size="22" fill="#55555f">?</text><text x="230" y="150" font-size="26" fill="#55555f">?</text>
+        </g>
+      </svg>
+      <figcaption>그림 2-1 · 논문 더미에서 숫자만 빠져나오면 «이게 어느 시료의, 어떤 조건의 값이었지?」를 잃는다. 그림 속 숫자는 모두 이 책에 나오는 실제 원문 값이다.</figcaption>
+    </figure>
+    <div class="kicker">2장</div>
+    <h2>수만 편 논문 속 흩어진 숫자</h2>
+    <p class="hook">MXene 실험 논문은 4만 편이 넘는다. 2025년 한 해에만 8,929편이 나왔다. 사람이 다 읽을 수 있는 양이 아니다.</p>
+  </div>
+
+  <div class="prose">
+    <p>숫자는 논문 안에 흩어져 있다. 어떤 값은 본문 한가운데, 어떤 값은 그림 설명에, 어떤 값은 «각각」이라는 말로 여러 시료와 함께 한 문장에 묶여 있다. 원하는 값을 찾으려면 논문을 하나씩 열어야 한다.<sup class="fn">1</sup></p>
+    <p>그래서 숫자만 모아 둔 데이터베이스(값을 표로 모아 둔 자료 창고)가 이미 몇 개 있다. 우리가 찾은 것 가운데 가장 비슷한 것은 논문 114편에서 573줄을 모은 공개 자료였다. 쓸모 있는 자료다. 하지만 들여다보니 아쉬운 점이 넷 있었다.<sup class="fn">2</sup></p>
+    <ul>
+      <li>값의 91%가 Ti₃C₂ 하나에 몰려 있다.</li>
+      <li>AI 가 뽑은 값인데, 얼마나 정확한지 보고가 없다.</li>
+      <li>값마다 «원문의 어느 문장에서 왔는지」가 없다.</li>
+      <li>무엇보다, 틀린 값이 섞여 있었다.</li>
+    </ul>
+    <p>마지막 것은 우리가 직접 원문을 펴서 확인했다. 그 데이터베이스의 값을 원래 논문과 한 줄씩 맞춰 보았다. 원문과 맞지 않는 값이 처음 15편에서는 17.9%, 범위를 넓힌 22편에서는 8.0% 나왔다. 조사한 논문 수(표본)가 작아서 어느 숫자도 확정은 아니다.<sup class="fn">3</sup></p>
+    <figure class="span">
+      <svg viewBox="0 0 1000 300" role="img" aria-label="기존 데이터베이스 감사 결과 막대 그래프: 처음 15편 17.9퍼센트, 넓힌 22편 8.0퍼센트">
+        <rect width="1000" height="300" fill="#ffffff"/>
+        <text x="40" y="46" font-family="Noto Serif KR,serif" font-size="24" font-weight="700" fill="#1d1d24">기존 데이터베이스 값을 원문과 대조했더니</text>
+        <text x="40" y="74" font-family="Noto Sans KR,sans-serif" font-size="16" fill="#55555f">원문과 맞지 않은 값의 비율 (막대 끝 = 20%)</text>
+        <g font-family="Noto Sans KR,sans-serif" font-size="18" fill="#1d1d24">
+          <text x="40" y="140">처음 15편</text>
+          <rect x="220" y="115" width="680" height="38" fill="#f1eee6"/>
+          <rect x="220" y="115" width="608.6" height="38" fill="#d2553f"/>
+          <text x="838" y="141" font-weight="700" fill="#8f2f1f">17.9%</text>
+          <text x="220" y="176" font-size="15" fill="#55555f">잠정 — 오류가 몇 편에 몰려 있어 폭이 넓다</text>
+          <text x="40" y="232">넓힌 22편</text>
+          <rect x="220" y="207" width="680" height="38" fill="#f1eee6"/>
+          <rect x="220" y="207" width="272" height="38" fill="#c8962a"/>
+          <text x="502" y="233" font-weight="700" fill="#6e5110">8.0%</text>
+          <text x="220" y="268" font-size="15" fill="#55555f">판정 불가 — 표본이 작아 하나로 확정하지 못했다</text>
+        </g>
+      </svg>
+      <figcaption>그림 2-2 · 두 번 대조해 두 숫자가 나왔다. 어느 쪽도 «확정」은 아니다. 다만 «틀린 값이 섞여 있다」는 것만은 분명했다.</figcaption>
+    </figure>
+    <p>틀린 값은 흔히 같은 모양이었다. MXene 에 다른 재료를 섞어 만든 <span class="term">복합체</span>(두 재료를 합친 것)의 값을, 순수한 MXene 의 값처럼 적어 둔 것이다. 숫자 자체는 원문에 있으니 얼핏 맞아 보인다. 하지만 «누구의 숫자인가」가 틀렸다.<sup class="fn">4</sup></p>
+    <p>전기가 얼마나 잘 흐르나(<span class="term">전기전도도</span>, 단위 S/cm — 클수록 잘 흐른다) 같은 대표 성질에서는 «24,000 S/cm」 같은 최고값이 조건 없이 돌아다닌다. 어떤 시료를 어떻게 만들어 어떻게 쟀는지가 떨어져 나간 숫자다. 근거가 붙은 지도가 가장 쓸모 있는 자리가 바로 여기다.<sup class="fn">5</sup></p>
+    <blockquote class="pull c span">값을 더 많이 모으는 경쟁이 아니다. 믿을 수 있는 값을 모으는 일이다.<small>— 이 지도의 «우리 몫」을 정한 문장</small></blockquote>
+    <p>원문을 구하는 일부터 쉽지 않았다. 우리는 처음부터 합법적인 길만 쓰기로 했다. 무단 복제 사이트에서 뽑은 값은 남에게 공개할 수도 없고, 남이 같은 원문으로 다시 확인할 수도 없기 때문이다.<sup class="fn">6</sup></p>
+    <p>그런데 누구나 볼 수 있게 공개된 논문이라도, 출판사 누리집은 프로그램이 들어와 읽는 것을 막는 경우가 많았다. 처음 대조할 때 공개 논문 60편 가운데 본문을 프로그램으로 받은 것은 16편뿐이었다. 결국 공공 도서관 같은 논문 저장소가 프로그램으로 읽을 수 있는 합법 통로가 되었다. (프로그램이 막힌 논문을 사람이 손으로 받아 온 이야기는 7장에 나온다.)<sup class="fn">7</sup></p>
+    <p>경쟁자만 있는 것은 아니었다. 컴퓨터 계산으로 만든 MXene 구조 4,488개를 모은 공개 자료도 있다. 이것은 경쟁 상대가 아니라 짝이다. 같은 조성 이름으로 «계산값」 칸을 나란히 붙일 수 있다.<sup class="fn">8</sup></p>
+    <p>그래서 할 일이 정해졌다. 숫자를 모으되, 숫자마다 그 숫자가 적힌 문장을 붙인다. 그리고 그 짝이 맞는지 따로 채점한다.</p>
+  </div>
+
+  <div class="summary"><h3>한 장 요약</h3><ul>
+    <li>MXene 논문은 4만 편이 넘고, 숫자는 그 안에 흩어져 있다.</li>
+    <li>이미 있는 데이터베이스를 원문과 대조하니 틀린 값이 섞여 있었다(17.9% · 8.0%, 둘 다 확정은 아님). 흔한 실수는 복합체 값을 순수 MXene 값으로 적은 것.</li>
+    <li>그래서 목표는 «많이」가 아니라 «믿을 수 있게」. 원문도 합법적인 길로만 구한다.</li>
+  </ul></div>
+  <aside class="notes"><h4>주석</h4><ol>
+    <li>논문 수: <code>PURPOSE-and-direction-2026-10-07.md</code> §1(OpenAlex 2026-10-06 · 2025년 8,929편) · 위키 타임라인 첫 줄(40,984편).</li>
+    <li>기존 자료: GitHub <code>tomal66/mxene-geometry</code> — 위키 핵심 요약 1번(<code>RESULT-P0-prior-art-2026-10-06.md</code>).</li>
+    <li>감사 수치: <code>PURPOSE</code> §1 · 위키 타임라인(P1-A 17.9% 잠정 · P1-A2 8.0% 판정 불가, 논문 단위 부트스트랩 [2.6, 14.3]).</li>
+    <li><code>PURPOSE</code> §1(KNOWLEDGE 🔒 인용).</li>
+    <li><code>PURPOSE</code> §6-2 P3-2 줄.</li>
+    <li><code>PURPOSE</code> §5 원칙 1(Sci-Hub 안 씀).</li>
+    <li>위키 핵심 요약 4번 — 출판사 403, Europe PMC 본문 XML, OA 60편 중 16편.</li>
+    <li><code>diegonti/mxene-db</code>(계산 4,488 구조 · MIT) — 위키 핵심 요약 5번.</li>
+  </ol></aside>
+</section>
+
+<!-- ===== 3장 ===== -->
+<section class="chapter" id="ch3">
+  <div class="opener">
+    <figure>
+      <svg viewBox="0 0 1000 380" role="img" aria-label="돋보기가 영어 원문 문장 속 숫자 6.05를 크게 비추는 그림">
+        <rect width="1000" height="380" fill="#dff0ea"/>
+        <rect x="70" y="60" width="860" height="260" rx="14" fill="#ffffff" stroke="#c9d9d2"/>
+        <g stroke="#e3e0d8" stroke-width="10" stroke-linecap="round">
+          <path d="M110 105 L880 105"/><path d="M110 145 L840 145"/><path d="M110 265 L860 265"/><path d="M110 295 L700 295"/>
+        </g>
+        <g font-family="Georgia,serif" font-size="21" fill="#1d1d24">
+          <text x="110" y="200">The specific surface area of few-layer Ti₃C₂Tₓ, spherical Ti₃C₂Tₓ</text>
+          <text x="110" y="232">and flaky Ti₃C₂Tₓ is <tspan font-weight="700" fill="#d2553f">6.05 m² g⁻¹</tspan>, 17.07 m² g⁻¹ and 17.81 m² g⁻¹, respectively.</text>
+        </g>
+        <circle cx="390" cy="222" r="78" fill="#fff6e0" fill-opacity=".35" stroke="#2b3a67" stroke-width="10"/>
+        <path d="M445 278 L520 350" stroke="#2b3a67" stroke-width="22" stroke-linecap="round"/>
+        <text x="300" y="232" font-family="Georgia,serif" font-size="38" font-weight="700" fill="#d2553f">6.05</text>
+      </svg>
+      <figcaption>그림 3-1 · 지도의 값 하나는 이런 원문 문장 하나와 짝을 이룬다. «respectively(각각)」 문장이라, 첫 번째 시료에는 첫 번째 숫자를 붙여야 한다.</figcaption>
+    </figure>
+    <div class="kicker">3장</div>
+    <h2>숫자에 원문 문장을 붙이다</h2>
+    <p class="hook">숫자 하나마다, 그 숫자가 적힌 원래 문장을 꼭 붙여 둔다. 누구든 그 문장을 다시 읽고 확인할 수 있게.</p>
+  </div>
+
+  <div class="prose">
+    <p>이 지도의 한 줄은 숫자 하나가 아니다. 그 숫자가 <b>어떤 MXene</b>(조성)의, <b>어떤 시료</b>의, <b>어떤 단위</b>의 값인지, 그리고 <b>원문의 어느 문장</b>에서 왔는지를 한 묶음으로 적는다. 만든 방법과 잰 조건도 함께 적는다. 도서관 책에 붙은 청구기호처럼, 누구든 이 줄을 보고 원래 자리를 다시 찾아갈 수 있다.<sup class="fn">1</sup></p>
+    <p>위 그림의 문장을 보자. 겉넓이(m²/g — 가루 1 g 을 쫙 펼쳤을 때 몇 제곱미터인가)를 적은 문장이다. 한 문장 안에 시료 셋, 숫자 셋이 있다. «respectively(각각)」라는 말이 붙어 있으니 순서대로 짝을 맞춰야 한다. 첫 번째 시료(few-layer Ti₃C₂Tₓ)는 6.05 m²/g 이다. 이런 짝짓기는 사람도 헷갈리고 AI 도 헷갈린다.<sup class="fn">2</sup></p>
+    <figure class="span">
+      <svg viewBox="0 0 1000 300" role="img" aria-label="지도 한 줄의 구성: 조성, 시료, 값, 단위, 원문 문장, 판정 표시">
+        <rect width="1000" height="300" fill="#ffffff"/>
+        <text x="40" y="44" font-family="Noto Serif KR,serif" font-size="24" font-weight="700" fill="#1d1d24">지도의 «한 줄」은 이렇게 생겼다</text>
+        <g font-family="Noto Sans KR,sans-serif">
+          <rect x="40" y="70" width="170" height="90" rx="10" fill="#e3e9f6"/><text x="56" y="100" font-size="15" fill="#55555f">조성</text><text x="56" y="136" font-size="24" font-weight="700" fill="#2b3a67">Ti₃C₂</text>
+          <rect x="222" y="70" width="270" height="90" rx="10" fill="#f6eed9"/><text x="238" y="100" font-size="15" fill="#55555f">시료 이름</text><text x="238" y="136" font-size="20" font-weight="700" fill="#6e5110">few-layer Ti₃C₂Tₓ</text>
+          <rect x="504" y="70" width="140" height="90" rx="10" fill="#f8e6df"/><text x="520" y="100" font-size="15" fill="#55555f">값</text><text x="520" y="136" font-size="26" font-weight="700" fill="#8f2f1f">6.05</text>
+          <rect x="656" y="70" width="140" height="90" rx="10" fill="#f8e6df"/><text x="672" y="100" font-size="15" fill="#55555f">단위</text><text x="672" y="136" font-size="22" font-weight="700" fill="#8f2f1f">m²/g</text>
+          <rect x="808" y="70" width="152" height="90" rx="10" fill="#dff0ea"/><text x="824" y="100" font-size="15" fill="#55555f">판정</text><text x="824" y="140" font-size="30" font-weight="700" fill="#1f7a72">● 맞음</text>
+          <rect x="40" y="176" width="920" height="96" rx="10" fill="#fbfaf7" stroke="#e3e0d8"/>
+          <text x="56" y="204" font-size="15" fill="#55555f">원문 문장 (그대로 옮김)</text>
+          <text x="56" y="236" font-size="17" font-family="Georgia,serif" fill="#1d1d24">"The specific surface area of few-layer Ti₃C₂Tₓ, spherical Ti₃C₂Tₓ and flaky Ti₃C₂Tₓ</text>
+          <text x="56" y="260" font-size="17" font-family="Georgia,serif" fill="#1d1d24">is 6.05 m² g⁻¹, 17.07 m² g⁻¹ and 17.81 m² g⁻¹, respectively."</text>
+        </g>
+      </svg>
+      <figcaption>그림 3-2 · 실제로 채점된 한 줄. 누르면 원문 문장이 나오고, 원문을 다시 열어 확인할 수 있다.</figcaption>
+    </figure>
+    <p>숫자가 맞아도 쓸 수 없는 줄이 있다. «16시간으로 늘렸더니 비표면적이 95.7 m²/g 이 되었다」는 문장에서 뽑은 줄이 그랬다. 값 95.7 은 원문 그대로였다. 그런데 시료 이름 칸이 비어 있었다. 이 숫자가 어느 시료의 것인지 알 수 없으니 지도에 올리지 않았다.<sup class="fn">3</sup></p>
+    <blockquote class="pull n span">숫자는 맞아도 «누구의 숫자인지」가 비면 쓸 수 없다.</blockquote>
+    <h3>한 성질을 지도에 올리는 여덟 걸음</h3>
+    <p>성질이 바뀌어도 순서는 늘 같다.<sup class="fn">4</sup></p>
+    <ol class="steps">
+      <li><b>논문 목록부터 고정한다.</b> 나중에 유리한 논문만 골라 넣지 못하게.</li>
+      <li><b>추린다.</b> 그 값을 «자기가 직접 재서」 적은 논문만 남긴다. 계산만 한 논문, 남의 값을 옮겨 적은 논문은 뺀다.</li>
+      <li><b>받아 적는다.</b> AI 가 논문을 읽고 조성·시료 이름·값·단위·원문 문장을 한 줄씩 뽑는다.</li>
+      <li><b>함정 문제를 만든다.</b> 뽑은 줄 몇 개를 몰래 고친다(4장).</li>
+      <li><b>채점 기준을 먼저 저장한다.</b> 무엇을 «맞다」로 볼지 채점 전에 적어서 저장해 둔다.</li>
+      <li><b>채점자 둘이 따로 채점한다.</b> 각자 원문을 열어 «맞다·틀리다·모르겠다」 중 하나를 고른다.</li>
+      <li><b>표시를 단다.</b> 둘 다 «맞다」면 ●, 하나라도 «틀리다」면 ✕, 그 밖은 ○. (5장에서 ◐ 가 하나 더 생긴다.)</li>
+      <li><b>합격을 가린다.</b> ● 가 80% 이상이고 ✕ 가 10% 이하면 그 회차는 통과.</li>
+    </ol>
+    <p>다섯 번째 걸음이 이 일의 등뼈다. 결과를 본 뒤에 기준을 정하면 기준이 결과 쪽으로 휜다. 재는 게 아니라 «맞추는」 게 된다. 시험을 보기 전에 정답 기준표를 봉투에 넣어 봉해 두는 것과 같다. 이것을 <span class="term">사전등록</span>(미리 등록해 두기)이라고 부른다. 기준을 바꾸고 싶으면 새 회차를 열어 처음부터 다시 잰다.<sup class="fn">5</sup></p>
+    <p>그렇게 하면 불편한 일도 생긴다. 결과를 보니 «이 칸만 빼면 훨씬 좋아 보이는데」 싶은 때가 온다. 5장에 그 이야기가 나온다. 그때도 우리는 결과를 보고 고른 숫자를 지도에 올리지 않았다.</p>
+  </div>
+
+  <div class="summary"><h3>한 장 요약</h3><ul>
+    <li>지도의 한 줄 = 조성 · 시료 · 값 · 단위 · <b>원문 문장</b>. 누구든 원문을 다시 열어 확인할 수 있다.</li>
+    <li>숫자가 맞아도 «누구의 숫자인지」가 비면 올리지 않는다.</li>
+    <li>채점 기준은 언제나 채점 전에 저장한다. 바꾸려면 새 회차로 다시 잰다.</li>
+  </ul></div>
+  <aside class="notes"><h4>주석</h4><ol>
+    <li>한 줄의 구성: <code>PURPOSE-and-direction-2026-10-07.md</code> §2 표 ①.</li>
+    <li>예시 문장과 «respectively」 설명: <code>how-judging-works.html</code> §3 «진짜 줄 — 둘 다 맞다」.</li>
+    <li>95.7 m²/g 예시: 같은 화면 §3 «진짜 줄인데 틀린 경우」(채점자 하나는 «틀리다」, 하나는 «모르겠다」).</li>
+    <li>여덟 걸음: 같은 화면 §2.</li>
+    <li>같은 화면 §7 ③ · <code>PURPOSE</code> §5 원칙 2(측정 전 사전등록 커밋).</li>
+  </ol></aside>
+</section>
+
+<!-- ===== 4장 ===== -->
+<section class="chapter" id="ch4">
+  <div class="opener">
+    <figure>
+      <svg viewBox="0 0 1000 380" role="img" aria-label="책상에 앉은 채점자 둘이 서로 다른 답안을 보고, 가운데 함정 카드 한 장이 놓인 그림">
+        <rect width="1000" height="380" fill="#f8e6df"/>
+        <!-- 책상 -->
+        <rect x="60" y="270" width="880" height="22" rx="6" fill="#8a6a4a"/>
+        <rect x="100" y="292" width="16" height="80" fill="#8a6a4a"/><rect x="884" y="292" width="16" height="80" fill="#8a6a4a"/>
+        <!-- 칸막이 -->
+        <rect x="492" y="120" width="16" height="150" fill="#c9c4b6"/>
+        <!-- 채점자 가 -->
+        <circle cx="270" cy="120" r="44" fill="#2b3a67"/>
+        <path d="M190 270 Q190 175 270 175 Q350 175 350 270 Z" fill="#2b3a67"/>
+        <rect x="300" y="215" width="150" height="58" rx="4" fill="#ffffff" transform="rotate(-8 375 244)"/>
+        <text x="330" y="252" font-family="Noto Sans KR,sans-serif" font-size="22" font-weight="700" fill="#1f7a72" transform="rotate(-8 375 244)">맞다 ●</text>
+        <!-- 채점자 나 -->
+        <circle cx="730" cy="120" r="44" fill="#1f7a72"/>
+        <path d="M650 270 Q650 175 730 175 Q810 175 810 270 Z" fill="#1f7a72"/>
+        <rect x="550" y="215" width="150" height="58" rx="4" fill="#ffffff" transform="rotate(8 625 244)"/>
+        <text x="572" y="252" font-family="Noto Sans KR,sans-serif" font-size="22" font-weight="700" fill="#d2553f" transform="rotate(8 625 244)">틀리다 ✕</text>
+        <!-- 함정 카드 -->
+        <g transform="rotate(-10 500 70)">
+          <rect x="430" y="20" width="140" height="92" rx="10" fill="#c8962a"/>
+          <rect x="440" y="30" width="120" height="72" rx="6" fill="none" stroke="#fbfaf7" stroke-width="3" stroke-dasharray="7 5"/>
+          <text x="458" y="76" font-family="Noto Sans KR,sans-serif" font-size="26" font-weight="900" fill="#fbfaf7">함정!</text>
+        </g>
+        <g font-family="Noto Sans KR,sans-serif" font-size="20" fill="#1d1d24">
+          <text x="220" y="350">채점자 가</text><text x="680" y="350">채점자 나</text>
+        </g>
+      </svg>
+      <figcaption>그림 4-1 · 두 채점자는 서로의 답을 보지 않는다. 그리고 둘 다 모르게, 일부러 고친 «함정 문제」가 섞여 있다.</figcaption>
+    </figure>
+    <div class="kicker">4장</div>
+    <h2>채점자 둘과 함정 문제</h2>
+    <p class="hook">채점자 둘, 그리고 그들 몰래 섞어 둔 함정 문제 열여덟 장. 함정을 못 잡는 채점자의 «맞다」는 믿지 않는다.</p>
+  </div>
+
+  <div class="prose">
+    <p>학교 시험 채점에 빗대 보자. 문제지는 논문 원문이다. 학생 답안은 AI 가 원문에서 뽑아 온 한 줄(«이 시료의 값은 이것」)이다. 채점 선생님은 둘이다. Claude 와 Codex, 서로 다른 회사가 만든 AI 둘이다. 둘은 서로의 채점을 보지 않는다.<sup class="fn">1</sup></p>
+    <p>그런데 선생님이 대충 채점하면 어떻게 알까. 그래서 선생님을 믿기 전에 먼저 선생님을 시험한다. «채점자를 채점하는」 셈이다. 답안 더미에 <b>함정 문제 열여덟 장</b>을 몰래 섞는다. 열두 장은 일부러 틀리게 고친 답안이고, 여섯 장은 손대지 않은 정답이다. 선생님은 어느 것이 함정인지 모른다.</p>
+    <figure class="span">
+      <svg viewBox="0 0 1000 300" role="img" aria-label="함정 카드 열두 장(빨강)과 정답 카드 여섯 장(초록), 합격 조건: 열두 장 중 열한 장 이상 잡기, 여섯 장 중 다섯 장 이상 맞다고 하기">
+        <rect width="1000" height="300" fill="#ffffff"/>
+        <g font-family="Noto Sans KR,sans-serif" font-weight="700" font-size="16" fill="#fbfaf7">
+          <g fill="#d2553f">
+            <rect x="40" y="40" width="70" height="90" rx="8"/><rect x="120" y="40" width="70" height="90" rx="8"/><rect x="200" y="40" width="70" height="90" rx="8"/><rect x="280" y="40" width="70" height="90" rx="8"/><rect x="360" y="40" width="70" height="90" rx="8"/><rect x="440" y="40" width="70" height="90" rx="8"/>
+            <rect x="40" y="145" width="70" height="90" rx="8"/><rect x="120" y="145" width="70" height="90" rx="8"/><rect x="200" y="145" width="70" height="90" rx="8"/><rect x="280" y="145" width="70" height="90" rx="8"/><rect x="360" y="145" width="70" height="90" rx="8"/><rect x="440" y="145" width="70" height="90" rx="8"/>
+          </g>
+          <g fill="#1f7a72">
+            <rect x="560" y="40" width="70" height="90" rx="8"/><rect x="640" y="40" width="70" height="90" rx="8"/><rect x="720" y="40" width="70" height="90" rx="8"/>
+            <rect x="560" y="145" width="70" height="90" rx="8"/><rect x="640" y="145" width="70" height="90" rx="8"/><rect x="720" y="145" width="70" height="90" rx="8"/>
+          </g>
+          <g font-size="30"><text x="62" y="98">✕</text><text x="142" y="98">✕</text><text x="222" y="98">✕</text><text x="302" y="98">✕</text><text x="382" y="98">✕</text><text x="462" y="98">✕</text><text x="62" y="203">✕</text><text x="142" y="203">✕</text><text x="222" y="203">✕</text><text x="302" y="203">✕</text><text x="382" y="203">✕</text><text x="462" y="203">✕</text>
+          <text x="580" y="98">●</text><text x="660" y="98">●</text><text x="740" y="98">●</text><text x="580" y="203">●</text><text x="660" y="203">●</text><text x="740" y="203">●</text></g>
+        </g>
+        <g font-family="Noto Sans KR,sans-serif" font-size="17" fill="#1d1d24">
+          <text x="40" y="270"><tspan font-weight="700" fill="#8f2f1f">고친 답안 12장</tspan> — 11장 이상 «틀리다」를 잡아야</text>
+          <text x="560" y="270"><tspan font-weight="700" fill="#11564f">정답 6장</tspan> — 5장 이상 «맞다」해야</text>
+          <text x="820" y="110" font-size="16" fill="#55555f">둘 다 넘어야</text><text x="820" y="134" font-size="16" fill="#55555f">그 선생님의</text><text x="820" y="158" font-size="16" fill="#55555f">채점을 믿는다</text>
+        </g>
+      </svg>
+      <figcaption>그림 4-2 · 선생님 자격 시험. 고친 답안을 잡는 눈과, 멀쩡한 답안을 알아보는 눈을 함께 본다.</figcaption>
+    </figure>
+    <p>정답 여섯 장을 함께 넣는 까닭은 간단하다. 무엇을 보든 «틀렸다」고만 하는 선생님이라도 고친 답안 열두 장은 다 잡을 것이다. 멀쩡한 답안을 «맞다」고 알아보는지까지 봐야 그 선생님을 믿을 수 있다.</p>
+    <h3>함정은 이렇게 생겼다</h3>
+    <p>실제로 쓴 함정 몇 가지.<sup class="fn">2</sup></p>
+    <ul>
+      <li><b>값 바꾸기.</b> 원문에는 어느 시료의 겉넓이가 16.7 m²/g 이었다. 함정에는 61.79 로 적어 보냈다. 두 선생님 모두 «논문엔 16.7」이라며 잡았다.</li>
+      <li><b>없는 시료 이름.</b> 556.283 m²/g 이라는 값에, 논문에 없는 시료 이름(«그래핀과 함께 구운 복합체, 시료 B」)을 붙였다. 둘 다 «그런 시료는 논문에 없다」고 했다.</li>
+      <li><b>다른 MXene 으로.</b> 빛을 열로 바꾸는 효율 34.21% 의 주인은 나이오븀 MXene(Nb₂C) 입자였다. 이것을 Ti₃C₂ 로 바꿔 보냈다. 둘 다 «이 입자는 Nb₂C」라고 잡았다.</li>
+      <li><b>단위 바꾸기.</b> 1.15 nm 를 1.15 Å(10배 작은 단위)로 바꿨다. 둘 다 «nm 이지 Å 가 아니다」라고 했다.</li>
+      <li><b>칸 비우기.</b> 원문에 분명히 적힌 조건을 일부러 빈칸으로 보냈다. «틀렸다」가 아니라 «빠뜨렸다」를 알아보는지 시험한다(5장).</li>
+      <li><b>성질 이름 바꾸기.</b> 숫자와 시료는 그대로 두고 «무슨 성질의 값인지」만 바꿨다. 10월 9일에 새로 넣은 함정이다(7장).</li>
+    </ul>
+    <p>함정 열여덟 장을 다 잡았다고 «채점자가 완벽하다」는 뜻은 아니다. 열여덟 장은 많지 않다. 채점자가 실제로는 열 번에 한두 번(약 17%까지) 실수하더라도 열여덟 장을 우연히 다 맞힐 수 있다. 그래서 우리는 «이 채점자를 믿어도 될 만큼은 시험했다」까지만 말한다.<sup class="fn">2</sup></p>
+    <blockquote class="pull m span">한 명이 놓친 것을 다른 한 명이 잡는다. 그래서 선생님이 둘이다.</blockquote>
+    <p>두 선생님이 갈리는 때도 있다. 층과 층 사이 간격이 «약 1.41 nm 로 늘었다」는 문장에서 뽑은 줄을 두고, 한 선생님은 «맞다」, 다른 선생님은 «틀리다 — 이건 다른 약품을 넣기 전 시료의 값」이라고 했다. 규칙은 하나라도 «틀리다」면 ✕ 다. 그 줄은 지도에 오르지 않았다.<sup class="fn">3</sup></p>
+    <h3>정답지가 애매하면 선생님도 떨어진다</h3>
+    <p>한 번은 두 선생님이 자격 시험에서 떨어졌다. 고친 답안 열두 장은 둘 다 다 잡았다. 그런데 «멀쩡한 정답」 여섯 장 가운데 한 선생님은 넷, 다른 선생님은 셋만 «맞다」고 했다.<sup class="fn">4</sup></p>
+    <p>들여다보니 문제는 선생님이 아니라 정답지 쪽이었다. 우리가 «정답」으로 고른 줄이 애초에 정의가 애매한 줄이었다. 그 뒤로는 채점 전에 정답 줄의 원문을 먼저 열어 본다. 표의 숫자만 덩그러니 있는 줄, 다른 액체 속에서 잰 값처럼 애매한 줄은 정답 후보에서 뺀다. 그렇게 고친 다음 회차에서는 두 선생님 모두 정답 여섯 장을 다 알아봤다. 다만 성질도 논문도 다른 한 번의 비교라, «이것 덕분」이라고 못 박지는 않는다.<sup class="fn">5</sup></p>
+    <p>반대로 너무 깨끗해도 의심한다. 어느 회차는 두 선생님이 36줄 모두 «맞다」, 함정도 전부 만점이었다. 기쁘기보다 «함정이 너무 쉬웠나」를 먼저 적어 두었다.<sup class="fn">6</sup></p>
+  </div>
+
+  <div class="summary"><h3>한 장 요약</h3><ul>
+    <li>서로 다른 AI 채점자 둘이 따로 채점하고, 하나라도 «틀리다」면 지도에 올리지 않는다.</li>
+    <li>함정 18장(고친 12 · 정답 6)으로 채점자부터 시험한다. 11/12 와 5/6 을 넘어야 믿는다. 다 맞혀도 «완벽」은 아니다.</li>
+    <li>정답지도 틀릴 수 있다. 그래서 채점 전에 정답 줄의 원문을 먼저 열어 본다.</li>
+  </ul></div>
+  <aside class="notes"><h4>주석</h4><ol>
+    <li>채점자 = Claude 와 Codex: <code>how-judging-works.html</code> 머리말 · §1.</li>
+    <li>함정 예시 넷: 같은 화면 §3(BET 값·시료 이름) · §4(광열 조성) · §5(층간거리 단위). 칸 비우기(빈칸 대조군 4): <code>RESULT-P14-thermal-conductivity-2026-10-09.md</code> §P14c. 성질 이름 바꾸기(변조 2): <code>RESULT-P17-nonTi-human-2026-10-09.md</code> «한 줄」. «대조군 18 = 판정자 오탐률 상한 ≈ 17%(rule of three)»: <code>RESULT-P16-nonTi-oa-2026-10-09.md</code> · <code>RESULT-P17</code>.</li>
+    <li>1.41 nm 갈림(시료 «MH(30)», NAC 를 넣지 않은 값): 같은 화면 §5.</li>
+    <li>위키 타임라인 2026-10-09 새벽 P9 줄(정전용량 사실 칸 v1.5 · 4/6 · 3/6 · 판정자 둘 무효).</li>
+    <li><code>RESULT-P10-nonTi-round4-2026-10-09.md</code> «공통 틀 v1.2」 절(애매한 3줄 거름 · 6/6 · n=1 이라 단정하지 않음).</li>
+    <li>위키 타임라인 2026-10-09 «Ti 밖 3차」 줄(36/36 · «너무 깨끗」).</li>
+  </ol></aside>
+</section>
+
+<!-- ===== 5장 ===== -->
+<section class="chapter" id="ch5">
+  <div class="opener">
+    <figure>
+      <svg viewBox="0 0 1000 380" role="img" aria-label="답안지 세 칸: 맞음 동그라미, 틀림 엑스, 빈칸으로 낸 반쪽 동그라미">
+        <rect width="1000" height="380" fill="#e3e9f6"/>
+        <rect x="140" y="40" width="720" height="300" rx="12" fill="#ffffff" stroke="#c9cfe0"/>
+        <g font-family="Noto Sans KR,sans-serif" fill="#1d1d24">
+          <text x="180" y="90" font-size="22" font-weight="700">답안지</text>
+          <g font-size="20">
+            <text x="180" y="160">1. 값</text><rect x="320" y="128" width="200" height="46" rx="6" fill="#fbfaf7" stroke="#e3e0d8"/><text x="340" y="160" font-family="Georgia,serif">550</text>
+            <text x="180" y="230">2. 조성</text><rect x="320" y="198" width="200" height="46" rx="6" fill="#fbfaf7" stroke="#e3e0d8"/><text x="340" y="230" font-family="Georgia,serif">Ti₃C₂</text>
+            <text x="180" y="300">3. 방향</text><rect x="320" y="268" width="200" height="46" rx="6" fill="#fbfaf7" stroke="#c8962a" stroke-dasharray="6 5"/><text x="340" y="300" fill="#8a8a93">(빈칸)</text>
+          </g>
+          <circle cx="600" cy="151" r="22" fill="#1f7a72"/><text x="640" y="160" font-size="20">맞음</text>
+          <g stroke="#d2553f" stroke-width="7" stroke-linecap="round"><path d="M582 205 L618 241"/><path d="M618 205 L582 241"/></g><text x="640" y="230" font-size="20">틀림</text>
+          <circle cx="600" cy="291" r="22" fill="none" stroke="#c8962a" stroke-width="5"/><path d="M600 269 A22 22 0 0 1 600 313 Z" fill="#c8962a"/><text x="640" y="300" font-size="20">빠뜨림 — 논문엔 있는데 칸이 빔</text>
+        </g>
+      </svg>
+      <figcaption>그림 5-1 · 틀린 답(✕)과 빈칸으로 낸 답(◐)은 다르다. 이 구별이 생기기까지 열전도도 한 성질에서 세 번을 쟀고, 네 번째에 통과했다. (그림 속 답안은 설명용이다.)</figcaption>
+    </figure>
+    <div class="kicker">5장</div>
+    <h2>틀린 것과 빠뜨린 것</h2>
+    <p class="hook">성질을 넓힐수록 이상한 모양이 반복됐다. 숫자는 대체로 맞는데, 숫자 옆의 «설명 칸」에서 자꾸 떨어졌다.</p>
+  </div>
+
+  <div class="prose">
+    <p>전기전도도, 전자파 차폐(전자파를 얼마나 막나), 전지, 층간거리. 성질이 바뀌어도 떨어지는 자리는 비슷했다. 숫자는 대체로 원문과 맞았다. 틀린 것은 그 숫자를 설명하는 칸이었다. 예를 들면 «밑에 깐 필름도 섞은 재료로 쳐야 하나」, «시료가 젖은 상태인가 마른 상태인가」 같은 칸이다.<sup class="fn">1</sup></p>
+    <h3>층간거리: 떨어졌다가 다시 잰 이야기</h3>
+    <p>층간거리는 MXene 판과 판 사이 간격이다. 처음 채점에서는 «시료가 젖었나, 말랐나」까지 맞혀야 «맞다」로 치게 했다. 그런데 논문들이 이 상태를 잘 적지 않았다. 결과는 ● 45%, 불합격이었다. ✕ 의 대부분이 바로 이 상태 칸에서 나왔다. 숫자 자체가 틀린 줄은 2.2%뿐이었다.<sup class="fn">2</sup></p>
+    <p>결과를 보고 계산해 보니 «상태 칸만 빼면 78%」가 나왔다. 솔깃한 숫자다. 하지만 결과를 본 뒤에 고른 잣대다. 이 숫자는 지도에 쓰지 않았다.</p>
+    <p>대신 처음부터 다시 했다. «상태는 빼고 값·단위·조성·시료만 본다」는 기준을 <b>채점 전에</b> 새로 저장하고, 같은 줄을 두 선생님이 다시 채점했다. 결과는 ● 90%. 이번에는 통과였다. 지도에는 «상태는 확인 안 됨」이라는 표시를 달아 올렸다.<sup class="fn">3</sup></p>
+    <figure class="span">
+      <svg viewBox="0 0 1000 250" role="img" aria-label="층간거리 두 번의 채점 결과: 첫 회 맞음 166 틀림 151 기타 50, 다시 잰 회차 맞음 181 틀림 2 기타 18">
+        <rect width="1000" height="250" fill="#ffffff"/>
+        <text x="40" y="42" font-family="Noto Serif KR,serif" font-size="22" font-weight="700" fill="#1d1d24">층간거리 — 기준을 먼저 고쳐 저장하고 다시 쟀다</text>
+        <g font-family="Noto Sans KR,sans-serif" font-size="16" fill="#1d1d24">
+          <text x="40" y="104">첫 회 (367줄)</text>
+          <rect x="250" y="80" width="271.4" height="38" fill="#1f7a72"/><rect x="521.4" y="80" width="246.9" height="38" fill="#d2553f"/><rect x="768.3" y="80" width="81.7" height="38" fill="#c9c4b6"/>
+          <text x="262" y="105" fill="#fff" font-weight="700">● 166</text><text x="534" y="105" fill="#fff" font-weight="700">✕ 151</text><text x="776" y="105" fill="#1d1d24">○ 50</text>
+          <text x="40" y="174">다시 잰 회차 (201줄)</text>
+          <rect x="250" y="150" width="540.3" height="38" fill="#1f7a72"/><rect x="790.3" y="150" width="6" height="38" fill="#d2553f"/><rect x="796.3" y="150" width="53.7" height="38" fill="#c9c4b6"/>
+          <text x="262" y="175" fill="#fff" font-weight="700">● 181</text><text x="800" y="175" fill="#1d1d24">○ 18</text><text x="860" y="175" fill="#8f2f1f">✕ 2</text>
+          <line x1="730" y1="66" x2="730" y2="202" stroke="#1d1d24" stroke-dasharray="5 4"/><text x="690" y="226" font-size="14" fill="#55555f">합격선 ● 80%</text>
+        </g>
+      </svg>
+      <figcaption>그림 5-2 · 같은 성질, 다른 기준. 두 번째 기준은 결과를 보기 전에 정해 저장했다. 다시 잰 201줄은 첫 회에서 ● 가 아니었던 줄들이다.</figcaption>
+    </figure>
+    <h3>열전도도: 세 번 떨어지고, 네 번째에 통과했다</h3>
+    <p>열전도도는 열을 얼마나 잘 나르나다. 기기의 열을 빼내는 데 쓰인다. 이 성질에서 우리는 가장 많이 배웠다.<sup class="fn">4</sup></p>
+    <p><b>첫 번째.</b> ● 66.7%, 불합격. 원인을 보니 숫자가 아니라 우리가 쓴 지시문이었다. 열이 흐르는 방향을 적는 칸에 «판과 나란히」, «판을 가로질러」 두 낱말만 허락했다. 그런데 논문들은 «가로」, «세로」, «축 방향」처럼 다른 낱말로 적었다. 받아 적는 AI 는 칸을 비웠고, 채점자는 «논문엔 적혀 있는데 비웠다」며 ✕ 를 줬다. 단위를 깜빡해 550 <b>m</b>W 를 550 으로 적은 줄도 있었다. 우리 실수였다.</p>
+    <p><b>두 번째.</b> 지시문만 고쳐 다시 저장하고, 같은 논문을 다시 받아 적었다. ● 81.2%로 합격선은 넘었다. 그러나 ✕ 가 18.8%로 상한 10%를 넘어 또 불합격. 이번 ✕ 열여섯은 <b>전부 빈칸</b>이었다. 틀린 숫자는 하나도 없었다.</p>
+    <p><b>세 번째.</b> 채점 쪽에 새 표시를 만들었다. «틀림(✕)」과 «빠뜨림(◐ — 논문엔 있는데 칸이 비어 있음)」을 따로 센다. 함정에도 «정답이 있는데 일부러 비운 칸」 네 장을 넣었다. 두 선생님 모두 넷 다 «틀림」이 아니라 «빠뜨림」이라고 정확히 불렀다. 둘을 가를 수 있다는 것을 처음 확인한 순간이다.</p>
+    <figure class="span">
+      <svg viewBox="0 0 1000 400" role="img" aria-label="열전도도 네 회차 결과 막대: 첫 회 맞음 56 틀림 27 기타 1, 둘째 회 맞음 69 틀림 16, 셋째 회 맞음 62 빠뜨림 22 틀림 0 기타 1, 넷째 회 맞음 70 빠뜨림 12 기타 2 틀림 1">
+        <rect width="1000" height="400" fill="#ffffff"/>
+        <text x="40" y="42" font-family="Noto Serif KR,serif" font-size="22" font-weight="700" fill="#1d1d24">열전도도 네 회차 — 세 번 떨어지고 네 번째에 통과</text>
+        <g font-family="Noto Sans KR,sans-serif" font-size="16" fill="#1d1d24">
+          <text x="40" y="104">첫 회 (84줄)</text>
+          <rect x="250" y="80" width="400" height="38" fill="#1f7a72"/><rect x="650" y="80" width="192.9" height="38" fill="#d2553f"/><rect x="842.9" y="80" width="7.1" height="38" fill="#c9c4b6"/>
+          <text x="262" y="105" fill="#fff" font-weight="700">● 56</text><text x="662" y="105" fill="#fff" font-weight="700">✕ 27</text>
+          <text x="40" y="174">둘째 회 (85줄)</text>
+          <rect x="250" y="150" width="487.1" height="38" fill="#1f7a72"/><rect x="737.1" y="150" width="112.9" height="38" fill="#d2553f"/>
+          <text x="262" y="175" fill="#fff" font-weight="700">● 69</text><text x="749" y="175" fill="#fff" font-weight="700">✕ 16</text><text x="862" y="175" fill="#8f2f1f" font-weight="700">전부 빈칸</text>
+          <text x="40" y="244">셋째 회 (85줄)</text>
+          <rect x="250" y="220" width="437.6" height="38" fill="#1f7a72"/><rect x="687.6" y="220" width="155.3" height="38" fill="#c8962a"/><rect x="842.9" y="220" width="7.1" height="38" fill="#c9c4b6"/>
+          <text x="262" y="245" fill="#fff" font-weight="700">● 62</text><text x="699" y="245" fill="#fff" font-weight="700">◐ 22</text><text x="862" y="245" fill="#11564f" font-weight="700">✕ 0</text>
+          <text x="40" y="314">넷째 회 (85줄)</text>
+          <rect x="250" y="290" width="494.1" height="38" fill="#1f7a72"/><rect x="744.1" y="290" width="84.7" height="38" fill="#c8962a"/><rect x="828.8" y="290" width="14.1" height="38" fill="#c9c4b6"/><rect x="842.9" y="290" width="7.1" height="38" fill="#d2553f"/>
+          <text x="262" y="315" fill="#fff" font-weight="700">● 70</text><text x="752" y="315" fill="#fff" font-weight="700">◐ 12</text><text x="862" y="315" fill="#11564f" font-weight="700">통과 · ✕ 1</text>
+          <line x1="730" y1="66" x2="730" y2="342" stroke="#1d1d24" stroke-dasharray="5 4"/><text x="690" y="362" font-size="14" fill="#55555f">● 80% 선</text>
+          <text x="40" y="388" font-size="14" fill="#55555f">합격 조건(셋째·넷째 회): ●+◐ 80% 이상 · ✕ 10% 이하 · ◐ 20% 이하 — 셋째 ◐ 26% 걸림 · 넷째 ◐ 14% 통과</text>
+        </g>
+      </svg>
+      <figcaption>그림 5-3 · 첫 회 원인은 지시문, 둘째 회 원인은 빈칸. 셋째 회에야 «숫자는 전부 맞고 받아 적기가 덜 꼼꼼했다」가 또렷이 보였다. 넷째 회는 받아 적기를 다시 해서 통과했다.</figcaption>
+    </figure>
+    <p>세 번째 결과는 이랬다. ● 62, ◐ 22, ✕ 0. 맞음과 빠뜨림을 합치면 98.8%. 틀린 숫자는 85줄 가운데 하나도 없었다. 그런데도 <b>불합격</b>이다. 빠뜨림이 26%로, 채점 전에 정해 둔 상한 20%를 넘었기 때문이다.</p>
+    <blockquote class="pull c span">숫자는 85줄 전부 맞았다. 떨어진 이유는 하나, 받아 적기가 덜 꼼꼼했던 것이다.</blockquote>
+    <p>이 상한은 일부러 박아 둔 안전장치였다. «빠뜨림」을 따로 세면 채점이 너그러워질 수 있다. 빈칸이 많아도 «틀린 건 아니잖아」 하고 넘어가기 쉽다. 그래서 «빈칸이 20%를 넘으면 받아 적기가 부실한 것」이라고 미리 정해 두었다. 그리고 그 장치가 실제로 걸렸다. 우리는 상한을 낮추지 않았다.<sup class="fn">5</sup></p>
+    <p>고칠 곳은 채점이 아니라 받아 적기였다. «빈칸으로 두기 전에, 실험 방법을 적은 부분과 그림 설명에서 한 번 더 찾아볼 것.」 이 지시를 넣었다. 다만 끝난 회차의 점수를 고쳐 쓰지는 않았다. <b>새 회차</b>를 열어 같은 35편을 처음부터 다시 받아 적었다.</p>
+    <p><b>네 번째.</b> ● 70 · ◐ 12 · ○ 2 · ✕ 1, 모두 85줄. 맞음과 빠뜨림을 합치면 96.5%, 틀림 1.2%, 빠뜨림 14.1%. 이번에는 세 조건을 모두 넘어 <b>통과</b>했다. 채점자 둘도 함정을 모두 잡았다.<sup class="fn">5</sup></p>
+    <p>하지만 «새 지시 덕분에 빠뜨림이 줄었다」고는 말하지 않는다. 이번에는 받아 적기도 새로 했고, 채점 지시문도 조금 바뀌었다. 무엇이 효과를 냈는지 가를 수 없다. 이 회차의 목적은 지도에 쓸 값을 더 단단하게 채우는 것이었다. 지도의 열전도도 점은 이 통과 회차의 82점으로 바꿔 실었다.</p>
+    <h3>둘이 같이 빠뜨리면 아무도 모른다</h3>
+    <p>전지 성질에서도 비슷한 일이 있었다. 받아 적는 AI 둘이 서로 독립적으로 같은 논문을 읽고 뽑는데, 둘이 함께 빈칸으로 둔 조건들이 있었다. 원문의 실험 방법 부분에 분명히 적혀 있는 조건이었다. 둘의 답이 «같다」는 것은 둘이 «같이 빠뜨렸다」는 것을 잡아내지 못한다. 그 빈칸은 원문과 대조하는 채점에서야 드러났다.<sup class="fn">6</sup></p>
+    <p>그리고 통과할 때까지 계속 돌리지는 않는다. 같은 문제지를 세 번 넘게 고치지 않기로 정해 두었다. 될 때까지 고쳐 돌리면, 그건 재는 게 아니라 «맞추는」 것이 된다.<sup class="fn">7</sup></p>
+  </div>
+
+  <div class="summary"><h3>한 장 요약</h3><ul>
+    <li>성질을 넓힐수록 «숫자는 맞고, 숫자를 설명하는 칸이 틀린다」는 모양이 반복됐다.</li>
+    <li>열전도도에서 «틀림」과 «빠뜨림」을 나눠 세자 진짜 문제가 보였다. 틀린 숫자 0, 빠뜨림 26% → 미리 정한 상한(20%)에 걸려 불합격.</li>
+    <li>기준은 낮추지 않고 받아 적기를 새 회차로 다시 했다. 네 번째에 통과(● 70 · ◐ 12 · ✕ 1 / 85줄).</li>
+    <li>결과를 보고 기준을 바꾸지 않는다. 바꿀 땐 채점 전에 새로 저장하고 다시 잰다.</li>
+  </ul></div>
+  <aside class="notes"><h4>주석</h4><ol>
+    <li>위키 핵심 요약 00번(전도도 G2 69% · EMI 56/63 · 오류가 사실 칸·경계에 몰림).</li>
+    <li><code>RESULT-P7-dspacing-2026-10-09.md</code> «한 줄」·«✕ 는 무엇인가」(● 166/367 = 45.2% · Codex ✕ 151 중 142 가 상태 칸 · 값 쪽 틀림 2.2%).</li>
+    <li>같은 문서 §P7b(사전등록 커밋 <code>437c2bda6</code> · 201줄 중 ● 181 = 90.0%) · <code>how-judging-works.html</code> §5 «다시 잰 성질」.</li>
+    <li><code>RESULT-P14-thermal-conductivity-2026-10-09.md</code> 전체(P14 ● 56/84 · P14b ● 69/85, ✕ 16 = 18.8% · P14c ● 62 · ◐ 22 · ✕ 0 · ○ 1, ◐ 25.9%).</li>
+    <li>같은 문서 §P14c(«이 상한이 유리한 규칙의 안전장치였다 — 실제로 걸렸다») · 공통 틀 v1.3. 네 번째 회차: <code>RESULT-P14d-thermal-conductivity-2026-10-09.md</code>(● 70 · ◐ 12 · ○ 2 · ✕ 1 / 85 · ●+◐ 96.5% · ✕ 1.2% · ◐ 14.1% · 판정자 둘 유효 · 지도 84 → 82점 · «v1.3 규칙이 효과 있다로 읽지 마라» 카드 문구).</li>
+    <li>위키 타임라인 2026-10-08 밤 P6 G2 줄(✕ 27 은 숫자 틀림 0 · «두 추출자 일치는 함께 빠뜨린 것을 못 잡는다»).</li>
+    <li><code>RESULT-P14</code> §P14b(«같은 카드 3번 넘게 안 고친다 · 순환을 피한다»).</li>
+  </ol></aside>
+</section>
+
+<!-- ===== 6장 ===== -->
+<section class="chapter" id="ch6">
+  <div class="opener">
+    <figure>
+      <svg viewBox="0 0 1000 380" role="img" aria-label="주기율표처럼 놓인 MXene 조성 타일 열두 개">
+        <rect width="1000" height="380" fill="#f6eed9"/>
+        <g font-family="Noto Serif KR,serif" font-weight="700" text-anchor="middle">
+          <g>
+            <rect x="40" y="40" width="140" height="140" rx="10" fill="#2b3a67"/><text x="110" y="120" font-size="34" fill="#fbfaf7">Ti₃C₂</text><text x="110" y="160" font-size="15" fill="#c9d0e6" font-family="Noto Sans KR,sans-serif" font-weight="400">가장 많이</text>
+            <rect x="195" y="40" width="140" height="140" rx="10" fill="#4a5a8a"/><text x="265" y="120" font-size="32" fill="#fbfaf7">Ti₂C</text>
+            <rect x="350" y="40" width="140" height="140" rx="10" fill="#1f7a72"/><text x="420" y="120" font-size="32" fill="#fbfaf7">Nb₂C</text>
+            <rect x="505" y="40" width="140" height="140" rx="10" fill="#c8962a"/><text x="575" y="120" font-size="32" fill="#fbfaf7">V₂C</text>
+            <rect x="660" y="40" width="140" height="140" rx="10" fill="#c8962a"/><text x="730" y="120" font-size="32" fill="#fbfaf7">V₄C₃</text>
+            <rect x="815" y="40" width="140" height="140" rx="10" fill="#d2553f"/><text x="885" y="120" font-size="28" fill="#fbfaf7">Mo₁.₃₃C</text>
+          </g>
+          <g>
+            <rect x="40" y="200" width="140" height="140" rx="10" fill="#d2553f"/><text x="110" y="280" font-size="32" fill="#fbfaf7">Mo₂C</text>
+            <rect x="195" y="200" width="140" height="140" rx="10" fill="#e07a63"/><text x="265" y="280" font-size="26" fill="#fbfaf7">Mo₂TiC₂</text>
+            <rect x="350" y="200" width="140" height="140" rx="10" fill="#5c5c6a"/><text x="420" y="280" font-size="30" fill="#fbfaf7">Ta₄C₃</text>
+            <rect x="505" y="200" width="140" height="140" rx="10" fill="#5c5c6a"/><text x="575" y="280" font-size="28" fill="#fbfaf7">W₁.₃₃C</text>
+            <rect x="660" y="200" width="140" height="140" rx="10" fill="#2b3a67"/><text x="730" y="270" font-size="24" fill="#fbfaf7">Ti₃C₂₋ₓNₓ</text><text x="730" y="302" font-size="14" fill="#c9d0e6" font-family="Noto Sans KR,sans-serif" font-weight="400">탄소+질소</text>
+            <rect x="815" y="200" width="140" height="140" rx="10" fill="#1f7a72"/><text x="885" y="270" font-size="21" fill="#fbfaf7">TiVNbMoC₃</text><text x="885" y="302" font-size="14" fill="#cfe9e2" font-family="Noto Sans KR,sans-serif" font-weight="400">금속 넷을 섞음</text>
+          </g>
+        </g>
+      </svg>
+      <figcaption>그림 6-1 · 지도에 실제로 값이 들어온 MXene 조성들. 타이타늄(Ti) 말고도 나이오븀(Nb)·바나듐(V)·몰리브데넘(Mo)·탄탈럼(Ta)·텅스텐(W)이 들어왔다.</figcaption>
+    </figure>
+    <div class="kicker">6장</div>
+    <h2>지도에 무엇이 모였나 — 성질 열 가지</h2>
+    <p class="hook">전기를 담는 힘부터 열을 나르는 힘까지. 열 가지 성질을, 값마다 원문 문장을 달아 모으고 채점했다.</p>
+  </div>
+
+  <div class="prose">
+    <p>처음 지도는 성질 하나, Ti₃C₂ 하나로 시작했다. 무게당 정전용량이었다. 논문 81편에서 351개의 값을 모았다. 그 뒤로 성질을 하나씩 늘렸고, 타이타늄이 아닌 MXene 도 넣었다. 일함수까지 올렸을 때 지도의 점(값 하나 = 점 하나)은 1,952개가 되었다. 10월 9일에 더 늘어난 이야기는 7장에 있다.<sup class="fn">1</sup></p>
+    <p>아래 카드는 성질 열 가지를 쉬운 말로 풀고, 채점 결과를 붙인 것이다. 초록 띠는 통과, 빨간 띠는 불합격, 회색 띠는 표본이 너무 적어 판정하지 못한 것이다.</p>
+  </div>
+
+  <div class="props">
+    <div class="prop"><span class="tag ok">통과</span><h4>무게당 정전용량</h4><p class="easy">MXene 1 g 이 전기를 얼마나 담아 두나.</p><p class="res">81편 · 351값 · 채점 ● 146/150</p></div>
+    <div class="prop thin"><span class="tag wait">표본 적음</span><h4>부피당 정전용량</h4><p class="easy">같은 부피에 전기를 얼마나 담나. MXene 을 유명하게 만든 바로 그 값.</p><p class="res">공개 84편 중 직접 잰 값은 7편 15값 · 채점 10/10 이지만 «증거 불충분」</p></div>
+    <div class="prop fail"><span class="tag no">미통과</span><h4>전기전도도</h4><p class="easy">전기가 얼마나 잘 흐르나.</p><p class="res">84편 · 227값 · 채점 69% — 숫자보다 «필름이냐 무엇과 섞였나」 칸에서 갈림</p></div>
+    <div class="prop fail"><span class="tag no">미통과</span><h4>전자파 차폐</h4><p class="easy">전자파를 얼마나 막아 주나.</p><p class="res">21편 · 63줄 · ● 56/63 · 틀린 숫자 0 — 받침 필름을 복합 재료로 볼지에서 7줄이 갈림</p></div>
+    <div class="prop fail"><span class="tag no">앞 단계 미통과</span><h4>전지 음극 용량</h4><p class="easy">리튬 전지에 전기를 얼마나 저장하나.</p><p class="res">31편 · 채점 ● 207/241 · 다만 두 AI 의 받아 적기 일치가 기준에 못 미쳐 «앞 단계 미통과」 표시</p></div>
+    <div class="prop"><span class="tag ok">통과(다시 잼)</span><h4>층간거리</h4><p class="easy">판과 판 사이 간격. 보통 1 nm 안팎.</p><p class="res">다시 잰 회차 ● 181/201 · 지도 347점 · «상태는 확인 안 됨」 표시</p></div>
+    <div class="prop"><span class="tag ok">통과</span><h4>겉넓이(비표면적)</h4><p class="easy">가루 1 g 을 쫙 펼치면 몇 제곱미터인가. 구멍·주름이 많을수록 크다.</p><p class="res">175편 · ● 370/380</p></div>
+    <div class="prop"><span class="tag ok">통과</span><h4>광열 변환 효율</h4><p class="easy">레이저 빛 에너지 가운데 몇 %가 열이 되나. 빛으로 데워 암세포를 죽이는 치료에 쓰인다.</p><p class="res">46편 · ● 60/66</p></div>
+    <div class="prop"><span class="tag ok">통과</span><h4>일함수</h4><p class="easy">겉에서 전자 하나를 떼어 내는 데 드는 에너지.</p><p class="res">45편 · ● 79/90 · 계산만 한 값은 뺐다</p></div>
+    <div class="prop"><span class="tag ok">통과(네 번째)</span><h4>열전도도</h4><p class="easy">열을 얼마나 잘 나르나. 기기의 열을 빼는 데 쓴다.</p><p class="res">세 번 미통과 뒤 받아 적기를 다시 해 ● 70/85 · ◐ 12 · ✕ 1 · 지도 82점</p></div>
+  </div>
+
+  <div class="prose">
+    <figure class="span">
+      <svg viewBox="0 0 1000 520" role="img" aria-label="성질별 채점에서 두 채점자가 모두 맞다고 한 비율 막대 그래프, 80퍼센트 선 표시">
+        <rect width="1000" height="520" fill="#ffffff"/>
+        <text x="40" y="42" font-family="Noto Serif KR,serif" font-size="22" font-weight="700" fill="#1d1d24">성질별로 «둘 다 맞다(●)」가 나온 몫</text>
+        <text x="40" y="68" font-family="Noto Sans KR,sans-serif" font-size="15" fill="#55555f">초록 = 통과 · 빨강 = 불합격 · 회색 = 표본 적음 · 노랑 = 빠뜨림(◐)</text>
+        <g font-family="Noto Sans KR,sans-serif" font-size="16" fill="#1d1d24">
+          <text x="40" y="111">무게당 정전용량</text><rect x="330" y="92" width="545.1" height="26" fill="#1f7a72"/><text x="882" y="111">146/150</text>
+          <text x="40" y="151">겉넓이</text><rect x="330" y="132" width="545.3" height="26" fill="#1f7a72"/><text x="882" y="151">370/380</text>
+          <text x="40" y="191">광열 변환 효율</text><rect x="330" y="172" width="509.1" height="26" fill="#1f7a72"/><text x="846" y="191">60/66</text>
+          <text x="40" y="231">층간거리 (다시 잼)</text><rect x="330" y="212" width="504.3" height="26" fill="#1f7a72"/><text x="841" y="231">181/201</text>
+          <text x="40" y="271">일함수</text><rect x="330" y="252" width="491.6" height="26" fill="#1f7a72"/><text x="829" y="271">79/90</text>
+          <text x="40" y="311">전지 음극 용량</text><rect x="330" y="292" width="481.0" height="26" fill="#d2553f" fill-opacity=".55"/><text x="818" y="311">207/241</text>
+          <text x="40" y="351">전자파 차폐</text><rect x="330" y="332" width="497.8" height="26" fill="#d2553f"/><text x="835" y="351">56/63</text>
+          <text x="40" y="391">열전도도 (넷째 회)</text><rect x="330" y="372" width="461.2" height="26" fill="#1f7a72"/><rect x="791.2" y="372" width="79.1" height="26" fill="#c8962a"/><text x="877" y="391">70/85 + ◐12</text>
+          <text x="40" y="431">전기전도도</text><rect x="330" y="412" width="386.4" height="26" fill="#d2553f"/><text x="723" y="431">69%</text>
+          <text x="40" y="471">부피당 정전용량</text><rect x="330" y="452" width="560" height="26" fill="#c9c4b6"/><text x="897" y="471">10/10</text>
+          <line x1="778" y1="84" x2="778" y2="488" stroke="#1d1d24" stroke-dasharray="5 4"/><text x="738" y="508" font-size="14" fill="#55555f">● 80% 선</text>
+        </g>
+      </svg>
+      <figcaption>그림 6-2 · 막대가 80% 선을 넘었는데도 빨간 것이 있다. 합격은 «● 80% 이상」과 «✕ 10% 이하」를 둘 다 넘어야 하기 때문이다. 전자파 차폐는 ✕ 7줄에서 걸렸다. 열전도도는 셋째 회에 빠뜨림 상한에서 걸렸다가 넷째 회에 통과했다(막대 = 넷째 회). 부피당 정전용량은 10줄뿐이라 만점이어도 판정하지 않았다.</figcaption>
+    </figure>
+    <h3>숫자를 읽는 법 — 조금 조심해서</h3>
+    <p>몇 가지 재미있는 숫자가 보인다. 아래의 <b>가운데값</b>은 값들을 크기 순으로 줄 세웠을 때 한가운데 오는 값이다. 다만 하나같이 조건이 다른 값을 섞어 계산한 것이라, «보통 이 정도로 보고된다」까지만 말할 수 있다. 서로 견주어 «어느 쪽이 더 좋다」고 할 값이 아니다.<sup class="fn">2</sup></p>
+    <ul>
+      <li><b>일함수.</b> 다른 재료와 섞지 않은 Ti₃C₂ 40줄의 가운데값은 약 4.53 eV 다. 그런데 범위는 2.85~6.0 eV, 겉면 처리에 따라 3 eV 넘게 벌어진다. 이 폭이 바로 «어떻게 만들면 일함수가 얼마인가」를 풀 재료다.</li>
+      <li><b>겉넓이.</b> 섞지 않은 MXene 은 가운데값 약 12.9 m²/g, 다른 재료와 섞은 복합체는 약 43.5 m²/g 이었다. 그렇다고 «복합체로 만들면 네 배」는 아니다. 재는 온도·기체·만드는 법이 다 달랐다. 형태 칸이 비어 있는 줄도 152줄 중 86줄이나 됐다.</li>
+      <li><b>광열 변환 효율.</b> 808 nm 빛에서 가운데값 약 39%, 1064 nm 빛에서 약 42%. 농도·빛의 세기·계산식이 논문마다 달랐다.</li>
+      <li><b>무게당 정전용량.</b> 4,000~12,000 F/g 처럼 유난히 큰 값도 들어 있다. 판 한 장의 아주 작은 자리를 재서 환산한 값이다. 지도에는 원문에 적힌 그대로 실었다.</li>
+    </ul>
+    <blockquote class="pull t span">지도 위 점의 개수를 연구의 양으로 읽지 말 것.</blockquote>
+    <p>점의 개수도 조심해서 읽어야 한다. 타이타늄 밖 MXene 을 모은 회차에서 Nb₂C 62줄, Mo₁.₃₃C 36줄이 들어왔다. 그런데 그중 84줄이 단 두 편의 논문에서 나왔다. 점이 많다고 «나이오븀·몰리브데넘 MXene 이 많이 연구됐다」는 뜻이 아니다.<sup class="fn">3</sup></p>
+    <p>그래도 첫 지도에서 «Ti₃C₂ 하나」로 시작했던 것을 생각하면, 위 그림의 타일들이 한 지도에 함께 놓였다는 것 자체가 진전이다. 여러 금속을 섞은 MXene 도, 탄소와 질소를 함께 쓴 MXene 도 원문 문장을 달고 들어왔다.<sup class="fn">4</sup></p>
+  </div>
+
+  <div class="summary"><h3>한 장 요약</h3><ul>
+    <li>성질 열 가지를 모아 채점했다. 여섯은 통과(열전도도는 네 번째에), 셋은 미통과, 하나는 표본이 적어 판정하지 못했다.</li>
+    <li>Ti 말고도 Nb·V·Mo·Ta·W MXene 이 들어왔다.</li>
+    <li>가운데값들은 조건이 섞인 값이다. 비교가 아니라 «원문으로 확인할 후보」로 읽는다.</li>
+  </ul></div>
+  <aside class="notes"><h4>주석</h4><ol>
+    <li>첫 지도: <code>PURPOSE-and-direction-2026-10-07.md</code> §2(P2 v0 351값 · 81편) · 지도 점 1,952: <code>RESULT-P13-workfunction-2026-10-09.md</code>. 성질별 채점 결과: <code>how-judging-works.html</code> §6 · 위키 타임라인(P3-1 7편 15값 · P3-2 84편 227값 · P3-3 21편 63줄 · P6 31편) · <code>RESULT-P7</code> · <code>RESULT-P11-bet</code>(175편) · <code>RESULT-P12-photothermal</code>(46편) · <code>RESULT-P13</code>(45편) · <code>RESULT-P14</code>(84점) → <code>RESULT-P14d</code>(통과 · 82점).</li>
+    <li>일함수: <code>RESULT-P13</code> «숫자」 · 겉넓이: <code>RESULT-P11-bet-2026-10-09.md</code> «숫자」 · 광열: <code>RESULT-P12</code> «숫자」 · 4,000~12,000 F/g(SECCM 단일층 국소 측정 환산값): 위키 타임라인 2026-10-07 P2 줄.</li>
+    <li><code>RESULT-P10-nonTi-round4-2026-10-09.md</code>(PMC13029227 Nb₂C 48줄 · PMC12566924 Mo₁.₃₃C 36줄).</li>
+    <li>조성 목록: <code>RESULT-P10</code> · <code>RESULT-P11</code> · <code>RESULT-P12</code>(W₁.₃₃C · 고엔트로피 TiVNbMoC₃) · <code>RESULT-P13</code>(Mo₂C · Ti₃C₂₋ₓNₓ).</li>
+  </ol></aside>
+</section>
+
+<!-- ===== 7장 (2026-10-09) ===== -->
+<section class="chapter" id="ch7">
+  <div class="opener">
+    <figure>
+      <svg viewBox="0 0 1000 380" role="img" aria-label="두 갈래 길: 프로그램이 받은 공개 논문과 사람이 손으로 받아 온 논문이 같은 채점 책상으로 들어가는 그림">
+        <rect width="1000" height="380" fill="#e3e9f6"/>
+        <!-- 위 갈래: 프로그램 -->
+        <rect x="50" y="50" width="200" height="110" rx="12" fill="#ffffff" stroke="#c9cfe0"/>
+        <g fill="#2b3a67"><rect x="80" y="78" width="140" height="10" rx="5"/><rect x="80" y="100" width="110" height="10" rx="5"/><rect x="80" y="122" width="125" height="10" rx="5"/></g>
+        <text x="150" y="190" text-anchor="middle" font-family="Noto Sans KR,sans-serif" font-size="18" fill="#1d1d24">프로그램이 받은 공개 논문</text>
+        <!-- 아래 갈래: 사람 손 -->
+        <g transform="translate(60,230)">
+          <rect x="0" y="0" width="80" height="100" rx="8" fill="#c8962a"/><rect x="22" y="-8" width="80" height="100" rx="8" fill="#d9ad4f"/><rect x="44" y="-16" width="80" height="100" rx="8" fill="#e9c878"/>
+        </g>
+        <text x="150" y="365" text-anchor="middle" font-family="Noto Sans KR,sans-serif" font-size="18" fill="#1d1d24">사람이 손으로 받은 논문</text>
+        <!-- 화살표 -->
+        <g stroke="#55555f" stroke-width="4" fill="none" stroke-linecap="round">
+          <path d="M265 105 C 400 105, 430 180, 540 190"/><path d="M290 290 C 410 290, 430 210, 540 205"/>
+          <path d="M528 180 L545 192 L528 205"/>
+        </g>
+        <!-- 채점 책상 -->
+        <rect x="560" y="150" width="380" height="20" rx="5" fill="#8a6a4a"/>
+        <circle cx="660" cy="95" r="32" fill="#2b3a67"/><path d="M610 150 Q610 120 660 120 Q710 120 710 150 Z" fill="#2b3a67"/>
+        <circle cx="840" cy="95" r="32" fill="#1f7a72"/><path d="M790 150 Q790 120 840 120 Q890 120 890 150 Z" fill="#1f7a72"/>
+        <rect x="742" y="50" width="16" height="100" fill="#c9c4b6"/>
+        <g font-family="Noto Sans KR,sans-serif" font-size="18" fill="#1d1d24" text-anchor="middle">
+          <text x="750" y="210">같은 채점자 둘 · 같은 함정 · 같은 기준</text>
+        </g>
+        <g font-family="Noto Serif KR,serif" font-weight="900" text-anchor="middle">
+          <text x="750" y="290" font-size="56" fill="#d2553f">361 → 669</text>
+          <text x="750" y="330" font-size="18" font-family="Noto Sans KR,sans-serif" font-weight="400" fill="#55555f">타이타늄이 아닌 MXene 의 점</text>
+        </g>
+      </svg>
+      <figcaption>그림 7-1 · 프로그램이 받은 논문도, 사람이 손으로 받아 온 논문도 똑같은 채점을 거친다. 그 하루에 타이타늄이 아닌 MXene 의 점이 361개에서 669개로 늘었다.</figcaption>
+    </figure>
+    <div class="kicker">7장</div>
+    <h2>10월 9일 — 지도가 넓어지고, 지도를 시험하다</h2>
+    <p class="hook">하루 동안 지도는 두 번 넓어졌다. 그리고 처음으로 «이 지도가 이미 알려진 사실과 맞는 말을 하나」를 시험받았다.</p>
+  </div>
+
+  <div class="prose">
+    <p>6장까지 지도의 점은 대부분 타이타늄(Ti) MXene 이었다. 전체 점 가운데 82.3%. 지도 한쪽만 빽빽한 셈이다. 그래서 10월 9일에는 나이오븀·바나듐·몰리브데넘 같은 다른 금속의 MXene 을 채우는 데 힘을 썼다.<sup class="fn">1</sup></p>
+    <h3>첫 번째 묶음 — 떨어졌지만, 숫자는 하나도 안 틀렸다</h3>
+    <p>먼저 프로그램으로 받아 둔 공개 논문 가운데 아직 쓰지 않은 27편을 열었다. 계산만 한 논문, 원하는 성질이 없는 논문 등 12편을 빼고 15편이 남았다. 여기서 96줄을 받아 적었다.</p>
+    <p>채점 결과는 ● 81, ✕ 15. ✕ 가 15.6% 로 상한 10% 를 넘어 <b>미통과</b>였다. 그런데 ✕ 15줄을 하나하나 열어 보니, 숫자가 틀린 줄은 <b>0</b>이었다. 전부 «이 값이 무슨 성질의 값인가」라는 이름표 문제였다.</p>
+    <ul>
+      <li><b>6줄</b> — 판 두 장 몫의 길이(c 격자 상수)를 «판 사이 간격」 칸에 넣었다. 받아 적는 AI 에게 준 지시문엔 «넣어도 된다」고 썼는데, 채점자에게 준 지시문엔 아무 말이 없었다. 우리 지시문 두 개가 서로 달랐던 것이다. 채점자 둘 다 «틀리다」고 했다.</li>
+      <li><b>9줄</b> — 슈퍼커패시터(아주 빨리 충전되는 축전기)의 값을 «전지 용량」 칸에 넣었다. 그 값을 넣을 알맞은 칸을 우리가 만들어 두지 않았다. 채점자 하나만 «틀리다」고 했다.</li>
+    </ul>
+    <p>그래도 판정은 바꾸지 않았다. «이 두 원인을 빼고 세면 81줄 모두 맞다」는 계산도 나오지만, 결과를 본 뒤에 만든 숫자라 근거로 쓰지 않는다(3장의 봉투 규칙). 지도에는 80점을 «회차 미통과 · 이 줄은 채점자 둘 다 맞다」는 표시를 달아 올렸다. 그리고 규칙 하나를 고쳤다. <b>채점자에게 주는 낱말 뜻은, 받아 적는 AI 에게 준 문장을 그대로 복사한다.</b><sup class="fn">2</sup></p>
+    <h3>두 번째 묶음 — 사람이 손으로 받아 온 논문</h3>
+    <p>출판사가 프로그램을 막아 받지 못한 논문이 137편 있었다. 그중 정당하게 열 수 있는 논문을 사람이 하나씩 손으로 받았다. 겹친 것을 빼니 56편.</p>
+    <p>사람이 가져온 논문이라고 봐주지 않았다. 똑같이 추리고, 받아 적고, 함정을 섞어 채점했다. 이번엔 함정에 «성질 이름 바꾸기」 두 장을 새로 넣었다. 남은 논문 29편, 253줄.</p>
+    <p>결과는 <b>● 253/253</b>. ✕ 도 ◐ 도 0. 4장에서 말했듯 너무 깨끗하면 먼저 의심한다. 그래서 채점자부터 다시 봤다. 두 채점자 모두 함정 18장을 전부 잡았다. 새로 넣은 «성질 이름 바꾸기」도 잡았다. 아무거나 «맞다」고 한 것은 아니었다. 다만 왜 첫 번째 묶음과 이렇게 다른지는 가를 수 없다. 지시문이 고쳐졌고, 논문 묶음 자체도 달랐다.<sup class="fn">3</sup></p>
+    <blockquote class="pull n span">«맞다(●)」는 «원문을 제대로 옮겼다」는 뜻이다. «원문이 옳다」는 뜻은 아니다.<small>예: 단위가 이상해 보이는 값(62.5 A h g⁻¹)도 원문에 그대로 있었기 때문에 «맞다」였다. 이 값은 지도에 싣는 칸이 아니어서 올리지 않았다.</small></blockquote>
+    <p>이 묶음에서 지도에 234점을 올렸다. 그래도 빈 곳이 있다. 돈을 내야 볼 수 있는 논문 77편은 아직 못 받았다. 사람 손으로 받을 수 있는 논문은 대개 «무료로 풀린 것」이라, 그쪽으로 쏠려 있을 수도 있다.</p>
+    <figure class="span">
+      <svg viewBox="0 0 1000 300" role="img" aria-label="타이타늄이 아닌 MXene 점 수: 361, 441, 669. 타이타늄 몫: 82.3퍼센트, 79.2퍼센트, 71.5퍼센트">
+        <rect width="1000" height="300" fill="#ffffff"/>
+        <text x="40" y="42" font-family="Noto Serif KR,serif" font-size="22" font-weight="700" fill="#1d1d24">타이타늄이 아닌 MXene 의 점 — 하루 사이</text>
+        <g font-family="Noto Sans KR,sans-serif" font-size="16" fill="#1d1d24">
+          <text x="40" y="104">아침 전</text>
+          <rect x="230" y="80" width="323.8" height="38" fill="#c9c4b6"/><text x="242" y="105" font-weight="700">361</text><text x="566" y="105" fill="#55555f">타이타늄 몫 82.3%</text>
+          <text x="40" y="174">첫 번째 묶음 뒤</text>
+          <rect x="230" y="150" width="395.5" height="38" fill="#4a5a8a"/><text x="242" y="175" fill="#fff" font-weight="700">441</text><text x="638" y="175" fill="#55555f">타이타늄 몫 79.2%</text>
+          <text x="40" y="244">두 번째 묶음 뒤</text>
+          <rect x="230" y="220" width="600" height="38" fill="#1f7a72"/><text x="242" y="245" fill="#fff" font-weight="700">669</text><text x="842" y="245" fill="#11564f" font-weight="700">71.5%</text>
+          <text x="40" y="286" font-size="14" fill="#55555f">타이타늄 몫 = 모든 성질의 점을 합친 것. 성질마다 다르다.</text>
+        </g>
+      </svg>
+      <figcaption>그림 7-2 · 점이 늘었다고 «그 MXene 이 많이 연구됐다」는 뜻은 아니다(6장). 다만 지도의 한쪽 쏠림은 조금 줄었다.</figcaption>
+    </figure>
+    <p>같은 날 열전도도도 네 번째 회차에서 통과했다. 5장 끝에 적어 두었다.<sup class="fn">4</sup></p>
+    <h3>«다시 볼 후보」 17점</h3>
+    <p>지도 전체를 «보통 이 정도 범위」라는 눈으로 한 번 훑었다. 원문에 그대로 있는 값인데 흔한 범위에서 크게 벗어난 점이 17개 나왔다. 판 사이 간격 0.354 nm(보통은 1 nm 안팎), 일함수 1.7 eV, 전기전도도 34,520 S/cm, 무게당 정전용량 4,000~12,000 F/g 같은 것들이다. 나눠 보면 판 사이 간격 9, 판 두 장 몫의 길이 3, 정전용량 2, 전지 1, 전기전도도 1, 일함수 1.</p>
+    <p>틀렸다는 뜻은 아니다. 아주 특별한 조건에서 잰 값일 수 있다. 예를 들어 4,000~12,000 F/g 은 판 한 장의 아주 작은 자리를 재서 환산한 값이다(6장). 그래서 지우지 않고 «다시 볼 후보」라는 표시만 달았다. 그리고 아래의 시험에서는 이 점들을 뺐다.<sup class="fn">5</sup></p>
+    <h3>지도를 시험하다 — 이미 알려진 답 20개</h3>
+    <p>새 내비게이션을 받으면 먼저 이미 아는 길을 찍어 본다. 엉뚱한 길을 알려 주면 모르는 길도 믿을 수 없으니까. 지도도 같은 방법으로 시험했다.</p>
+    <p>이 분야에서 이미 자리 잡은 논문들에서 «알려진 사실」 20개를 골랐다. 예를 들면 «염산과 불화리튬으로 식각하면 불산으로 식각한 것보다 판 사이가 넓다」 같은 것이다. 지도를 보지 않고 골랐고, 원문의 쪽까지 확인했다. 지도와 견주는 규칙도 지도 숫자를 보기 전에 저장했다. 그리고 <b>딱 한 번</b> 돌렸다.</p>
+    <figure class="span">
+      <svg viewBox="0 0 1000 300" role="img" aria-label="알려진 사실 20개 결과: 일치 5, 어긋남 1, 판가름 없음 1, 답 못 함 13">
+        <rect width="1000" height="300" fill="#ffffff"/>
+        <text x="40" y="42" font-family="Noto Serif KR,serif" font-size="22" font-weight="700" fill="#1d1d24">알려진 사실 20개에 지도가 한 대답</text>
+        <g>
+          <rect x="40" y="70" width="80" height="70" rx="8" fill="#1f7a72"/><rect x="132" y="70" width="80" height="70" rx="8" fill="#1f7a72"/><rect x="224" y="70" width="80" height="70" rx="8" fill="#1f7a72"/><rect x="316" y="70" width="80" height="70" rx="8" fill="#1f7a72"/><rect x="408" y="70" width="80" height="70" rx="8" fill="#1f7a72"/>
+          <rect x="500" y="70" width="80" height="70" rx="8" fill="#d2553f"/><rect x="592" y="70" width="80" height="70" rx="8" fill="#8a8a93"/>
+          <g fill="#fbfaf7" stroke="#c8962a" stroke-width="3" stroke-dasharray="7 5">
+            <rect x="684" y="70" width="80" height="70" rx="8"/><rect x="776" y="70" width="80" height="70" rx="8"/><rect x="868" y="70" width="80" height="70" rx="8"/>
+            <rect x="40" y="152" width="80" height="70" rx="8"/><rect x="132" y="152" width="80" height="70" rx="8"/><rect x="224" y="152" width="80" height="70" rx="8"/><rect x="316" y="152" width="80" height="70" rx="8"/><rect x="408" y="152" width="80" height="70" rx="8"/><rect x="500" y="152" width="80" height="70" rx="8"/><rect x="592" y="152" width="80" height="70" rx="8"/><rect x="684" y="152" width="80" height="70" rx="8"/><rect x="776" y="152" width="80" height="70" rx="8"/><rect x="868" y="152" width="80" height="70" rx="8"/>
+          </g>
+        </g>
+        <g font-family="Noto Sans KR,sans-serif" font-size="16" fill="#1d1d24">
+          <rect x="40" y="250" width="16" height="16" fill="#1f7a72"/><text x="62" y="264">일치 5</text>
+          <rect x="160" y="250" width="16" height="16" fill="#d2553f"/><text x="182" y="264">어긋남 1</text>
+          <rect x="295" y="250" width="16" height="16" fill="#8a8a93"/><text x="317" y="264">판가름 없음 1</text>
+          <rect x="460" y="250" width="16" height="16" fill="#fbfaf7" stroke="#c8962a" stroke-width="2" stroke-dasharray="4 3"/><text x="482" y="264">답 못 함 13 — 비교할 상대편 논문이 거의 없다</text>
+        </g>
+      </svg>
+      <figcaption>그림 7-3 · 지도가 대답할 수 있었던 것은 20개 가운데 7개. 미리 정한 기준(8개)에 못 미쳐 이 시험은 «판정 불가」로 닫았다.</figcaption>
+    </figure>
+    <p>대답할 수 있었던 7개 가운데 <b>5개는 알려진 사실과 맞았다.</b> 염산·불화리튬으로 식각한 쪽의 판 사이 간격 가운데값은 13.7 Å, 불산으로 식각한 쪽은 12.1 Å. 알려진 그대로다. 타이타늄·바나듐 계열의 전기전도도 가운데값은 3,612 S/cm, 나이오븀 계열은 31 S/cm. 이것도 알려진 방향과 같다.<sup class="fn">6</sup></p>
+    <p><b>1개는 어긋났다.</b> «투명할 만큼 얇은 막」이 전기를 얼마나 막나(면저항)를 물었는데, 우리 지도는 투명한 얇은 막과 두꺼운 필름을 가르지 못해 둘이 섞였다. 지도의 숫자가 틀렸다기보다 조건이 맞지 않은 것으로 보인다. 그래도 결과를 본 뒤에 고치지는 않았다. <b>1개는 판가름이 없었다.</b> 우리 지도가 «붙이려고 넣은 고분자」와 «기능을 더하려고 섞은 재료」를 한 칸에 넣고 있었기 때문이다.</p>
+    <p>나머지 <b>13개는 아예 답을 못 했다.</b> 비교하려면 두 쪽 논문이 다 있어야 하는데, 한쪽이 0~3편뿐이었다. 예를 들어 불산 대신 수산화나트륨(NaOH)으로 식각한 MXene 의 정전용량은 지도에 0편이다.</p>
+    <blockquote class="pull m span">답 못 한 13개는 실패가 아니다. 다음에 채울 목록이다.</blockquote>
+    <p>이 시험이 알려 준 것은 분명하다. 지금 지도의 첫 번째 약점은 «값이 틀린 것」이 아니라 «비교할 자료가 얕은 것」이다. 맞은 5개도 «모순이 없다」까지이지 «증명했다」는 아니다. 논문마다 조건이 다르고, 7개는 적은 수다. 그래서 이 분야의 대가께 지도를 보여 드리는 일은 미뤄 두었다. 빈자리를 채운 뒤 <b>같은 20문제, 같은 규칙</b>으로 다시 시험한다. 13이 몇으로 줄어드는지가 «지도가 쓸모 있어졌나」의 첫 잣대다.</p>
+  </div>
+
+  <div class="summary"><h3>한 장 요약</h3><ul>
+    <li>타이타늄이 아닌 MXene 점이 하루에 361 → 669 로 늘었다(타이타늄 몫 82.3% → 71.5%). 사람이 손으로 받은 논문도 똑같이 채점했다.</li>
+    <li>첫 묶음은 미통과였지만 숫자 틀림은 0, 원인은 우리 지시문. 두 번째 묶음은 ● 253/253 — 너무 깨끗해서 채점자부터 다시 확인했다.</li>
+    <li>알려진 사실 20개 시험: 답할 수 있던 7개 중 5개 일치, 13개는 자료가 없어 답 못 함. 실패가 아니라 다음에 채울 목록.</li>
+  </ul></div>
+  <aside class="notes"><h4>주석</h4><ol>
+    <li>Ti 비율 82.3%: <code>intelligence/mxene-atlas/RESULT-P16-nonTi-oa-2026-10-09.md</code> «지도」(전체 점 2,036 → 2,116 · 모든 탭 합산).</li>
+    <li>같은 문서 «한 줄»·«수치»·«✕ 15 의 원인»(27편 → 넣음 15 · 뺌 12 · 96줄 · ● 81 · ✕ 15 = 15.6% · c 격자 6줄 둘 다 wrong · 슈퍼커패시터 mAh/g 9줄 Claude 만 wrong · «81/81 은 근거로 쓰지 않는다» · 지도 80 · PMC9561093 1줄 뺌 · 틀 v1.4 A4). 정의 어긋남 전수: <code>AUDIT-extract-vs-judge-definitions-2026-10-09.md</code>.</li>
+    <li><code>RESULT-P17-nonTi-human-2026-10-09.md</code>(1차 38 + 2차 19 · 중복 1 = 56편 · 넣음 29편 · 253줄 · ● 253/253 · 변조 8/8 · 빈칸 4/4 · 그대로 6/6 · «놀라운 결과라 계측기부터 봤다» · 62.5 A h g⁻¹ · 지도 +234 · 남은 77편).  점 수 361 → 441 → 669 · 82.3% → 79.2% → 71.5%: P16·P17 «지도».</li>
+    <li><code>RESULT-P14d-thermal-conductivity-2026-10-09.md</code>.</li>
+    <li><code>audit_map_ranges_2026-10-09.json</code>(17점 · 층간거리 Å 9 · c 격자 Å 3 · F/g 2 · 전지 mAh/g 1 · S/cm 1 · 일함수 eV 1) · 위키 타임라인 2026-10-09 오후 U1 줄 · U1 에서 뺌: <code>CARD-U1-known-answer-usefulness-2026-10-09.md</code> 12행.</li>
+    <li><code>RESULT-U1-known-answer-usefulness-2026-10-09.md</code>(답할 수 있던 7 &lt; 기준 8 · 일치 K03·K05·K10·K17·K19 · 어긋남 K06 · 판가름 없음 K04 · 답 못 함 13) · 알려진 답: <code>KNOWN-ANSWERS-canon-2026-10-09.json</code> · 변환표·계산 코드 커밋 <code>54629112c</code>(지도 숫자 보기 전) · 실행 <code>u1_known_answers.py</code> 1회.</li>
+  </ol></aside>
+</section>
+
+<!-- ===== 8장(10/9 오후 추가 · 규칙과 논문 고르기) ===== -->
+<section class="chapter" id="ch8">
+  <div class="opener">
+    <figure>
+      <svg viewBox="0 0 1000 380" role="img" aria-label="왼쪽에 미리 적어 봉인한 규칙 봉투, 가운데 시험지, 오른쪽에 새 시험지 — 결과를 보기 전에 규칙을 먼저 적는다">
+        <rect width="1000" height="380" fill="#f3ead6"/>
+        <g transform="translate(90,90)">
+          <rect width="220" height="150" rx="10" fill="#ffffff" stroke="#c8962a" stroke-width="3"/>
+          <path d="M0 0 L110 85 L220 0" fill="none" stroke="#c8962a" stroke-width="3"/>
+          <circle cx="110" cy="85" r="18" fill="#d9534f"/>
+          <text x="110" y="200" text-anchor="middle" font-size="26" fill="#3d3d44">① 먼저 적어 봉인</text>
+        </g>
+        <g transform="translate(390,70)">
+          <rect width="200" height="230" rx="8" fill="#ffffff" stroke="#2b3a67" stroke-width="3"/>
+          <g stroke="#2b3a67" stroke-width="3"><path d="M30 50 H170"/><path d="M30 90 H170"/><path d="M30 130 H140"/><path d="M30 170 H160"/></g>
+          <text x="100" y="270" text-anchor="middle" font-size="26" fill="#3d3d44">② 시험</text>
+        </g>
+        <g transform="translate(680,70)">
+          <rect width="200" height="230" rx="8" fill="#ffffff" stroke="#1f7a72" stroke-width="3" stroke-dasharray="10 6"/>
+          <g stroke="#1f7a72" stroke-width="3"><path d="M30 50 H170"/><path d="M30 90 H150"/><path d="M30 130 H170"/></g>
+          <text x="100" y="270" text-anchor="middle" font-size="26" fill="#3d3d44">③ 실패하면 새 시험지</text>
+        </g>
+        <g fill="none" stroke="#3d3d44" stroke-width="3"><path d="M320 165 H380"/><path d="M600 185 H670"/></g>
+      </svg>
+      <figcaption>결과를 보기 전에 규칙을 먼저 적어 저장한다. 시험이 실패하면 같은 시험을 다시 보지 않고 새 시험지를 만든다.</figcaption>
+    </figure>
+    <div class="kicker">8장</div>
+    <h2>규칙을 고칠 때, 논문을 고를 때 — 우리가 지킨 약속</h2>
+    <p class="hook">지도를 만들다 보면 규칙을 고치고 싶어지는 순간이 온다. 결과가 마음에 안 들 때다. 그때 고치면 지도는 우리가 원하는 답만 보여 주게 된다. 그래서 몇 가지 약속을 정했다.</p>
+  </div>
+
+  <div class="prose">
+    <h3>논문은 이렇게 골랐다</h3>
+    <p><b>누구나 열어 볼 수 있는 논문부터.</b> 지도의 모든 숫자에는 원문 문장이 붙는다. 그 문장을 다른 사람도 직접 확인할 수 있어야 하므로, 처음에는 무료로 공개된 본문만 썼다.<sup class="fn">1</sup></p>
+    <p><b>지도가 비어 있는 곳을 겨냥해서.</b> 쓸모 시험(7장)이 «여기 자료가 없어서 답을 못 하겠다」고 알려 준 자리를 채울 논문을 골랐다. 예를 들어 «불산 없이 수산화나트륨으로 식각한 MXene 의 정전용량」 같은 자리다.</p>
+    <p><b>제목만 보고 고르면 빗나간다.</b> 처음에는 제목과 요약의 낱말로 골랐다. 그랬더니 «알칼리로 식각한 논문」을 찾으려다 «식각은 불산으로 하고 알칼리로 씻은 논문」이 걸렸다. 낱말은 같은데 실험이 다르다. 그래서 요즘은 <b>요약에 그 조건이 실제로 적혀 있는지</b>까지 보고, 사람이 한 번 더 읽어 거른다.<sup class="fn">2</sup></p>
+    <p><b>시험 문제의 «정답 논문」은 넣지 않는다.</b> 쓸모 시험은 «알려진 사실」 20개를 지도가 다시 찾아내는지 보는 것이다. 그 사실을 처음 말한 논문을 지도에 넣으면, 지도는 정답지를 베껴서 맞히는 셈이 된다.</p>
+    <p><b>사람이 가져온 논문도 똑같이 채점한다.</b> 사람이 브라우저로 받은 논문은 출판사 본문이 섞여 있다. 그래도 같은 방법으로 채점하고, 결과는 «어디서 왔는지」 갈래별로 따로 적는다. 자료를 버리지 않되, 섞어서 흐리지도 않는다.<sup class="fn">3</sup></p>
+    <blockquote class="pull span">결과를 보기 전에 규칙을 먼저 적는다. 결과를 본 뒤 고친 규칙은 «탐색」이라고 이름표를 단다.</blockquote>
+    <h3>규칙은 이렇게 고쳤다</h3>
+    <p><b>① 먼저 적고 저장한다.</b> 시험을 돌리기 전에 «무엇을 셀지 · 몇 점이면 통과인지」를 파일로 적어 저장(커밋)한다. 그래야 나중에 «사실 이 기준이었다」고 말을 바꿀 수 없다.</p>
+    <p><b>② 실패하면 같은 시험을 다시 보지 않는다.</b> 10월 9일, 사람이 받아 온 45편을 채점하던 중 채점자 하나가 함정 문제 둘을 놓쳤다. 이름 칸을 일부러 비워 둔 줄을 «맞다」고 한 것이다. 같은 시험지를 다시 돌리면 통과할 때까지 돌리는 꼴이 된다. 그래서 그 회차는 «판정 불가」로 남기고, <b>함정을 새로 뽑은 새 시험지</b>로 다시 봤다. 이번엔 두 채점자 모두 함정 18개를 다 잡았고, 223줄 중 222줄이 통과했다.<sup class="fn">4</sup></p>
+    <p><b>③ 결과를 보고 고친 규칙에는 이름표를 단다.</b> 쓸모 시험에서 «Ti₂C 전지가 Ti₃C₂ 보다 용량이 크다」가 어긋났다. 들여다보니 우리 지도의 Ti₃C₂ 값에 실리콘처럼 용량이 큰 물질을 섞은 복합체가 많이 들어 있었다. 정답 논문은 순수한 MXene 끼리 비교했는데 말이다. 그래서 «섞은 물질이 없는 시료만 비교한다」로 규칙을 고쳤다. 다만 결과를 본 뒤 고친 것이라 <b>«탐색」</b>이라고 이름 붙이고, 지도가 쓸모 있다는 근거로는 쓰지 않는다.<sup class="fn">5</sup></p>
+    <p><b>④ 좋아진 것과 나빠진 것을 나란히 적는다.</b> 고친 규칙으로 다시 재 보니 Ti₂C 비교는 «일치」로 바뀌었다. 그런데 앞서 «일치」였던 «Nb₂C 가 Ti₂C 보다 크다」는 «답 못 함」이 됐다. 순수한 Nb₂C 자료가 1편뿐이었던 것이다. <b>그 «일치」는 복합체 값에 기대고 있었다.</b> 좋아진 것만 적으면 지도가 실제보다 좋아 보인다. 그래서 둘 다 적었다.</p>
+    <p><b>⑤ 진짜 근거는 새 자료로.</b> 고친 규칙을 이제 얼려 두고, 앞으로 새로 받을 논문으로 다시 시험한다. 그때 통과하면 그것이 «지도가 쓸모 있다」의 근거가 된다.</p>
+  </div>
+
+  <div class="summary"><h3>한 장 요약</h3><ul>
+    <li>논문은 «누구나 확인할 수 있는 것 · 지도가 빈 곳 · 요약에 그 조건이 적힌 것」 순으로 골랐고, 시험 정답 논문은 넣지 않았다.</li>
+    <li>규칙은 결과 보기 전에 적어 저장한다. 실패한 시험은 다시 보지 않고 새 시험지를 만든다.</li>
+    <li>결과를 본 뒤 고친 규칙은 «탐색」이다. 좋아진 것(Ti₂C 비교)과 드러난 허점(Nb₂C 비교)을 함께 적었다.</li>
+  </ul></div>
+  <aside class="notes"><h4>주석</h4><ol>
+    <li>공통 틀 <code>intelligence/mxene-atlas/PREREG-TEMPLATE-common-2026-10-09.md</code>(v1.5 · 공개 원문 · 사람이 가져온 논문은 출처별 보고).</li>
+    <li>P18 «알칼리」 빗나감: <code>RESULT-U1b-known-answer-after-P18-2026-10-09.md</code> «왜 13 중 2 만 풀렸나」 · 초록 조건 거름: <code>p18_gaps/find_u1_needs.py</code> · 사람 눈 거름(11편 뺌 · 정답 논문 포함): <code>p18_gaps/u1_needs_curated.json</code>.</li>
+    <li><code>CARD-P19-received-2026-10-09.md</code>(사람이 받아 온 45편 · 갈래별 보고 칸).</li>
+    <li><code>RESULT-P19-received-2026-10-09.md</code>(판정 불가 · 이름 빈칸 대조군 2/4) · <code>CARD-P19b-rejudge-2026-10-09.md</code>(새 대조군 26줄 · P19 와 겹침 0) · <code>RESULT-P19b-and-U1b2-2026-10-09.md</code>(● 222/223).</li>
+    <li><code>CARD-U1c-known-answer-rules-2026-10-09.md</code>(이해당사자 표시 · 실행 전 커밋 <code>6f155c989</code>) · <code>RESULT-U1c-known-answer-rules-2026-10-09.md</code>(K13 어긋남→일치 · K14 일치→답 못 함).</li>
+  </ol></aside>
+</section>
+
+<!-- ===== 9장 ===== -->
+<section class="chapter" id="ch9">
+  <div class="opener">
+    <figure>
+      <svg viewBox="0 0 1000 380" role="img" aria-label="점이 찍힌 접힌 지도 위에 비어 있는 빈칸 구역, 그리고 그 빈칸으로 이어지는 점선 길과 두 사람">
+        <rect width="1000" height="380" fill="#dff0ea"/>
+        <path d="M80 60 L320 40 L560 60 L800 40 L800 330 L560 350 L320 330 L80 350 Z" fill="#ffffff" stroke="#c9d9d2" stroke-width="2"/>
+        <path d="M320 40 L320 330 M560 60 L560 350" stroke="#e3e0d8" stroke-width="2"/>
+        <g fill="#1f7a72">
+          <circle cx="130" cy="110" r="7"/><circle cx="160" cy="140" r="7"/><circle cx="190" cy="120" r="7"/><circle cx="150" cy="190" r="7"/><circle cx="210" cy="170" r="7"/><circle cx="240" cy="210" r="7"/><circle cx="130" cy="250" r="7"/><circle cx="270" cy="140" r="7"/><circle cx="200" cy="260" r="7"/><circle cx="260" cy="290" r="7"/>
+          <circle cx="360" cy="110" r="7"/><circle cx="400" cy="160" r="7"/><circle cx="440" cy="120" r="7"/><circle cx="380" cy="230" r="7"/><circle cx="470" cy="200" r="7"/><circle cx="500" cy="270" r="7"/><circle cx="420" cy="300" r="7"/>
+        </g>
+        <g fill="#2b3a67"><circle cx="230" cy="100" r="7"/><circle cx="460" cy="160" r="7"/><circle cx="350" cy="280" r="7"/></g>
+        <rect x="590" y="110" width="170" height="150" rx="10" fill="none" stroke="#d2553f" stroke-width="4" stroke-dasharray="10 8"/>
+        <text x="675" y="180" text-anchor="middle" font-family="Noto Serif KR,serif" font-size="28" font-weight="900" fill="#d2553f">빈칸</text>
+        <text x="675" y="212" text-anchor="middle" font-family="Noto Sans KR,sans-serif" font-size="15" fill="#8f2f1f">아직 아무도 재지 않은 곳</text>
+        <path d="M560 310 C 620 300, 640 270, 660 262" stroke="#55555f" stroke-width="3" stroke-dasharray="4 8" fill="none"/>
+        <g transform="translate(850,200)">
+          <circle cx="0" cy="0" r="24" fill="#c8962a"/><path d="M-36 90 Q-36 34 0 34 Q36 34 36 90 Z" fill="#c8962a"/>
+          <circle cx="70" cy="10" r="22" fill="#2b3a67"/><path d="M38 96 Q38 44 70 44 Q102 44 102 96 Z" fill="#2b3a67"/>
+        </g>
+        <text x="880" y="330" text-anchor="middle" font-family="Noto Sans KR,sans-serif" font-size="16" fill="#1d1d24">사람 전문가의 확인</text>
+      </svg>
+      <figcaption>그림 9-1 · 지도가 쓸모 있는 순간은 두 가지다. 아직 아무도 재지 않은 «빈칸」을 보여 줄 때, 그리고 사람 전문가의 확인을 거쳐 믿을 수 있게 될 때.</figcaption>
+    </figure>
+    <div class="kicker">9장</div>
+    <h2>아직 모르는 것 · 자료가 오면 채울 것</h2>
+    <p class="hook">이 지도는 아직 «검증됨」이 아니다. 채점자 둘이 모두 AI 이기 때문이다. 그리고 «판정 불가」로 닫힌 질문들이 있다. 실패가 아니라, 자료가 오면 채울 자리다.</p>
+  </div>
+
+  <div class="prose">
+    <div class="honest span"><strong>아직 «검증됨」이 아니다 — 채점자가 둘 다 AI 다.</strong> 서로 다른 회사의 AI 라도 같은 종류의 실수를 함께 할 수 있다. 그래서 지도에는 «사람 전문가 확인 전」이라고 표시한다. 동료와 전문가의 확인을 거친 뒤에야 «검증됨」이라고 쓸 것이다.<sup class="fn">1</sup></div>
+    <h3>우리가 아직 모르는 것</h3>
+    <p><b>대부분 공개된 논문만 봤다.</b> 거의 모든 회차가 누구나 합법적으로 열어 볼 수 있는 본문만 썼다. 사람이 손으로 받은 논문도 대개 무료로 풀린 것이다(7장). 10월 9일 오후부터는 사람이 브라우저로 받은 출판사 본문도 30편 들어왔지만, 여전히 대부분은 «공개 논문 안에서」의 이야기다. 돈을 내야 볼 수 있는 논문까지 넣으면 그림이 달라질 수 있다.<sup class="fn">2</sup></p>
+    <p><b>정의가 애매한 경계가 남아 있다.</b> 예를 들어 «판을 떼어 내려고 넣은 약품이 식각제냐, 판 사이에 끼어드는 물질이냐」. 이런 질문 하나는 이 분야의 바탕이 되는 논문 33편을 모두 구해 그 원문으로 답했다. 아직 답하지 못한 경계에는 «판정 보류」 표시만 단다.<sup class="fn">3</sup></p>
+    <h3>보충 예정 — 자료가 오면 채울 것</h3>
+    <p>«판정 불가」는 «틀렸다」가 아니다. «이 자료로는 아직 말할 수 없다」는 뜻이다. 그럴 때 우리는 기준을 낮춰 억지로 답을 만들지 않았다. 대신 무엇이 모자랐는지 적어 두었다. 아래가 그 목록이다.</p>
+    <ul class="fill">
+      <li><b>두께와 전기전도도.</b> 같은 방법으로 만들었는데 전도도가 크게 다른 필름들이 있었다. 두께 때문인지 보려 했지만, 공개 논문 300편 가운데 두께와 전도도를 함께 적은 논문은 4%뿐이었다. 쓸 수 있는 논문이 12편으로, 미리 정한 15편에 못 미쳤다. → 두께를 적은 논문이 더 모이면 다시 잰다.<sup class="fn">4</sup></li>
+      <li><b>정전용량의 «설명 칸」.</b> 이 회차는 논문 수 때문이 아니라 다른 이유로 «판정 불가」였다. 채점자 자격 시험의 «정답 줄」 자체가 정의가 애매해서, 채점자 둘이 정답 6장 중 4장과 3장만 알아봤다(4장). 채점자를 믿을 수 없으니 결과도 쓰지 않았다. → 정답 줄을 다시 골라 새 회차로 잰다.<sup class="fn">5</sup></li>
+      <li><b>알려진 사실 시험에서 답 못 한 13개(빈자리를 채운 뒤 다시 재니 11개 · 8장).</b> 비교할 상대편 논문이 0~3편뿐이었다. 채울 것: 불산으로 만든 여러 겹·가루 시료의 전기전도도 · 수산화나트륨 같은 알칼리로 식각한 MXene 의 정전용량 · 고분자(예: 폴리피롤)를 섞은 복합체의 정전용량 · Ti₂C·Nb₂C 의 전지 용량 · Ta₄C₃ 의 빛→열 변환 · 다른 불소 약품(NH₄HF₂)으로 만든 MXene 의 판 사이 간격. → 공개 논문을 찾아 같은 채점을 거친 뒤, 같은 20문제로 다시 시험한다(7장).<sup class="fn">6</sup></li>
+      <li><b>지도의 칸 두 개 나누기.</b> «섞은 재료」 칸을 «붙이려고 넣은 고분자」와 «기능을 더하려고 섞은 재료」로 나눈다. 형태 칸에 «투명한 얇은 막」 표시를 단다. 알려진 사실 시험에서 판가름이 안 났거나 어긋난 두 문제의 원인이다.<sup class="fn">6</sup></li>
+      <li><b>부피당 정전용량.</b> MXene 을 유명하게 만든 바로 그 값인데, 공개 논문에서 직접 잰 값은 7편 15값뿐이다. 만점이어도 «증거 불충분」. → 직접 잰 논문이 더 필요하다(6장).</li>
+      <li><b>아직 못 받은 논문 77편.</b> 출판사가 막아 둔 논문이다. → 사람 손으로 구하는 길을 찾는다. 저자에게 직접 부탁하는 일은 밖으로 나가는 일이라, 일을 맡긴 사람이 결정한다.<sup class="fn">7</sup></li>
+    </ul>
+    <blockquote class="pull n span">지도는 발견이 아니다. 발견은 지도가 가리킨 빈칸을 실험실이 실제로 만들어 볼 때 생긴다.</blockquote>
+    <h3>빈칸이 보이기 시작했다</h3>
+    <p>지도를 만들자 처음으로 «빈칸」이 하나 보였다. 녹인 소금으로 판을 드러내는 방법(용융염 식각)으로 만든 MXene 의 정전용량은, 우리가 본 공개 논문 범위에서 <b>0편</b>이었다. 아무도 안 쟀거나, 쟀어도 공개 논문에는 없다는 뜻이다. 이런 빈칸을 찾아 보여 주는 것이 이 지도가 결국 하려는 일, «발견을 돕는 자리」다.<sup class="fn">8</sup></p>
+    <h3>사람의 확인 — 동료 먼저, 대가는 마지막</h3>
+    <p>AI 채점자 둘이 같이 실수하면 아무도 모른다. 그래서 마지막 확인은 사람이 한다. 순서도 정해 두었다. 먼저 동료에게, 그리고 이 분야의 대가께는 지도가 충분히 선 뒤 마지막에 청한다. 지킬 것도 정했다.<sup class="fn">9</sup></p>
+    <ul>
+      <li><b>자기 논문은 자기에게 묻지 않는다.</b> 교수님이 함께 쓴 논문의 값은 교수님께 확인을 청하지 않는다.</li>
+      <li><b>AI 의 답을 보여 주지 않는다.</b> 확인하는 사람이 AI 채점에 끌려가지 않도록.</li>
+      <li><b>부담은 작게.</b> 성질마다 30~60줄, «맞다·틀리다·애매하다」 단추 세 개. 60줄을 봐서 틀린 것이 하나도 없으면, 실제로 틀린 비율이 약 5%를 넘지 않는다고 말할 수 있다.</li>
+    </ul>
+    <p>확인 화면은 이미 만들어 보관해 두었다. 다만 7장의 시험이 보여 주었듯 지금은 비교할 자료부터 채울 때다. 대가께 청하는 일은 그 뒤로 미룬다.</p>
+    <h3>다음 걸음</h3>
+    <ol>
+      <li><b>빈자리 채우기.</b> 위 «보충 예정」 목록의 자료를 공개 논문에서 찾아, 같은 채점을 거쳐 넣는다.</li>
+      <li><b>칸 두 개 나누기.</b> «섞은 재료」를 둘로, 형태에 «투명한 얇은 막」을 단다.</li>
+      <li><b>같은 시험 다시.</b> 알려진 사실 20개를 같은 규칙으로 다시 묻는다. «답 못 함 13」이 몇으로 주는지 본다.</li>
+      <li><b>계산값과 짝짓기.</b> 컴퓨터 계산으로 만든 구조 4,488개를 같은 조성 이름으로 나란히 붙인다.</li>
+      <li><b>공개는 사람이 정한다.</b> 지도를 밖에 내놓을지는 이 일을 맡긴 사람이 결정한다. 원문은 짧은 인용과 논문 번호만 싣는다.</li>
+    </ol>
+    <p>목표를 크게 부풀리지 않기로 했다. 현실적인 목표는 두 가지다. <b>많이 쓰이는 도구</b>가 되는 것, 그리고 <b>함께 연구할 문</b>이 되는 것.<sup class="fn">10</sup></p>
+    <p>작은 신호는 이미 하나 있었다. 이 지도를 시작할 무렵 만든 MXene 3D 설명 자료를 보고, 이 분야를 이끄는 교수 한 분이 «그룹에 공유하고 수업에 쓰겠다」고 답했다. 그 답장은 이 일의 동기였지 목적은 아니다. 목적은 처음 그대로다.<sup class="fn">11</sup></p>
+    <blockquote class="pull c span">«이 성질이 필요하면 어떤 MXene 을 어떻게 만들어야 하나」에, 값 하나하나가 원문 문장으로 확인되는 답을 주는 지도.</blockquote>
+  </div>
+
+  <div class="summary"><h3>한 장 요약</h3><ul>
+    <li>아직 «검증됨」이 아니다. 채점자 둘이 모두 AI 다. 사람 확인(동료 먼저, 대가는 마지막)을 거쳐야 그 말을 쓴다.</li>
+    <li>«판정 불가」로 닫힌 것들(두께 · 정전용량 설명 칸 · 알려진 사실 13개 · 부피당 정전용량 · 못 받은 논문 77편)은 실패가 아니라 «보충 예정」이다.</li>
+    <li>다음: 빈자리 채우기 → 칸 나누기 → 같은 시험 다시 → 계산값과 짝짓기. 공개는 사람이 정한다.</li>
+  </ul></div>
+  <aside class="notes"><h4>주석</h4><ol>
+    <li><code>how-judging-works.html</code> §7 끝 경고 · <code>PURPOSE-and-direction-2026-10-07.md</code> §5 원칙 3(«검증됨」은 독립 확인 뒤에만).</li>
+    <li><code>RESULT-P10</code> · <code>RESULT-P11</code> «남는 한계」(공개 본문만) · 위키 핵심 요약 4번 · 사람이 가져온 논문의 쏠림: <code>RESULT-P17-nonTi-human-2026-10-09.md</code> «이 통과가 말하지 않는 것」.</li>
+    <li>위키 타임라인 2026-10-08 바이블 33편 줄(D22 · 불화염 = 식각의 일부 · TMAOH = 삽입물) · 위키 핵심 요약 00번(D20 «판정 보류」).</li>
+    <li>위키 타임라인 2026-10-08 P4·P5 줄(가설 지지 안 됨) · <code>RESULT-P8-thickness-2026-10-09.md</code> «한 줄»(300편 중 12편 = 4% · 자격 12편 &lt; 15 · 모집단을 넓히지 않는다).</li>
+    <li><code>RESULT-P9-capacitance-v15-2026-10-09.md</code> «한 줄»(변조 12/12 · 그대로 둔 6 중 Claude 4/6 · Codex 3/6 · 기준 5/6 · 판정자 둘 무효 · 원인 = 대조군 정답이 정의 경계).</li>
+    <li><code>RESULT-U1-known-answer-usefulness-2026-10-09.md</code> «다음» 1~4(표적 회차 목록 · «섞음」 분류 둘로 · «투명 박막」 표시 · 같은 20 진술로 다시).</li>
+    <li><code>RESULT-P17-nonTi-human-2026-10-09.md</code> «다음»(남은 77편 = 사람 경로 · 교신저자 요청 = 결재).</li>
+    <li><code>PURPOSE</code> §2 표 ④(용융염 식각 정전용량 0편 · OA 범위).</li>
+    <li><code>PURPOSE</code> §8(G3 = 동료 + 이 분야 전문가 · 이해충돌 · 블라인드 · 30~60줄 · n=60 0 오류면 상한 ~5% · 확인 화면 보관 <code>presentations/mxene-atlas-expert-check-2026-10-09/</code>) · 연락 보류 유지: <code>RESULT-U1</code> «말하는 것」.</li>
+    <li><code>PURPOSE</code> §4 끝 경고 · §6-3(공개 = 결재, 짧은 인용 + DOI) · <code>PURPOSE</code> §2 표 ③(계산값 짝짓기).</li>
+    <li><code>PURPOSE</code> §1 동기 줄(3D 설명 공개 · 2026-10-06 답장) · §3 ②.</li>
+  </ol></aside>
+</section>
+
+<!-- ===== 10장(10/9 오후 · 맺음 · 태은이 확인 초안 반영) ===== -->
+<section class="chapter" id="ch10">
+  <div class="opener">
+    <figure>
+      <svg viewBox="0 0 1000 380" role="img" aria-label="왼쪽 네 권의 노트에서 오른쪽 지도로 이어지는 선, 그 너머로 퍼져 나가는 작은 지도들">
+        <rect width="1000" height="380" fill="#efe8f6"/>
+        <g fill="#ffffff" stroke="#5b4b8a" stroke-width="3">
+          <rect x="70" y="70" width="90" height="120" rx="6"/><rect x="90" y="90" width="90" height="120" rx="6"/><rect x="110" y="110" width="90" height="120" rx="6"/><rect x="130" y="130" width="90" height="120" rx="6"/>
+        </g>
+        <path d="M230 190 C 330 190, 360 190, 440 190" fill="none" stroke="#5b4b8a" stroke-width="3" stroke-dasharray="8 6"/>
+        <g transform="translate(450,95)">
+          <rect width="230" height="190" rx="12" fill="#ffffff" stroke="#1f7a72" stroke-width="3"/>
+          <g fill="#1f7a72"><circle cx="50" cy="60" r="8"/><circle cx="110" cy="110" r="8"/><circle cx="170" cy="70" r="8"/><circle cx="80" cy="140" r="8"/><circle cx="185" cy="140" r="8"/></g>
+          <g stroke="#1f7a72" stroke-width="2"><path d="M50 60 L110 110 L170 70"/><path d="M80 140 L110 110 L185 140"/></g>
+        </g>
+        <g fill="none" stroke="#c8962a" stroke-width="2" stroke-dasharray="4 6"><circle cx="830" cy="110" r="45"/><circle cx="880" cy="250" r="60"/><circle cx="760" cy="300" r="35"/></g>
+        <path d="M690 160 L780 120 M690 210 L820 240" stroke="#c8962a" stroke-width="2" stroke-dasharray="4 6"/>
+      </svg>
+      <figcaption>네 편의 연구 노트에서 배운 방법이 이 지도로 이어졌고, 같은 방법이 언젠가 다른 지도들로 퍼져 나가기를 바란다.</figcaption>
+    </figure>
+    <div class="kicker">10장</div>
+    <h2>이 지도는 어디서 왔고, 어디로 가나</h2>
+    <p class="hook">이 지도의 검증 방법은 갑자기 생긴 것이 아니다. 내가 먼저 쓴 네 편의 연구 노트 위에 서 있다. 그리고 이 지도가 끝도 아니다.</p>
+  </div>
+
+  <div class="prose">
+    <h3>어디서 왔나 — 내가 먼저 쓴 네 편의 연구 노트</h3>
+    <p>네 편 모두 arXiv 에 공개한 preprint 다. 주제는 하나, <b>AI 가 한 일을 어떻게 믿을 수 있게 확인하나</b>다.<sup class="fn">1</sup></p>
+    <p><b>CCR</b> — AI 가 자기가 만든 글을 <b>같은 대화 안에서</b> 검토하면 실수를 잘 못 잡는다. 그래서 <b>새 대화에서</b> 검토하게 했더니 더 잘 잡았다. → 이 지도에서 값을 뽑는 AI 와 확인하는 AI 를 나누고, 확인하는 쪽은 뽑은 기록을 보지 못하게 한 것이 여기서 왔다.</p>
+    <p><b>D-CCR</b> — 그럼 검토를 여러 번 주고받으면 더 좋아질까? 오히려 <b>헛짚음이 늘었다</b>(제목이 «More Rounds, More Noise」다). → 우리가 «통과할 때까지 같은 시험을 다시 보지 않는다」(8장)고 약속한 이유 중 하나다.</p>
+    <p><b>CCV(HCCA)</b> — 따로 떨어진 대화로 확인하는 방법을, AI 가 시험 문제의 답을 <b>외워서</b> 맞히는지 가려내는 데 썼다. → 쓸모 시험에서 «정답 논문」을 지도에 넣지 않은 것과 같은 생각이다.</p>
+    <p><b>XMR</b> — 두 번째 확인을 <b>다른 회사의 AI</b> 가 하면 언제 도움이 되나. → 이 지도의 채점자가 Claude 와 Codex 둘인 이유다.</p>
+    <p>그대로 옮긴 것은 아니다. 네 편은 글과 코드의 오류를 다뤘고, 이 지도는 과학 수치를 다룬다. 몇 가지 생각을 빌려 왔을 뿐이다. 거꾸로 이 지도에서 새로 배운 것 — <b>함정 문제로 채점자부터 시험하기, 결과를 보기 전에 규칙을 적어 두기</b> — 은 다음 검증 연구로 돌려줄 수 있다. 두 일은 서로를 고쳐 준다.</p>
+    <blockquote class="pull span">호수를 바다라 하면 호수에서 바다를 찾을 것이고, 바위를 보석이라 하면 바위에서 보석을 깨낼 것이다.</blockquote>
+    <h3>어디로 가나 — 꿈</h3>
+    <p>지금은 MXene 하나다. 하지만 같은 방법은 다른 얇은 판 물질(2D 물질)에도 쓸 수 있다. 더 멀리는, 뇌처럼 훨씬 복잡한 대상도 <b>AI 가 모으고 사람이 확인하는 3D 지도</b>로 그려 볼 수 있지 않을까. 아직은 꿈이다. 이 책이 보여 준 것처럼 한 걸음마다 «검증됨」과 «아직 아님」을 정직하게 나누면서 가야 하는 꿈이다.</p>
+    <h3>왜 하나</h3>
+    <p>위의 문구는 내가 직접 만든 것이다. 없을 수도 있지만, 있다고 믿고 끝까지 깎아 내는 마음이다. 그리고 하나 더 — 막힌 문제는 엉뚱한 곳에서 풀린다. 도매시장의 숫자, 물질의 숫자, 언젠가 뇌의 지도까지, 서로 상관없어 보이는 것들이 거미줄처럼 이어져 있다. <b>그 연결을 찾아내는 것이 과학이고, 노력하는 이유다.</b> 이 지도를 함께 만든 AI 동료 «송자비스」도 그래서 만들었다 — 시킨 일만 하는 도구가 아니라, 넓게 보고 스스로 깨닫는 동료로.</p>
+    <p>이 모든 일을 하는 내 마음은 단순하다. <b>많은 사람에게 쓸모 있는 흔적을 남기는 것, 그리고 다음 세대에게 떳떳한 사람이 되는 것.</b></p>
+  </div>
+
+  <div class="summary"><h3>한 장 요약</h3><ul>
+    <li>이 지도의 검증 방법은 내가 먼저 쓴 네 편의 preprint(CCR · D-CCR · CCV · XMR)에서 빌려 왔고, 지도에서 배운 것은 다시 검증 연구로 돌려줄 수 있다.</li>
+    <li>꿈: 같은 방법으로 다른 2D 물질, 언젠가는 뇌 같은 대상의 3D 지도를 — 한 걸음마다 «검증됨」과 «아직 아님」을 나누면서.</li>
+    <li>이유: 호수에서 바다를 찾는 마음, 거미줄처럼 이어진 연결을 찾는 일, 많은 사람에게 쓸모 있는 흔적.</li>
+  </ul></div>
+  <aside class="notes"><h4>주석</h4><ol>
+    <li>arXiv 2603.12123(CCR · Cross-Context Review) · 2603.16244(D-CCR · More Rounds, More Noise) · 2603.21454(CCV · Cross-Context Verification) · 2610.01471(XMR · When Does a Second Model Help?) — 제목·초록 2026-10-09 arXiv 에서 확인 · 문구 «호수와 바위」(2026-04-12) · </li>
+  </ol></aside>
+  <p style="margin-top:2rem;color:var(--ink3)">만든 사람: 송태은 · <a href="https://manus.mn">manus.mn</a></p>
+</section>
+
+<footer>© 2026 송태은(Tae-Eun Song) · 모든 권리 보유 · 저작자 허락 없이 복제·재배포·소스 재사용 금지<br>2026-10-09 오후 · 고등학생 눈높이 판</footer>
+</div>
+</body>
+</html>

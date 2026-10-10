@@ -5,6 +5,9 @@ An evidence-linked map of MXene properties from open-access experimental papers 
 - Map: https://songt-50.github.io/mxene-3d/atlas/
 - Explore mode (3D): https://songt-50.github.io/mxene-3d/atlas/explore.html
 - How to use: https://songt-50.github.io/mxene-3d/atlas/guide.html
+- Korean (한국어): https://songt-50.github.io/mxene-3d/atlas/ko.html · 3D 탐험 explore.ko.html
+- Book — *A Map on Thin Sheets* (EN): https://songt-50.github.io/mxene-3d/atlas/book/index.en.html · 책 *얇은 판 위의 지도* (KO): https://songt-50.github.io/mxene-3d/atlas/book/index.html
+- Build: `python make_atlas.py` then `python make_public_book.py` (the internal status board is not published)
 
 **Status:** values have been checked against their source sentences by two AI judges only; no human expert check yet, so nothing is labelled "verified". Completeness and accuracy are not yet confirmed.
 

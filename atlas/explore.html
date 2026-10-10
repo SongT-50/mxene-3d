@@ -1,14 +1,13 @@
-<!DOCTYPE html>
-
+<!doctype html>
 <html lang="en">
 <head>
 <meta name="robots" content="noindex, nofollow">
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MXene Explorer (3D)</title>
-<meta content="A 3D explorer that shows MXene property values collected from open papers as towers on a periodic-table island, with fog for cells that have no value yet." name="description"/>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800&amp;display=swap" rel="stylesheet"/>
+<meta name="description" content="A 3D explorer that shows MXene property values collected from open papers as towers on a periodic-table island, with fog for cells that have no value yet.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0a0a12;--bg-card:#151522;--bg-card2:#1d1d2e;--fg:#e8e8f0;--fg-dim:#a3a3b8;--border:#2c2c42;--accent:#6fb6ff;--green:#5fd39a;--red:#ff7b8a;--yellow:#ffd166;--fog:#cfd8ff;--mono:"JetBrains Mono",ui-monospace,Consolas,monospace}
 *{box-sizing:border-box}
@@ -119,66 +118,67 @@ footer{padding:10px 16px 18px;font-size:11.5px;color:var(--fg-dim);border-top:1p
 </head>
 <body>
 <header>
-<h1>MXene Explorer</h1>
-<span class="sub">Towers on the periodic-table island = values collected · fog = cells with no value yet</span>
-<button id="help" type="button">New here? Start here</button>
-<button aria-expanded="false" id="nbOpen" type="button">📒 Discovery notes<small id="nbCount"></small></button>
-<button aria-controls="gapBox" aria-expanded="false" id="gapOpen" type="button">🧩 To fill when data arrives</button>
-<span class="toplinks"><a href="index.html">🗺 Map</a></span>
+  <h1>MXene Explorer</h1>
+  <span class="sub">Towers on the periodic-table island = values collected · fog = cells with no value yet</span>
+  <button id="help" type="button">New here? Start here</button>
+  <button id="nbOpen" type="button" aria-expanded="false">📒 Discovery notes<small id="nbCount"></small></button>
+  <button id="gapOpen" type="button" aria-expanded="false" aria-controls="gapBox">🧩 To fill when data arrives</button>
+  <span class="toplinks"><a href="index.html">🗺 Map</a><a href="explore.html" class="lang">한국어</a></span>
 </header>
 <div class="chips" id="chips"></div>
 <div class="honest">Tower height = how many values we collected, not a ‘good material’ · values were checked against the source by two AI judges (before human check · not «verified»)</div>
-<div hidden="" id="gapBox"><b>🧩 To fill when data arrives</b>
-<div class="gapLead">Places where judgement was postponed for lack of papers — not a failure: when colleagues or experts provide papers, they are filled the same way</div>
-<ul id="gapList"><li>conductivity of HF multilayer / powder</li><li>capacitance of NaOH (fluorine-free) etching</li><li>capacitance of polymer composites such as PPy</li><li>battery capacity of Ti₂C · Nb₂C</li><li>photothermal efficiency of Ta₄C₃</li><li>interlayer spacing after NH₄HF₂ etching</li><li>papers that report both thickness and conductivity</li><li>volumetric capacitance</li></ul>
+<div id="gapBox" hidden><b>🧩 To fill when data arrives</b>
+  <div class="gapLead">Places where judgement was postponed for lack of papers — not a failure: when colleagues or experts provide papers, they are filled the same way</div>
+  <ul id="gapList"><li>conductivity of HF multilayer / powder</li><li>capacitance of NaOH (fluorine-free) etching</li><li>capacitance of polymer composites such as PPy</li><li>battery capacity of Ti₂C · Nb₂C</li><li>photothermal efficiency of Ta₄C₃</li><li>interlayer spacing after NH₄HF₂ etching</li><li>papers that report both thickness and conductivity</li><li>volumetric capacitance</li></ul>
 </div>
 <div class="stage" id="stage">
-<div id="view"></div>
-<div id="nogl">3D (WebGL) can't be turned on in this browser. You can still pick a composition from the list below.</div>
-<div id="tip"></div>
-<div id="legend"><b>●</b> counts only values two judges found to match the source sentence · <b>fog</b> 0 values in our collection (not collected yet) · drag = rotate · wheel / two fingers = zoom</div>
-<div aria-live="polite" id="panel"><button aria-label="Close" id="pclose" type="button">×</button><div id="pbody"></div></div>
+  <div id="view"></div>
+  <div id="nogl">3D (WebGL) can't be turned on in this browser. You can still pick a composition from the list below.</div>
+  <div id="tip"></div>
+  <div id="legend"><b>●</b> counts only values two judges found to match the source sentence · <b>fog</b> 0 values in our collection (not collected yet) · drag = rotate · wheel / two fingers = zoom</div>
+  <div id="panel" aria-live="polite"><button id="pclose" type="button" aria-label="Close">×</button><div id="pbody"></div></div>
 </div>
 <div class="below">
-<div class="picker"><span>Pick from a list</span><select id="pick"><option value="">Choose a composition…</option></select></div>
-<h4>Quests</h4>
-<div class="quests" id="quests"></div>
+  <div class="picker"><span>Pick from a list</span><select id="pick"><option value="">Choose a composition…</option></select></div>
+  <h4>Quests</h4>
+  <div class="quests" id="quests"></div>
 </div>
 <footer>
-  Data: sentences and values extracted from open-access papers. Fog means «no value yet in the open papers we collected» — not collected yet, not that no value exists.<br/>
-  © 2026 Tae-Eun Song · All rights reserved · No copying, redistribution or reuse of the source without the author's permission · How to cite: Song, T.-E. MXene Atlas (2026), https://songt-50.github.io/mxene-3d/atlas/<br/>
+  Data: sentences and values extracted from open-access papers. Fog means «no value yet in the open papers we collected» — not collected yet, not that no value exists.<br>
+  © 2026 Tae-Eun Song · All rights reserved · No copying, redistribution or reuse of the source without the author's permission · How to cite: Song, T.-E. MXene Atlas (2026), https://songt-50.github.io/mxene-3d/atlas/<br>
   2026-10-09 · version 2 (10/9 afternoon) · English edition
 </footer>
-<div aria-label="Discovery notes" id="nb" role="region">
-<button aria-label="Close notes" id="nbClose" type="button">×</button>
-<h4>📒 Discovery notes</h4>
-<div class="nbEmpty" id="nbHint">Click a tower, fog or planet, then «Add to notes» — each adds one line here.</div>
-<ul id="nbList"></ul>
-<div class="pact"><button class="pbtn" id="nbDown" type="button">Download as text</button></div>
-<div class="nbWarn" hidden="" id="nbWarn">This browser blocks storage, so notes disappear on reload. Download them to keep them.</div>
+<div id="nb" role="region" aria-label="Discovery notes">
+  <button id="nbClose" type="button" aria-label="Close notes">×</button>
+  <h4>📒 Discovery notes</h4>
+  <div class="nbEmpty" id="nbHint">Click a tower, fog or planet, then «Add to notes» — each adds one line here.</div>
+  <ul id="nbList"></ul>
+  <div class="pact"><button class="pbtn" id="nbDown" type="button">Download as text</button></div>
+  <div class="nbWarn" id="nbWarn" hidden>This browser blocks storage, so notes disappear on reload. Download them to keep them.</div>
 </div>
-<div aria-labelledby="atitle" aria-modal="true" id="atom" role="dialog"><div class="abox">
-<button aria-label="Close" id="aclose" type="button">×</button>
-<b id="atitle">Atomic structure</b>
-<div id="aview"></div>
-<div class="acap">Concept sketch — not the real atomic spacing or arrangement</div>
-<div id="anote"></div>
+<div id="atom" role="dialog" aria-modal="true" aria-labelledby="atitle"><div class="abox">
+  <button id="aclose" type="button" aria-label="Close">×</button>
+  <b id="atitle">Atomic structure</b>
+  <div id="aview"></div>
+  <div class="acap">Concept sketch — not the real atomic spacing or arrangement</div>
+  <div id="anote"></div>
 </div></div>
-<div aria-modal="true" id="intro" role="dialog"><div class="box">
-<b>New here? Start here</b>
-<ol>
-<li><b>Rotate</b> — drag to turn the island; zoom with the wheel (two fingers on a phone).</li>
-<li><b>Pick a property</b> — choose a property in the chips above and the towers and fog change. A taller tower means we collected more values; fog marks a cell with no value yet (not collected yet, not «does not exist»).</li>
-<li><b>Click</b> — click a tower or fog to see the source sentence and DOI. Try the quests below too.</li>
-</ol>
-<b>New in version 2</b>
-<ol>
-<li><b>Property planet</b> — when you pick a property, a glowing planet rises above the island. Light beams run to the towers that have values; more values = thicker and brighter. Click the planet for the top 5 values.</li>
-<li><b>📒 Discovery notes</b> — use «Add to notes» in each panel to collect what you saw, one line at a time, and download it as a text file.</li>
-<li><b>View atomic structure</b> — in a composition panel, click it to rotate a simple sketch of that MXene's layer stacking.</li>
-</ol>
-<button id="introOk" type="button">Start</button>
+<div id="intro" role="dialog" aria-modal="true"><div class="box">
+  <b>New here? Start here</b>
+  <ol>
+    <li><b>Rotate</b> — drag to turn the island; zoom with the wheel (two fingers on a phone).</li>
+    <li><b>Pick a property</b> — choose a property in the chips above and the towers and fog change. A taller tower means we collected more values; fog marks a cell with no value yet (not collected yet, not «does not exist»).</li>
+    <li><b>Click</b> — click a tower or fog to see the source sentence and DOI. Try the quests below too.</li>
+  </ol>
+  <b>New in version 2</b>
+  <ol>
+    <li><b>Property planet</b> — when you pick a property, a glowing planet rises above the island. Light beams run to the towers that have values; more values = thicker and brighter. Click the planet for the top 5 values.</li>
+    <li><b>📒 Discovery notes</b> — use «Add to notes» in each panel to collect what you saw, one line at a time, and download it as a text file.</li>
+    <li><b>View atomic structure</b> — in a composition panel, click it to rotate a simple sketch of that MXene's layer stacking.</li>
+  </ol>
+  <button id="introOk" type="button">Start</button>
 </div></div>
+
 <script>/**
  * @license
  * Copyright 2010-2022 Three.js Authors

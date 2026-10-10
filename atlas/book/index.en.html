@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<title>A Map on Thin Sheets</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&amp;family=Noto+Serif+KR:wght@500;700;900&amp;display=swap" rel="stylesheet"/>
+<style>
+/* 판형 = 잡지 특집. 인쇄용 라이트 한 가지. 본문 넓은 화면 2단 · 폰 1단. */
+:root{
+  --paper:#fbfaf7; --sheet:#ffffff; --ink:#1d1d24; --ink2:#55555f; --ink3:#8a8a93; --line:#e6e2d8;
+  --coral:#d2553f; --teal:#1f7a72; --mustard:#c8962a; --navy:#2b3a67;
+  --blush:#f8e6df; --mint:#dff0ea; --cream:#f6eed9; --sky:#e3e9f6;
+  --serif:'Noto Serif KR',Georgia,serif; --sans:'Noto Sans KR',-apple-system,'Segoe UI',system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.85;word-break:keep-all;overflow-wrap:anywhere}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px 80px}
+svg{display:block;max-width:100%;height:auto}
+h1,h2,h3{font-family:var(--serif);font-weight:900;letter-spacing:-.01em;text-wrap:balance}
+a{color:var(--navy)}
+a:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
+
+/* 표지 */
+.cover{min-height:92vh;display:grid;align-content:center;gap:1.2rem;padding:3rem 0 2rem;border-bottom:1px solid var(--line)}
+.cover .issue{font-size:.85rem;letter-spacing:.2em;color:var(--coral);font-weight:700}
+.cover h1{font-size:clamp(2.6rem,9vw,5.6rem);line-height:1.08;margin:0}
+.cover h1 em{font-style:normal;color:var(--teal)}
+.cover .deck{font-family:var(--serif);font-size:clamp(1.1rem,2.6vw,1.45rem);color:var(--ink2);max-width:36rem;margin:0}
+.cover .by{font-size:.9rem;color:var(--ink3)}
+.cover figure{margin:0}
+
+/* 읽는 법 · 차례 */
+.howto{display:grid;gap:2rem;padding:3.5rem 0;border-bottom:1px solid var(--line)}
+@media(min-width:900px){.howto{grid-template-columns:1.1fr .9fr;gap:3.5rem}}
+.howto h2{font-size:1.9rem;margin:0 0 1rem}
+.howto ol{margin:0;padding-left:1.2rem} .howto li{margin-bottom:.6rem}
+.toc ol{list-style:none;margin:0;padding:0}
+.toc li{display:grid;grid-template-columns:3rem minmax(0,1fr);gap:.4rem;padding:.55rem 0;border-bottom:1px dotted var(--line)}
+.toc .n{font-family:var(--serif);font-weight:900;font-size:1.3rem;color:var(--coral)}
+.toc a{text-decoration:none;color:var(--ink);font-weight:500}
+.toc a:hover{color:var(--teal)}
+.honest{background:var(--cream);border-left:6px solid var(--mustard);padding:1.1rem 1.3rem;border-radius:4px;margin-top:1.4rem}
+.honest strong{color:#7a5a12}
+
+/* 장 */
+.chapter{padding:4.5rem 0 2rem;border-bottom:1px solid var(--line)}
+.opener{display:grid;gap:1.2rem;margin-bottom:2.5rem}
+.opener figure{margin:0;background:var(--sheet);border-radius:18px;overflow:hidden;border:1px solid var(--line)}
+.kicker{font-size:.85rem;font-weight:700;letter-spacing:.25em;color:var(--coral)}
+.opener h2{font-size:clamp(2rem,6vw,3.4rem);line-height:1.15;margin:.2rem 0 0}
+.hook{font-family:var(--serif);font-size:clamp(1.15rem,2.8vw,1.55rem);line-height:1.6;color:var(--ink2);margin:0;max-width:44rem}
+figcaption{font-size:.85rem;color:var(--ink3);padding:.6rem 1rem .8rem;line-height:1.5}
+.prose p{margin:0 0 1.05em}
+.prose p:first-of-type::first-letter{font-family:var(--serif);font-weight:900;font-size:3.1em;float:left;line-height:.9;margin:.08em .12em 0 0;color:var(--teal)}
+@media(min-width:900px){
+  .prose{column-count:2;column-gap:3rem;column-rule:1px solid var(--line)}
+  .prose .span{column-span:all}
+}
+.pull{margin:2rem 0;padding:1.4rem 1.6rem;font-family:var(--serif);font-weight:700;font-size:clamp(1.3rem,3.2vw,1.9rem);line-height:1.5;border-radius:6px;break-inside:avoid}
+.pull.c{background:var(--blush);color:#8f2f1f}
+.pull.t{background:var(--mint);color:#11564f}
+.pull.n{background:var(--sky);color:var(--navy)}
+.pull.m{background:var(--cream);color:#6e5110}
+.pull small{display:block;font-family:var(--sans);font-weight:400;font-size:.85rem;margin-top:.5rem;opacity:.8}
+.prose figure{margin:1.6rem 0;background:var(--sheet);border:1px solid var(--line);border-radius:12px;overflow:hidden;break-inside:avoid}
+.prose h3{font-size:1.35rem;margin:1.6rem 0 .6rem;break-after:avoid}
+.prose ul,.prose ol{padding-left:1.2rem;margin:0 0 1em} .prose li{margin-bottom:.35rem}
+sup.fn{font-size:.68em;color:var(--coral);font-weight:700;margin-left:1px}
+.term{border-bottom:1px dashed var(--ink3)}
+.summary{margin:2.5rem 0 1.5rem;background:var(--ink);color:#f3f1ea;border-radius:14px;padding:1.5rem 1.6rem}
+.summary h3{font-size:1.15rem;margin:0 0 .7rem;color:#f2c96b;letter-spacing:.1em}
+.summary ul{margin:0;padding-left:1.2rem} .summary li{margin-bottom:.45rem}
+.notes{font-size:.82rem;color:var(--ink2);line-height:1.6;border-top:1px solid var(--line);padding-top:.8rem}
+.notes h4{font-size:.85rem;margin:0 0 .4rem;letter-spacing:.15em;color:var(--ink3)}
+.notes ol{margin:0;padding-left:1.4rem} .notes li{margin-bottom:.3rem}
+.notes code{font-family:Consolas,monospace;font-size:.95em;overflow-wrap:anywhere}
+
+/* 6장 성질 카드 */
+.props{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));margin:1.6rem 0}
+.prop{background:var(--sheet);border:1px solid var(--line);border-radius:12px;padding:1rem 1.1rem;border-top:5px solid var(--teal)}
+.prop.fail{border-top-color:var(--coral)} .prop.thin{border-top-color:var(--ink3)}
+.prop h4{font-family:var(--serif);font-size:1.12rem;margin:0 0 .2rem}
+.prop .easy{font-size:.88rem;color:var(--ink2);margin:0 0 .5rem}
+.prop .res{font-size:.92rem;margin:0}
+.prop .tag{display:inline-block;font-size:.75rem;font-weight:700;padding:0 .5rem;border-radius:99px;margin-bottom:.4rem}
+.tag.ok{background:var(--mint);color:#11564f} .tag.no{background:var(--blush);color:#8f2f1f} .tag.wait{background:#ecebe6;color:var(--ink2)}
+
+/* 3장 순서 */
+.steps{counter-reset:s;list-style:none;padding:0!important;margin:1.2rem 0}
+.steps li{counter-increment:s;position:relative;padding:.2rem 0 .7rem 2.6rem;break-inside:avoid}
+.steps li::before{content:counter(s);position:absolute;left:0;top:.15rem;width:1.9rem;height:1.9rem;border-radius:50%;background:var(--teal);color:#fff;font-weight:700;text-align:center;line-height:1.9rem;font-size:.9rem}
+
+/* 쉬운 말 사전 · 줄거리 */
+.gloss{margin-top:1.4rem;background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:1rem 1.2rem}
+.gloss h3{font-size:1.1rem;margin:0 0 .5rem}
+.gloss dl{margin:0;display:grid;grid-template-columns:minmax(0,7.5rem) minmax(0,1fr);gap:.25rem .8rem;font-size:.92rem;line-height:1.6}
+.gloss dt{font-weight:700;color:var(--navy)} .gloss dd{margin:0;color:var(--ink2)}
+.story{margin-top:1.4rem;background:var(--mint);border-radius:10px;padding:1rem 1.2rem}
+.story h3{font-size:1.1rem;margin:0 0 .4rem;color:#11564f}
+.story ol{margin:0;padding-left:1.3rem;font-size:.95rem} .story li{margin-bottom:.3rem}
+.fill{list-style:none;padding:0!important;margin:1rem 0}
+.fill li{background:var(--sheet);border:1px solid var(--line);border-left:6px solid var(--mustard);border-radius:6px;padding:.7rem .9rem;margin-bottom:.7rem;break-inside:avoid}
+.fill b{color:#6e5110}
+
+footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);font-size:.85rem;color:var(--ink3)}
+@media print{.cover{min-height:auto}.chapter{break-before:page}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<!-- ===== 표지 ===== -->
+<header class="cover">
+<div class="issue">MXene Special Issue · 2026-10</div>
+<h1>A <em>Map</em> Drawn<br/>on Thin Sheets</h1>
+<p class="deck">MXene numbers scattered across tens of thousands of papers. The story of how each number was paired with its original sentence, re-checked by two AI judges, the judges themselves tested with trap questions, and everything gathered into a single map.</p>
+<figure>
+<svg aria-label="Five thin sheets stacked layer upon layer" role="img" viewbox="0 0 1000 420">
+<defs>
+<lineargradient id="gA" x1="0" x2="1"><stop offset="0" stop-color="#1f7a72"></stop><stop offset="1" stop-color="#2b3a67"></stop></lineargradient>
+<lineargradient id="gB" x1="0" x2="1"><stop offset="0" stop-color="#d2553f"></stop><stop offset="1" stop-color="#c8962a"></stop></lineargradient>
+</defs>
+<g opacity=".95">
+<path d="M500 300 L820 360 L500 420 L180 360 Z" fill="#e6e2d8"></path>
+<path d="M500 250 L820 310 L500 370 L180 310 Z" fill="url(#gA)" opacity=".85"></path>
+<path d="M500 200 L820 260 L500 320 L180 260 Z" fill="url(#gB)" opacity=".85"></path>
+<path d="M500 150 L820 210 L500 270 L180 210 Z" fill="url(#gA)" opacity=".9"></path>
+<path d="M500 100 L820 160 L500 220 L180 160 Z" fill="url(#gB)" opacity=".9"></path>
+<path d="M500 50 L820 110 L500 170 L180 110 Z" fill="url(#gA)"></path>
+</g>
+<g fill="#fbfaf7" opacity=".9">
+<circle cx="500" cy="80" r="7"></circle><circle cx="560" cy="92" r="7"></circle><circle cx="620" cy="104" r="7"></circle><circle cx="440" cy="92" r="7"></circle><circle cx="380" cy="104" r="7"></circle>
+<circle cx="500" cy="104" r="7"></circle><circle cx="560" cy="116" r="7"></circle><circle cx="440" cy="116" r="7"></circle><circle cx="680" cy="116" r="7"></circle><circle cx="320" cy="116" r="7"></circle>
+<circle cx="500" cy="128" r="7"></circle><circle cx="560" cy="140" r="7"></circle><circle cx="440" cy="140" r="7"></circle><circle cx="500" cy="152" r="7"></circle>
+</g>
+<g fill="#1d1d24" font-family="Noto Serif KR,serif" font-size="22">
+<text x="850" y="120">6.05</text><text x="868" y="200">34.21%</text><text x="840" y="280">1.41 nm</text>
+<text x="40" y="150">4.53 eV</text><text x="60" y="240">16.7</text>
+</g>
+</svg>
+<figcaption>Figure 0 · MXene is a material made of very thin sheets stacked layer upon layer like this. The numbers floating beside it are values that actually appear in this book.</figcaption>
+</figure>
+<p class="by">Text and figures: MXene Atlas workshop · All numbers are copied from the work records · <a href="index.html" hreflang="ko" lang="ko">한국어</a></p>
+</header>
+<!-- ===== 이 책을 읽는 법 ===== -->
+<section class="howto" id="howto">
+<div>
+<h2>How to read this book</h2>
+<ol>
+<li>Each chapter opens with <b>one large figure</b> and <b>one sentence</b>. Read only that sentence and move on, and you will still follow the storyline.</li>
+<li>Difficult words are explained in one line right beside them the first time they appear.</li>
+<li>The black box at the end of each chapter, <b>“Chapter summary”</b>, condenses that chapter into three lines.</li>
+<li>Program names, file names, task numbers and the like are kept out of the main text and moved to small <b>notes</b> at the very bottom of each chapter. Only readers who want to follow the sources need to look at them.</li>
+<li>Every number is one written in the actual work records. No number absent from the records is used.</li>
+</ol>
+<div class="honest"><strong>To state up front.</strong> This map is not yet “verified.” That is because the two judges that scored the values are <b>both AI</b>. Two AIs can make the same kind of mistake together. We will write “verified” only after a human expert has checked it. Chapter 9 returns to this.</div>
+<div class="story"><h3>The storyline in six lines</h3><ol>
+<li><b>Attach the original sentence to each number.</b> For every value we also record “it came from this sentence of the paper.”</li>
+<li><b>Two AI judges re-read the original.</b> Claude and Codex. Neither sees the other's answer.</li>
+<li><b>Test the judges first.</b> We secretly mix in “trap answers” in which a number has been changed, a name changed, a field emptied, or the property name changed. A judge that cannot catch the traps is not trusted.</li>
+<li><b>The scoring criteria are fixed before the results are seen.</b> It is like sealing the answer key in an envelope before the exam.</li>
+<li><b>Attach a mark.</b> ● both say correct · ◐ present in the paper but left blank · ✕ at least one says wrong · ○ other.</li>
+<li><b>Even so, it is not yet “verified.”</b> Not until a human expert has looked at it.</li>
+</ol></div>
+<div class="gloss"><h3>Plain-language glossary</h3><dl>
+<dt>Composition</dt><dd>Which elements are present, and in what ratio. Example: Ti₃C₂ has 3 titanium and 2 carbon.</dd>
+<dt>Sample</dt><dd>One actual piece of material used in an experiment. Even with the same composition, a different synthesis route makes it a different sample.</dd>
+<dt>Original text</dt><dd>The sentence, verbatim, of the paper in which the value first appeared.</dd>
+<dt>Judge</dt><dd>An AI that re-reads the original text and decides “was this value transcribed correctly?”</dd>
+<dt>Trap question</dt><dd>An answer deliberately altered without the judge's knowledge. Used to test the judge (a control).</dd>
+<dt>Round</dt><dd>One complete pass of scoring one property (or one batch of papers), from start to finish.</dd>
+<dt>Median</dt><dd>The value in the very middle when the values are lined up by size. Less swayed by outliers.</dd>
+<dt>nm · Å</dt><dd>Units of length. 1 nm is one billionth of a metre; 1 Å is 1/10 of that.</dd>
+<dt>eV</dt><dd>A very small unit of energy used when dealing with a single electron.</dd>
+</dl></div>
+</div>
+<nav aria-label="Contents" class="toc">
+<h2>Contents</h2>
+<ol>
+<li><span class="n">1</span><a href="#ch1">A very thin sheet: MXene</a></li>
+<li><span class="n">2</span><a href="#ch2">Numbers scattered across tens of thousands of papers</a></li>
+<li><span class="n">3</span><a href="#ch3">Attaching the original sentence to each number</a></li>
+<li><span class="n">4</span><a href="#ch4">Two judges and the trap questions</a></li>
+<li><span class="n">5</span><a href="#ch5">Wrong versus omitted</a></li>
+<li><span class="n">6</span><a href="#ch6">What the map has gathered — ten properties</a></li>
+<li><span class="n">7</span><a href="#ch7">2026-10-09 — the map widens, and the map is tested</a></li>
+<li><span class="n">8</span><a href="#ch8">When we changed the rules, when we chose the papers — the promises we kept</a></li>
+<li><span class="n">9</span><a href="#ch9">What we still don't know · what we will fill in when data arrive</a></li>
+<li><span class="n">10</span><a href="#ch10">Where this map came from, and where it is going</a></li>
+</ol>
+</nav>
+</section>
+<!-- ===== 1장 ===== -->
+<section class="chapter" id="ch1">
+<div class="opener">
+<figure>
+<svg aria-label="Side view of an MXene sheet: rows of carbon atoms between rows of metal atoms, termination atoms on the surface, and a spacing of about 1 nanometre between sheets" role="img" viewbox="0 0 1000 380">
+<rect fill="#f6eed9" height="380" width="1000"></rect>
+<!-- 판 1 -->
+<g>
+<g fill="#c8962a"><circle cx="150" cy="70" r="11"></circle><circle cx="230" cy="70" r="11"></circle><circle cx="310" cy="70" r="11"></circle><circle cx="390" cy="70" r="11"></circle><circle cx="470" cy="70" r="11"></circle><circle cx="550" cy="70" r="11"></circle><circle cx="630" cy="70" r="11"></circle></g>
+<g fill="#2b3a67"><circle cx="110" cy="100" r="17"></circle><circle cx="190" cy="100" r="17"></circle><circle cx="270" cy="100" r="17"></circle><circle cx="350" cy="100" r="17"></circle><circle cx="430" cy="100" r="17"></circle><circle cx="510" cy="100" r="17"></circle><circle cx="590" cy="100" r="17"></circle><circle cx="670" cy="100" r="17"></circle></g>
+<g fill="#3d3d44"><circle cx="150" cy="128" r="10"></circle><circle cx="230" cy="128" r="10"></circle><circle cx="310" cy="128" r="10"></circle><circle cx="390" cy="128" r="10"></circle><circle cx="470" cy="128" r="10"></circle><circle cx="550" cy="128" r="10"></circle><circle cx="630" cy="128" r="10"></circle></g>
+<g fill="#2b3a67"><circle cx="110" cy="156" r="17"></circle><circle cx="190" cy="156" r="17"></circle><circle cx="270" cy="156" r="17"></circle><circle cx="350" cy="156" r="17"></circle><circle cx="430" cy="156" r="17"></circle><circle cx="510" cy="156" r="17"></circle><circle cx="590" cy="156" r="17"></circle><circle cx="670" cy="156" r="17"></circle></g>
+<g fill="#c8962a"><circle cx="150" cy="186" r="11"></circle><circle cx="230" cy="186" r="11"></circle><circle cx="310" cy="186" r="11"></circle><circle cx="390" cy="186" r="11"></circle><circle cx="470" cy="186" r="11"></circle><circle cx="550" cy="186" r="11"></circle><circle cx="630" cy="186" r="11"></circle></g>
+</g>
+<!-- 판 2 -->
+<g transform="translate(0,150)">
+<g fill="#c8962a"><circle cx="150" cy="70" r="11"></circle><circle cx="230" cy="70" r="11"></circle><circle cx="310" cy="70" r="11"></circle><circle cx="390" cy="70" r="11"></circle><circle cx="470" cy="70" r="11"></circle><circle cx="550" cy="70" r="11"></circle><circle cx="630" cy="70" r="11"></circle></g>
+<g fill="#2b3a67"><circle cx="110" cy="100" r="17"></circle><circle cx="190" cy="100" r="17"></circle><circle cx="270" cy="100" r="17"></circle><circle cx="350" cy="100" r="17"></circle><circle cx="430" cy="100" r="17"></circle><circle cx="510" cy="100" r="17"></circle><circle cx="590" cy="100" r="17"></circle><circle cx="670" cy="100" r="17"></circle></g>
+<g fill="#3d3d44"><circle cx="150" cy="128" r="10"></circle><circle cx="230" cy="128" r="10"></circle><circle cx="310" cy="128" r="10"></circle><circle cx="390" cy="128" r="10"></circle><circle cx="470" cy="128" r="10"></circle><circle cx="550" cy="128" r="10"></circle><circle cx="630" cy="128" r="10"></circle></g>
+<g fill="#2b3a67"><circle cx="110" cy="156" r="17"></circle><circle cx="190" cy="156" r="17"></circle><circle cx="270" cy="156" r="17"></circle><circle cx="350" cy="156" r="17"></circle><circle cx="430" cy="156" r="17"></circle><circle cx="510" cy="156" r="17"></circle><circle cx="590" cy="156" r="17"></circle><circle cx="670" cy="156" r="17"></circle></g>
+<g fill="#c8962a"><circle cx="150" cy="186" r="11"></circle><circle cx="230" cy="186" r="11"></circle><circle cx="310" cy="186" r="11"></circle><circle cx="390" cy="186" r="11"></circle><circle cx="470" cy="186" r="11"></circle><circle cx="550" cy="186" r="11"></circle><circle cx="630" cy="186" r="11"></circle></g>
+</g>
+<!-- 간격 표시 -->
+<g fill="none" stroke="#d2553f" stroke-width="3"><path d="M720 100 L720 250"></path><path d="M710 100 L730 100"></path><path d="M710 250 L730 250"></path></g>
+<g fill="#1d1d24" font-family="Noto Sans KR,sans-serif" font-size="22">
+<text fill="#d2553f" font-weight="700" x="742" y="180">Between sheets ≈ 1 nm</text>
+<text fill="#55555f" font-size="17" x="742" y="208">~1/100,000 of a hair's width</text>
+<circle cx="760" cy="290" fill="#2b3a67" r="12"></circle><text x="782" y="297">Metal atom</text>
+<circle cx="760" cy="325" fill="#3d3d44" r="9"></circle><text x="782" y="332">C or N atom</text>
+<circle cx="760" cy="358" fill="#c8962a" r="9"></circle><text x="782" y="365">Surface termination</text>
+</g>
+</svg>
+<figcaption>Figure 1-1 · Side view of an MXene sheet (the drawing is schematic). Carbon or nitrogen sits between rows of metal atoms, and termination atoms attach to the surface. Such sheets stack like the pages of a book.</figcaption>
+</figure>
+<div class="kicker">Chapter 1</div>
+<h2>A very thin sheet: MXene</h2>
+<p class="hook">Very thin sheets, stacked layer upon layer like the pages of a book. The spacing between one sheet and the next is typically around 1 nm, roughly one hundred-thousandth of the thickness of a human hair.</p>
+</div>
+<div class="prose">
+<p>MXene (pronounced “maxene”) is a very thin sheet. Rows of metal atoms and rows of carbon (or nitrogen) atoms alternate like a sandwich. Many such sheets stack like the pages of a book. The spacing between sheets is measured with X-rays and is typically around 1 nm.</p>
+<p>The most studied is <b>Ti₃C₂Tₓ</b>, made of titanium (Ti) and carbon (C). The Tₓ at the end denotes the atoms attached to the sheet surface. How the surface is treated changes the properties considerably. As Chapter 6 will show, even for the same Ti₃C₂, some values spread by more than 3 eV (a very small unit of energy used when dealing with a single electron) depending on the treatment.</p>
+<p>Synthesis goes roughly like this. A hard crystal that exists before the sheets form (the <span class="term">precursor</span>) is immersed in a chemical that dissolves out one layer (<span class="term">etching</span>). This exposes the sheets, which are then peeled off one at a time (<span class="term">delamination</span>). There are several etchants: hydrofluoric acid (HF), a mixture of lithium fluoride and hydrochloric acid, molten salts, and so on.</p>
+<p>How many kinds are there? Metal–carbon combinations actually synthesized in the lab alone number more than 50. Counting mixed-element ones and ones with different surfaces, the number approaches 100. Candidates predicted only by computer calculation number more than 1,000.<sup class="fn">1</sup></p>
+<blockquote class="pull t span">“MXenes comprise a very large number of materials. Which composition should be used for which property — can the structures and synthesis methods be organized systematically?”<small>— This map began on 2026-10-06 from this single question.<sup class="fn">2</sup></small></blockquote>
+<p>MXene first made its name through its ability to store electricity, i.e. its <span class="term">capacitance</span>. Capacitance means how much electricity it can hold, as in a capacitor. The landmark results published in <i>Science</i> in 2013 and <i>Nature</i> in 2014 were both about the capacitance of Ti₃C₂Tₓ. In particular, the key was how much it stores in a given volume (the <b>volumetric</b> value).<sup class="fn">3</sup></p>
+<p>After that, research branched out in every direction: how well it conducts electricity, how well it blocks electromagnetic waves, how hot it gets under light, how well it carries heat. These are called <b>properties</b>. Papers piled up for each property.</p>
+<p>The person who asked the question is a researcher who once wrote papers with MXene. In their own words, however, “I didn't study the material itself; I used it to build structures.” So the materials knowledge needed for this map has been built up piece by piece during the work.<sup class="fn">4</sup></p>
+<p>The question was simple, but the answer was not. The next chapter shows why.</p>
+</div>
+<div class="summary"><h3>Chapter summary</h3><ul>
+<li>MXene is a material made of stacked, very thin sheets of a metal and carbon (or nitrogen). The spacing between sheets is around 1 nm.</li>
+<li>Experimentally synthesized combinations alone number more than 50; computed candidates number more than 1,000.</li>
+<li>This map started from the question “for a given property, which MXene should be made, and how?”</li>
+</ul></div>
+<aside class="notes"><h4>Notes</h4><ol>
+<li>Number of combinations: <code>intelligence/wiki/mxene-atlas.md</code> key summary item 3 (source <code>evidence/q2_synthesized_count_agent3.md</code>). Explanation of the ~1 nm interlayer spacing: <code>presentations/mxene-atlas-status-2026-10-07/how-judging-works.html</code> §5.</li>
+<li>Original wording of the question: <code>intelligence/mxene-atlas/PURPOSE-and-direction-2026-10-07.md</code> §1. Start date and the remark “this might be a turning point in my life”: wiki timeline, 2026-10-06 entry.</li>
+<li>“Why capacitance first”: wiki timeline 2026-10-07 entry (Science 2013 · Nature 2014 clay; the key is F/cm³).</li>
+<li>Wiki “Relation to our projects” correction entry (2026-10-07) · decision D14.</li>
+</ol></aside>
+</section>
+<!-- ===== 2장 ===== -->
+<section class="chapter" id="ch2">
+<div class="opener">
+<figure>
+<svg aria-label="Numbers scattered and flying above a pile of papers" role="img" viewbox="0 0 1000 380">
+<rect fill="#e3e9f6" height="380" width="1000"></rect>
+<g stroke="#c9c4b6" stroke-width="2">
+<rect fill="#ffffff" height="110" transform="rotate(-6 420 305)" width="240" x="300" y="250"></rect>
+<rect fill="#fbfaf7" height="110" transform="rotate(4 450 280)" width="240" x="330" y="225"></rect>
+<rect fill="#ffffff" height="110" transform="rotate(-3 410 255)" width="240" x="290" y="200"></rect>
+<rect fill="#fbfaf7" height="120" transform="rotate(7 460 230)" width="240" x="340" y="170"></rect>
+<rect fill="#ffffff" height="130" transform="rotate(-2 430 205)" width="240" x="310" y="140"></rect>
+</g>
+<g stroke="#d6d1c3" stroke-linecap="round" stroke-width="5">
+<path d="M335 175 L520 170"></path><path d="M335 195 L500 192"></path><path d="M335 215 L525 212"></path><path d="M335 235 L470 233"></path>
+</g>
+<g font-family="Noto Serif KR,serif" font-weight="700">
+<text fill="#d2553f" font-size="34" transform="rotate(-8 80 90)" x="80" y="90">6.05 m²/g</text>
+<text fill="#1f7a72" font-size="30" transform="rotate(6 640 80)" x="640" y="80">34.21%</text>
+<text fill="#2b3a67" font-size="36" transform="rotate(-4 700 190)" x="700" y="190">4.53 eV</text>
+<text fill="#c8962a" font-size="28" transform="rotate(5 90 230)" x="90" y="230">1.15 nm</text>
+<text fill="#d2553f" font-size="26" transform="rotate(-6 660 300)" x="660" y="300">16.7 m²/g</text>
+<text fill="#2b3a67" font-size="24" transform="rotate(3 140 330)" x="140" y="330">37.15%</text>
+<text fill="#55555f" font-size="24" x="420" y="60">?</text><text fill="#55555f" font-size="22" x="600" y="140">?</text><text fill="#55555f" font-size="26" x="230" y="150">?</text>
+</g>
+</svg>
+<figcaption>Figure 2-1 · Once numbers leave the pile of papers, we lose “which sample, under which conditions, was this value from?” Every number in the figure is a real original-text value that appears in this book.</figcaption>
+</figure>
+<div class="kicker">Chapter 2</div>
+<h2>Numbers scattered across tens of thousands of papers</h2>
+<p class="hook">There are more than 40,000 experimental MXene papers. In 2025 alone, 8,929 were published. That is not an amount a person can read.</p>
+</div>
+<div class="prose">
+<p>Numbers are scattered inside the papers. Some sit in the middle of the main text, some in figure captions, and some are bundled with several samples in one sentence via the word “respectively.” To find the value you want, you have to open the papers one at a time.<sup class="fn">1</sup></p>
+<p>So a few databases that collect only the numbers (data stores that gather values into tables) already exist. The most similar one we found was a public dataset of 573 rows collected from 114 papers. It is a useful resource. But on closer inspection it had four shortcomings.<sup class="fn">2</sup></p>
+<ul>
+<li>91% of the values are concentrated in a single MXene, Ti₃C₂.</li>
+<li>The values were extracted by AI, but there is no report of how accurate they are.</li>
+<li>No value records “which sentence of the original it came from.”</li>
+<li>Above all, wrong values were mixed in.</li>
+</ul>
+<p>We checked the last point ourselves by opening the originals. We compared the values in that database line by line against the original papers. Values that did not match the original amounted to 17.9% in the first 15 papers and 8.0% in an expanded set of 22 papers. Because the number of papers examined (the sample) is small, neither figure is definitive.<sup class="fn">3</sup></p>
+<figure class="span">
+<svg aria-label="Bar chart of the existing-database audit: first 15 papers 17.9 percent, expanded 22 papers 8.0 percent" role="img" viewbox="0 0 1000 300">
+<rect fill="#ffffff" height="300" width="1000"></rect>
+<text fill="#1d1d24" font-family="Noto Serif KR,serif" font-size="24" font-weight="700" x="40" y="46">Checking an existing database against the originals</text>
+<text fill="#55555f" font-family="Noto Sans KR,sans-serif" font-size="16" x="40" y="74">Share of values that did not match the original (bar end = 20%)</text>
+<g fill="#1d1d24" font-family="Noto Sans KR,sans-serif" font-size="18">
+<text x="40" y="140">First 15 papers</text>
+<rect fill="#f1eee6" height="38" width="680" x="220" y="115"></rect>
+<rect fill="#d2553f" height="38" width="608.6" x="220" y="115"></rect>
+<text fill="#8f2f1f" font-weight="700" x="838" y="141">17.9%</text>
+<text fill="#55555f" font-size="15" x="220" y="176">Provisional — wide uncertainty because the errors cluster in a few papers</text>
+<text x="40" y="232">Expanded 22</text>
+<rect fill="#f1eee6" height="38" width="680" x="220" y="207"></rect>
+<rect fill="#c8962a" height="38" width="272" x="220" y="207"></rect>
+<text fill="#6e5110" font-weight="700" x="502" y="233">8.0%</text>
+<text fill="#55555f" font-size="15" x="220" y="268">Undetermined — sample too small to settle on a single figure</text>
+</g>
+</svg>
+<figcaption>Figure 2-2 · Two comparisons gave two numbers. Neither is “definitive.” What was clear, though, is that “wrong values are mixed in.”</figcaption>
+</figure>
+<p>The wrong values often had the same shape. The value of a <span class="term">composite</span> (two materials combined), made by mixing MXene with another material, was recorded as if it were the value of pure MXene. The number itself is in the original, so at a glance it looks right. But “whose number it is” was wrong.<sup class="fn">4</sup></p>
+<p>For a flagship property such as how well electricity flows (<span class="term">electrical conductivity</span>, in S/cm — larger means better conduction), record values like “24,000 S/cm” circulate without their conditions. These are numbers stripped of which sample was made how and measured how. This is exactly where a map with attached evidence is most useful.<sup class="fn">5</sup></p>
+<blockquote class="pull c span">This is not a race to collect more values. It is the work of collecting values that can be trusted.<small>— the sentence that defined “our share” of this map</small></blockquote>
+<p>Even obtaining the originals was not easy. From the start, we decided to use only legal routes, because values taken from unauthorized copy sites can neither be published to others nor re-checked by others against the same original.<sup class="fn">6</sup></p>
+<p>Yet even for papers that anyone can read openly, publisher websites often blocked programs from accessing and reading them. In the first comparison, of 60 open-access papers the full text could be retrieved by program for only 16. In the end, a paper repository that works like a public library became the legal route a program can read. (Papers that publishers blocked from programs are covered in Chapter 7.)<sup class="fn">7</sup></p>
+<p>It is not only competitors. There is also a public dataset of 4,488 MXene structures generated by computer calculation. This is not a competitor but a partner: a “calculated value” column can be placed side by side under the same composition name.<sup class="fn">8</sup></p>
+<p>So the task was set. Collect the numbers, but attach to each number the sentence in which it is written. And score separately whether each pair is correct.</p>
+</div>
+<div class="summary"><h3>Chapter summary</h3><ul>
+<li>There are more than 40,000 MXene papers, and the numbers are scattered within them.</li>
+<li>Comparing an existing database against the originals showed wrong values mixed in (17.9% · 8.0%, neither definitive). The common mistake was recording a composite's value as a pure-MXene value.</li>
+<li>So the goal is not “many” but “trustworthy.” The originals, too, are obtained only through legal routes.</li>
+</ul></div>
+<aside class="notes"><h4>Notes</h4><ol>
+<li>Paper counts: <code>PURPOSE-and-direction-2026-10-07.md</code> §1 (OpenAlex 2026-10-06 · 8,929 papers in 2025) · first wiki timeline entry (40,984 papers).</li>
+<li>Existing dataset: GitHub <code>tomal66/mxene-geometry</code> — wiki key summary item 1 (<code>RESULT-P0-prior-art-2026-10-06.md</code>).</li>
+<li>Audit figures: <code>PURPOSE</code> §1 · wiki timeline (P1-A 17.9% provisional · P1-A2 8.0% undetermined, paper-level bootstrap [2.6, 14.3]).</li>
+<li><code>PURPOSE</code> §1 (quoting KNOWLEDGE 🔒).</li>
+<li><code>PURPOSE</code> §6-2, P3-2 entry.</li>
+<li><code>PURPOSE</code> §5 principle 1 (Sci-Hub not used).</li>
+<li>Wiki key summary item 4 — publisher 403, Europe PMC full-text XML, 16 of 60 OA papers.</li>
+<li><code>diegonti/mxene-db</code> (4,488 calculated structures · MIT) — wiki key summary item 5.</li>
+</ol></aside>
+</section>
+<!-- ===== 3장 ===== -->
+<section class="chapter" id="ch3">
+<div class="opener">
+<figure>
+<svg aria-label="A magnifying glass enlarging the number 6.05 in an English original sentence" role="img" viewbox="0 0 1000 380">
+<rect fill="#dff0ea" height="380" width="1000"></rect>
+<rect fill="#ffffff" height="260" rx="14" stroke="#c9d9d2" width="860" x="70" y="60"></rect>
+<g stroke="#e3e0d8" stroke-linecap="round" stroke-width="10">
+<path d="M110 105 L880 105"></path><path d="M110 145 L840 145"></path><path d="M110 265 L860 265"></path><path d="M110 295 L700 295"></path>
+</g>
+<g fill="#1d1d24" font-family="Georgia,serif" font-size="21">
+<text x="110" y="200">The specific surface area of few-layer Ti₃C₂Tₓ, spherical Ti₃C₂Tₓ</text>
+<text x="110" y="232">and flaky Ti₃C₂Tₓ is <tspan fill="#d2553f" font-weight="700">6.05 m² g⁻¹</tspan>, 17.07 m² g⁻¹ and 17.81 m² g⁻¹, respectively.</text>
+</g>
+<circle cx="390" cy="222" fill="#fff6e0" fill-opacity=".35" r="78" stroke="#2b3a67" stroke-width="10"></circle>
+<path d="M445 278 L520 350" stroke="#2b3a67" stroke-linecap="round" stroke-width="22"></path>
+<text fill="#d2553f" font-family="Georgia,serif" font-size="38" font-weight="700" x="300" y="232">6.05</text>
+</svg>
+<figcaption>Figure 3-1 · Each value in the map is paired with one original sentence like this. Because it is a “respectively” sentence, the first number must be attached to the first sample.</figcaption>
+</figure>
+<div class="kicker">Chapter 3</div>
+<h2>Attaching the original sentence to each number</h2>
+<p class="hook">For every number, we always attach the original sentence in which it is written, so that anyone can re-read that sentence and check.</p>
+</div>
+<div class="prose">
+<p>A row of this map is not just a number. It records, as one bundle, which <b>MXene</b> (composition), which <b>sample</b> and which <b>unit</b> the number belongs to, and from <b>which sentence of the original</b> it came. The synthesis method and the measurement conditions are recorded too. Like the call number on a library book, anyone can use this row to find the way back to the original location.<sup class="fn">1</sup></p>
+<p>Look at the sentence in the figure above. It reports surface area (m²/g — how many square metres 1 g of powder would cover if fully spread out). One sentence contains three samples and three numbers. Because the word “respectively” is attached, the pairs must be matched in order. The first sample (few-layer Ti₃C₂Tₓ) is 6.05 m²/g. This kind of pairing confuses people and AI alike.<sup class="fn">2</sup></p>
+<figure class="span">
+<svg aria-label="Structure of one row of the map: composition, sample, value, unit, original sentence, verdict mark" role="img" viewbox="0 0 1000 300">
+<rect fill="#ffffff" height="300" width="1000"></rect>
+<text fill="#1d1d24" font-family="Noto Serif KR,serif" font-size="24" font-weight="700" x="40" y="44">What one “row” of the map looks like</text>
+<g font-family="Noto Sans KR,sans-serif">
+<rect fill="#e3e9f6" height="90" rx="10" width="170" x="40" y="70"></rect><text fill="#55555f" font-size="15" x="56" y="100">Composition</text><text fill="#2b3a67" font-size="24" font-weight="700" x="56" y="136">Ti₃C₂</text>
+<rect fill="#f6eed9" height="90" rx="10" width="270" x="222" y="70"></rect><text fill="#55555f" font-size="15" x="238" y="100">Sample name</text><text fill="#6e5110" font-size="20" font-weight="700" x="238" y="136">few-layer Ti₃C₂Tₓ</text>
+<rect fill="#f8e6df" height="90" rx="10" width="140" x="504" y="70"></rect><text fill="#55555f" font-size="15" x="520" y="100">Value</text><text fill="#8f2f1f" font-size="26" font-weight="700" x="520" y="136">6.05</text>
+<rect fill="#f8e6df" height="90" rx="10" width="140" x="656" y="70"></rect><text fill="#55555f" font-size="15" x="672" y="100">Unit</text><text fill="#8f2f1f" font-size="22" font-weight="700" x="672" y="136">m²/g</text>
+<rect fill="#dff0ea" height="90" rx="10" width="152" x="808" y="70"></rect><text fill="#55555f" font-size="15" x="824" y="100">Verdict</text><text fill="#1f7a72" font-size="30" font-weight="700" x="824" y="140">● Right</text>
+<rect fill="#fbfaf7" height="96" rx="10" stroke="#e3e0d8" width="920" x="40" y="176"></rect>
+<text fill="#55555f" font-size="15" x="56" y="204">Original sentence (verbatim)</text>
+<text fill="#1d1d24" font-family="Georgia,serif" font-size="17" x="56" y="236">"The specific surface area of few-layer Ti₃C₂Tₓ, spherical Ti₃C₂Tₓ and flaky Ti₃C₂Tₓ</text>
+<text fill="#1d1d24" font-family="Georgia,serif" font-size="17" x="56" y="260">is 6.05 m² g⁻¹, 17.07 m² g⁻¹ and 17.81 m² g⁻¹, respectively."</text>
+</g>
+</svg>
+<figcaption>Figure 3-2 · A row that was actually scored. Clicking it shows the original sentence, and you can reopen the original to check.</figcaption>
+</figure>
+<p>Some rows cannot be used even when the number is right. A row extracted from the sentence “extending to 16 hours, the specific surface area became 95.7 m²/g” was one of them. The value 95.7 was exactly as in the original. But the sample-name field was empty. Since there was no way to know which sample the number belongs to, it was not put on the map.<sup class="fn">3</sup></p>
+<blockquote class="pull n span">Even if the number is right, it cannot be used when “whose number it is” is blank.</blockquote>
+<h3>Eight steps to put one property on the map</h3>
+<p>Even when the property changes, the order is always the same.<sup class="fn">4</sup></p>
+<ol class="steps">
+<li><b>Fix the list of papers first.</b> So that favorable papers cannot be cherry-picked in later.</li>
+<li><b>Screen.</b> Keep only papers that report the value from “their own measurement.” Papers that only calculate, and papers that copy someone else's value, are excluded.</li>
+<li><b>Transcribe.</b> An AI reads each paper and extracts, row by row, the composition, sample name, value, unit and original sentence.</li>
+<li><b>Make trap questions.</b> Secretly alter a few of the extracted rows (Chapter 4).</li>
+<li><b>Save the scoring criteria first.</b> Before scoring, write down and save what will count as “correct.”</li>
+<li><b>Two judges score independently.</b> Each opens the original and picks one of “correct · wrong · can't tell.”</li>
+<li><b>Attach a mark.</b> If both say “correct,” ●; if at least one says “wrong,” ✕; otherwise ○. (In Chapter 5 one more mark, ◐, appears.)</li>
+<li><b>Decide pass or fail.</b> If ● is 80% or more and ✕ is 10% or less, the round passes.</li>
+</ol>
+<p>The fifth step is the backbone of this work. If the criteria are set after seeing the results, the criteria bend toward the results. It becomes not measuring but “fitting.” It is like sealing the answer key in an envelope before the exam. This is called <span class="term">preregistration</span> (registering in advance). If we want to change the criteria, we open a new round and measure again from the beginning.<sup class="fn">5</sup></p>
+<p>This creates some inconvenience. A moment comes when, looking at the results, you think “it would look much better if only this field were excluded.” That story is in Chapter 5. Even then, we did not put on the map a number chosen after seeing the results.</p>
+</div>
+<div class="summary"><h3>Chapter summary</h3><ul>
+<li>One row of the map = composition · sample · value · unit · <b>original sentence</b>. Anyone can reopen the original and check.</li>
+<li>Even if the number is right, a row is not put on the map when “whose number it is” is blank.</li>
+<li>Scoring criteria are always saved before scoring. To change them, measure again in a new round.</li>
+</ul></div>
+<aside class="notes"><h4>Notes</h4><ol>
+<li>Structure of a row: <code>PURPOSE-and-direction-2026-10-07.md</code> §2, table ①.</li>
+<li>Example sentence and the “respectively” explanation: <code>how-judging-works.html</code> §3 “A real row — both say correct.”</li>
+<li>95.7 m²/g example: same page §3 “A real row that was wrong” (one judge said “wrong,” the other “can't tell”).</li>
+<li>Eight steps: same page §2.</li>
+<li>Same page §7 ③ · <code>PURPOSE</code> §5 principle 2 (commit the preregistration before measuring).</li>
+</ol></aside>
+</section>
+<!-- ===== 4장 ===== -->
+<section class="chapter" id="ch4">
+<div class="opener">
+<figure>
+<svg aria-label="Two judges seated at a desk looking at different answers, with one trap card placed in the middle" role="img" viewbox="0 0 1000 380">
+<rect fill="#f8e6df" height="380" width="1000"></rect>
+<!-- 책상 -->
+<rect fill="#8a6a4a" height="22" rx="6" width="880" x="60" y="270"></rect>
+<rect fill="#8a6a4a" height="80" width="16" x="100" y="292"></rect><rect fill="#8a6a4a" height="80" width="16" x="884" y="292"></rect>
+<!-- 칸막이 -->
+<rect fill="#c9c4b6" height="150" width="16" x="492" y="120"></rect>
+<!-- 채점자 가 -->
+<circle cx="270" cy="120" fill="#2b3a67" r="44"></circle>
+<path d="M190 270 Q190 175 270 175 Q350 175 350 270 Z" fill="#2b3a67"></path>
+<rect fill="#ffffff" height="58" rx="4" transform="rotate(-8 375 244)" width="150" x="300" y="215"></rect>
+<text fill="#1f7a72" font-family="Noto Sans KR,sans-serif" font-size="22" font-weight="700" transform="rotate(-8 375 244)" x="330" y="252">Correct ●</text>
+<!-- 채점자 나 -->
+<circle cx="730" cy="120" fill="#1f7a72" r="44"></circle>
+<path d="M650 270 Q650 175 730 175 Q810 175 810 270 Z" fill="#1f7a72"></path>
+<rect fill="#ffffff" height="58" rx="4" transform="rotate(8 625 244)" width="150" x="550" y="215"></rect>
+<text fill="#d2553f" font-family="Noto Sans KR,sans-serif" font-size="22" font-weight="700" transform="rotate(8 625 244)" x="572" y="252">Wrong ✕</text>
+<!-- 함정 카드 -->
+<g transform="rotate(-10 500 70)">
+<rect fill="#c8962a" height="92" rx="10" width="140" x="430" y="20"></rect>
+<rect fill="none" height="72" rx="6" stroke="#fbfaf7" stroke-dasharray="7 5" stroke-width="3" width="120" x="440" y="30"></rect>
+<text fill="#fbfaf7" font-family="Noto Sans KR,sans-serif" font-size="26" font-weight="900" x="458" y="76">Trap!</text>
+</g>
+<g fill="#1d1d24" font-family="Noto Sans KR,sans-serif" font-size="20">
+<text x="220" y="350">Judge A</text><text x="680" y="350">Judge B</text>
+</g>
+</svg>
+<figcaption>Figure 4-1 · The two judges do not see each other's answers. And, unknown to both, deliberately altered “trap questions” are mixed in.</figcaption>
+</figure>
+<div class="kicker">Chapter 4</div>
+<h2>Two judges and the trap questions</h2>
+<p class="hook">Two judges, and eighteen trap questions mixed in without their knowledge. The “correct” of a judge that cannot catch the traps is not trusted.</p>
+</div>
+<div class="prose">
+<p>Think of grading a school exam. The question paper is the original paper. A student's answer is one row the AI extracted from the original (“this sample's value is this”). There are two teachers grading: Claude and Codex, two AIs built by different companies. Neither sees the other's grading.<sup class="fn">1</sup></p>
+<p>But how would we know if a teacher grades carelessly? So before trusting the teachers, we test them first; we are “grading the graders.” We secretly mix <b>eighteen trap questions</b> into the pile of answers. Twelve are answers deliberately altered to be wrong, and six are correct answers left untouched. The teachers do not know which ones are traps.</p>
+<figure class="span">
+<svg aria-label="Twelve trap cards (red) and six correct cards (green); pass conditions: catch at least eleven of the twelve, and call at least five of the six correct" role="img" viewbox="0 0 1000 300">
+<rect fill="#ffffff" height="300" width="1000"></rect>
+<g fill="#fbfaf7" font-family="Noto Sans KR,sans-serif" font-size="16" font-weight="700">
+<g fill="#d2553f">
+<rect height="90" rx="8" width="70" x="40" y="40"></rect><rect height="90" rx="8" width="70" x="120" y="40"></rect><rect height="90" rx="8" width="70" x="200" y="40"></rect><rect height="90" rx="8" width="70" x="280" y="40"></rect><rect height="90" rx="8" width="70" x="360" y="40"></rect><rect height="90" rx="8" width="70" x="440" y="40"></rect>
+<rect height="90" rx="8" width="70" x="40" y="145"></rect><rect height="90" rx="8" width="70" x="120" y="145"></rect><rect height="90" rx="8" width="70" x="200" y="145"></rect><rect height="90" rx="8" width="70" x="280" y="145"></rect><rect height="90" rx="8" width="70" x="360" y="145"></rect><rect height="90" rx="8" width="70" x="440" y="145"></rect>
+</g>
+<g fill="#1f7a72">
+<rect height="90" rx="8" width="70" x="560" y="40"></rect><rect height="90" rx="8" width="70" x="640" y="40"></rect><rect height="90" rx="8" width="70" x="720" y="40"></rect>
+<rect height="90" rx="8" width="70" x="560" y="145"></rect><rect height="90" rx="8" width="70" x="640" y="145"></rect><rect height="90" rx="8" width="70" x="720" y="145"></rect>
+</g>
+<g font-size="30"><text x="62" y="98">✕</text><text x="142" y="98">✕</text><text x="222" y="98">✕</text><text x="302" y="98">✕</text><text x="382" y="98">✕</text><text x="462" y="98">✕</text><text x="62" y="203">✕</text><text x="142" y="203">✕</text><text x="222" y="203">✕</text><text x="302" y="203">✕</text><text x="382" y="203">✕</text><text x="462" y="203">✕</text>
+<text x="580" y="98">●</text><text x="660" y="98">●</text><text x="740" y="98">●</text><text x="580" y="203">●</text><text x="660" y="203">●</text><text x="740" y="203">●</text></g>
+</g>
+<g fill="#1d1d24" font-family="Noto Sans KR,sans-serif" font-size="17">
+<text x="40" y="270"><tspan fill="#8f2f1f" font-weight="700">12 altered answers</tspan> — must catch at least 11 as “wrong”</text>
+<text x="560" y="270"><tspan fill="#11564f" font-weight="700">6 correct</tspan> — must call at least 5 “correct”</text>
+<text fill="#55555f" font-size="16" x="820" y="110">Both must be met</text><text fill="#55555f" font-size="16" x="820" y="134">before that teacher's</text><text fill="#55555f" font-size="16" x="820" y="158">grading is trusted</text>
+</g>
+</svg>
+<figcaption>Figure 4-2 · The teacher qualification test. It checks both the eye for catching altered answers and the eye for recognizing intact ones.</figcaption>
+</figure>
+<p>The reason for including the six correct answers is simple. Even a teacher who says “wrong” to everything would catch all twelve altered answers. Only by also checking whether the teacher recognizes intact answers as “correct” can we trust that teacher.</p>
+<h3>What the traps look like</h3>
+<p>Some of the traps actually used.<sup class="fn">2</sup></p>
+<ul>
+<li><b>Changing the value.</b> In the original, a sample's surface area was 16.7 m²/g. The trap sent it as 61.79. Both teachers caught it, saying “the paper says 16.7.”</li>
+<li><b>A sample name that doesn't exist.</b> To the value 556.283 m²/g we attached a sample name not in the paper (“composite calcined with graphene, sample B”). Both said “no such sample in the paper.”</li>
+<li><b>A different MXene.</b> The 34.21% efficiency of converting light into heat (photothermal conversion efficiency) belonged to niobium MXene (Nb₂C) particles. We sent it as Ti₃C₂. Both caught it: “these particles are Nb₂C.”</li>
+<li><b>Changing the unit.</b> We changed 1.15 nm to 1.15 Å (a unit 10 times smaller). Both said “it is nm, not Å.”</li>
+<li><b>Blanking a field.</b> We deliberately sent a condition clearly stated in the original as a blank. This tests whether the judge recognizes “omitted” rather than “wrong” (Chapter 5).</li>
+<li><b>Changing the property name.</b> The number and sample were left as they were, and only “which property the value belongs to” was changed. This is a trap newly added on 2026-10-09 (Chapter 7).</li>
+</ul>
+<p>Catching all eighteen traps does not mean “the judge is perfect.” Eighteen is not many. Even if a judge actually errs once or twice in ten (up to about 17%), it could get all eighteen right by chance. So we only go as far as saying “this judge has been tested enough to be trusted.”<sup class="fn">2</sup></p>
+<blockquote class="pull m span">What one misses, the other catches. That is why there are two teachers.</blockquote>
+<p>Sometimes the two teachers disagree. For a row extracted from a sentence saying the spacing between layers “increased to about 1.41 nm,” one teacher said “correct” and the other said “wrong — this is the value of the sample before another chemical was added.” The rule is that if even one says “wrong,” it is ✕. That row did not go on the map.<sup class="fn">3</sup></p>
+<h3>If the answer key is ambiguous, even the teachers fail</h3>
+<p>Once, both teachers failed the qualification test. Both caught all twelve altered answers. But of the six “intact correct” answers, one teacher called only four “correct,” and the other only three.<sup class="fn">4</sup></p>
+<p>On inspection, the problem lay not with the teachers but with the answer key. The rows we had chosen as “correct” had ambiguous definitions to begin with. Since then, before scoring, we first open the originals of the correct-answer rows. Ambiguous rows, such as a lone number from a table or a value measured in a different liquid, are removed from the correct-answer candidates. In the next round after this fix, both teachers recognized all six correct answers. However, since this is a single comparison with a different property and different papers, we do not claim it was “because of this.”<sup class="fn">5</sup></p>
+<p>Conversely, too clean is also suspicious. In one round, both teachers called all 36 rows “correct” and scored perfectly on the traps too. Rather than rejoicing, we first wrote down “were the traps too easy?”<sup class="fn">6</sup></p>
+</div>
+<div class="summary"><h3>Chapter summary</h3><ul>
+<li>Two different AI judges score independently; if even one says “wrong,” the row does not go on the map.</li>
+<li>The judges are tested first with 18 traps (12 altered · 6 correct). They are trusted only if they pass 11/12 and 5/6. Even a perfect score does not mean “perfect.”</li>
+<li>The answer key can be wrong too. So before scoring, we first open the originals of the correct-answer rows.</li>
+</ul></div>
+<aside class="notes"><h4>Notes</h4><ol>
+<li>Judges = Claude and Codex: <code>how-judging-works.html</code> preface · §1.</li>
+<li>Four trap examples: same page §3 (BET value · sample name) · §4 (photothermal composition) · §5 (interlayer-spacing unit). Blanking a field (blank controls: 4): <code>RESULT-P14-thermal-conductivity-2026-10-09.md</code> §P14c. Changing the property name (tampered: 2): <code>RESULT-P17-nonTi-human-2026-10-09.md</code> “one line.” “18 controls = upper bound on the judges' error rate ≈ 17% (rule of three)”: <code>RESULT-P16-nonTi-oa-2026-10-09.md</code> · <code>RESULT-P17</code>.</li>
+<li>1.41 nm disagreement (sample “MH(30)”, value without NAC added): same page §5.</li>
+<li>Wiki timeline 2026-10-09 early-morning P9 entry (capacitance fact fields v1.5 · 4/6 · 3/6 · both judges invalid).</li>
+<li><code>RESULT-P10-nonTi-round4-2026-10-09.md</code> section “common template v1.2” (3 ambiguous rows filtered out · 6/6 · n=1, so not asserted).</li>
+<li>Wiki timeline 2026-10-09 “non-Ti round 3” entry (36/36 · “too clean”).</li>
+</ol></aside>
+</section>
+<!-- ===== 5장 ===== -->
+<section class="chapter" id="ch5">
+<div class="opener">
+<figure>
+<svg aria-label="Three answer fields: a filled circle for correct, an X for wrong, and a half-filled circle for an answer submitted blank" role="img" viewbox="0 0 1000 380">
+<rect fill="#e3e9f6" height="380" width="1000"></rect>
+<rect fill="#ffffff" height="300" rx="12" stroke="#c9cfe0" width="720" x="140" y="40"></rect>
+<g fill="#1d1d24" font-family="Noto Sans KR,sans-serif">
+<text font-size="22" font-weight="700" x="180" y="90">Answer sheet</text>
+<g font-size="20">
+<text x="180" y="160">1. Value</text><rect fill="#fbfaf7" height="46" rx="6" stroke="#e3e0d8" width="200" x="320" y="128"></rect><text font-family="Georgia,serif" x="340" y="160">550</text>
+<text x="180" y="230">2. Formula</text><rect fill="#fbfaf7" height="46" rx="6" stroke="#e3e0d8" width="200" x="320" y="198"></rect><text font-family="Georgia,serif" x="340" y="230">Ti₃C₂</text>
+<text x="180" y="300">3. Direction</text><rect fill="#fbfaf7" height="46" rx="6" stroke="#c8962a" stroke-dasharray="6 5" width="200" x="320" y="268"></rect><text fill="#8a8a93" x="340" y="300">(blank)</text>
+</g>
+<circle cx="600" cy="151" fill="#1f7a72" r="22"></circle><text font-size="20" x="640" y="160">Correct</text>
+<g stroke="#d2553f" stroke-linecap="round" stroke-width="7"><path d="M582 205 L618 241"></path><path d="M618 205 L582 241"></path></g><text font-size="20" x="640" y="230">Wrong</text>
+<circle cx="600" cy="291" fill="none" r="22" stroke="#c8962a" stroke-width="5"></circle><path d="M600 269 A22 22 0 0 1 600 313 Z" fill="#c8962a"></path><text font-size="20" x="640" y="300">Omitted — in paper, field blank</text>
+</g>
+</svg>
+<figcaption>Figure 5-1 · A wrong answer (✕) and an answer left blank (◐) are different. Reaching this distinction took three measurements on a single property, thermal conductivity, and it passed on the fourth. (The answers in the figure are for illustration.)</figcaption>
+</figure>
+<div class="kicker">Chapter 5</div>
+<h2>Wrong versus omitted</h2>
+<p class="hook">The more properties we added, the more a strange pattern repeated. The numbers were mostly right, but rows kept failing on the “description fields” next to the numbers.</p>
+</div>
+<div class="prose">
+<p>Electrical conductivity, EMI shielding (how well it blocks electromagnetic waves), batteries, interlayer spacing. Even as the property changed, the failure points were similar. The numbers mostly matched the originals. What was wrong were the fields describing the numbers, for example “should the substrate film underneath also count as a mixed-in material?” or “is the sample wet or dry?”<sup class="fn">1</sup></p>
+<h3>Interlayer spacing: failing, then measuring again</h3>
+<p>Interlayer spacing is the gap between one MXene sheet and the next. In the first scoring, a row counted as “correct” only if it also got “was the sample wet or dry?” right. But papers rarely reported this state. The result was ● 45%, a fail. Most of the ✕ came from exactly this state field. Rows in which the number itself was wrong were only 2.2%.<sup class="fn">2</sup></p>
+<p>Calculating after seeing the results gave “78% if only the state field is excluded.” A tempting number. But it is a yardstick chosen after seeing the results. This number was not used on the map.</p>
+<p>Instead, we started over. A new criterion, “exclude the state; check only value, unit, composition and sample,” was saved <b>before scoring</b>, and the two teachers re-scored the same rows. The result was ● 90%. This time it passed. The rows went on the map with a “state not verified” mark.<sup class="fn">3</sup></p>
+<figure class="span">
+<svg aria-label="Two scoring results for interlayer spacing: first round correct 166, wrong 151, other 50; re-measured round correct 181, wrong 2, other 18" role="img" viewbox="0 0 1000 250">
+<rect fill="#ffffff" height="250" width="1000"></rect>
+<text fill="#1d1d24" font-family="Noto Serif KR,serif" font-size="22" font-weight="700" x="40" y="42">Interlayer spacing — criteria revised and saved first, then measured again</text>
+<g fill="#1d1d24" font-family="Noto Sans KR,sans-serif" font-size="16">
+<text x="40" y="104">Round 1 (367 rows)</text>
+<rect fill="#1f7a72" height="38" width="271.4" x="250" y="80"></rect><rect fill="#d2553f" height="38" width="246.9" x="521.4" y="80"></rect><rect fill="#c9c4b6" height="38" width="81.7" x="768.3" y="80"></rect>
+<text fill="#fff" font-weight="700" x="262" y="105">● 166</text><text fill="#fff" font-weight="700" x="534" y="105">✕ 151</text><text fill="#1d1d24" x="776" y="105">○ 50</text>
+<text x="40" y="174">Re-run (201 rows)</text>
+<rect fill="#1f7a72" height="38" width="540.3" x="250" y="150"></rect><rect fill="#d2553f" height="38" width="6" x="790.3" y="150"></rect><rect fill="#c9c4b6" height="38" width="53.7" x="796.3" y="150"></rect>
+<text fill="#fff" font-weight="700" x="262" y="175">● 181</text><text fill="#1d1d24" x="800" y="175">○ 18</text><text fill="#8f2f1f" x="860" y="175">✕ 2</text>
+<line stroke="#1d1d24" stroke-dasharray="5 4" x1="730" x2="730" y1="66" y2="202"></line><text fill="#55555f" font-size="14" x="690" y="226">Pass line ● 80%</text>
+</g>
+</svg>
+<figcaption>Figure 5-2 · Same property, different criteria. The second criterion was set and saved before seeing the results. The 201 rows re-measured are the rows that were not ● in the first round.</figcaption>
+</figure>
+<h3>Thermal conductivity: failed three times, passed on the fourth</h3>
+<p>Thermal conductivity is how well heat is carried. It is used to remove heat from devices. This property taught us the most.<sup class="fn">4</sup></p>
+<p><b>First.</b> ● 66.7%, fail. The cause was not the numbers but the instructions we wrote. For the field recording the direction of heat flow, we allowed only two words: “parallel to the sheets” and “across the sheets.” But the papers used other words, such as “horizontal,” “vertical” and “axial.” The transcribing AI left the field blank, and the judges gave ✕, saying “it is stated in the paper but was left blank.” There was also a row in which the unit was forgotten, writing 550 <b>m</b>W as 550. That was our mistake.</p>
+<p><b>Second.</b> Only the instructions were fixed and re-saved, and the same papers were transcribed again. ● 81.2%, above the pass line. But ✕ was 18.8%, above the 10% ceiling, so another fail. This time all sixteen ✕ were <b>blanks</b>. Not a single number was wrong.</p>
+<p><b>Third.</b> We created a new mark on the scoring side, counting “wrong (✕)” and “omitted (◐ — present in the paper, but the field is blank)” separately. Into the traps we also put four “fields deliberately blanked although an answer exists.” Both teachers correctly called all four “omitted” rather than “wrong.” This was the first confirmation that the two could be told apart.</p>
+<figure class="span">
+<svg aria-label="Bars for four thermal-conductivity rounds: round 1 correct 56, wrong 27, other 1; round 2 correct 69, wrong 16; round 3 correct 62, omitted 22, wrong 0, other 1; round 4 correct 70, omitted 12, other 2, wrong 1" role="img" viewbox="0 0 1000 400">
+<rect fill="#ffffff" height="400" width="1000"></rect>
+<text fill="#1d1d24" font-family="Noto Serif KR,serif" font-size="22" font-weight="700" x="40" y="42">Thermal conductivity, four rounds — failed three times, passed on the fourth</text>
+<g fill="#1d1d24" font-family="Noto Sans KR,sans-serif" font-size="16">
+<text x="40" y="104">Round 1 (84 rows)</text>
+<rect fill="#1f7a72" height="38" width="400" x="250" y="80"></rect><rect fill="#d2553f" height="38" width="192.9" x="650" y="80"></rect><rect fill="#c9c4b6" height="38" width="7.1" x="842.9" y="80"></rect>
+<text fill="#fff" font-weight="700" x="262" y="105">● 56</text><text fill="#fff" font-weight="700" x="662" y="105">✕ 27</text>
+<text x="40" y="174">Round 2 (85 rows)</text>
+<rect fill="#1f7a72" height="38" width="487.1" x="250" y="150"></rect><rect fill="#d2553f" height="38" width="112.9" x="737.1" y="150"></rect>
+<text fill="#fff" font-weight="700" x="262" y="175">● 69</text><text fill="#fff" font-weight="700" x="749" y="175">✕ 16</text><text fill="#8f2f1f" font-weight="700" x="862" y="175">all blank</text>
+<text x="40" y="244">Round 3 (85 rows)</text>
+<rect fill="#1f7a72" height="38" width="437.6" x="250" y="220"></rect><rect fill="#c8962a" height="38" width="155.3" x="687.6" y="220"></rect><rect fill="#c9c4b6" height="38" width="7.1" x="842.9" y="220"></rect>
+<text fill="#fff" font-weight="700" x="262" y="245">● 62</text><text fill="#fff" font-weight="700" x="699" y="245">◐ 22</text><text fill="#11564f" font-weight="700" x="862" y="245">✕ 0</text>
+<text x="40" y="314">Round 4 (85 rows)</text>
+<rect fill="#1f7a72" height="38" width="494.1" x="250" y="290"></rect><rect fill="#c8962a" height="38" width="84.7" x="744.1" y="290"></rect><rect fill="#c9c4b6" height="38" width="14.1" x="828.8" y="290"></rect><rect fill="#d2553f" height="38" width="7.1" x="842.9" y="290"></rect>
+<text fill="#fff" font-weight="700" x="262" y="315">● 70</text><text fill="#fff" font-weight="700" x="752" y="315">◐ 12</text><text fill="#11564f" font-weight="700" x="862" y="315">pass · ✕ 1</text>
+<line stroke="#1d1d24" stroke-dasharray="5 4" x1="730" x2="730" y1="66" y2="342"></line><text fill="#55555f" font-size="14" x="690" y="362">● 80% line</text>
+<text fill="#55555f" font-size="14" x="40" y="388">Pass conditions (rounds 3 and 4): ●+◐ ≥ 80% · ✕ ≤ 10% · ◐ ≤ 20% — round 3 ◐ 26%, failed · round 4 ◐ 14%, passed</text>
+</g>
+</svg>
+<figcaption>Figure 5-3 · The cause in round 1 was the instructions; in round 2, blanks. Only in round 3 did it become clear that “the numbers are all right; the transcription was not thorough enough.” Round 4 passed after the transcription was redone.</figcaption>
+</figure>
+<p>The third result was: ● 62, ◐ 22, ✕ 0. Correct plus omitted is 98.8%. Of 85 rows, not one number was wrong. Yet it is a <b>fail</b>, because omissions were 26%, above the 20% ceiling set before scoring.</p>
+<blockquote class="pull c span">The numbers were right in all 85 rows. The only reason for failing: the transcription was not thorough enough.</blockquote>
+<p>This ceiling was a safeguard placed on purpose. Counting “omitted” separately can make the scoring lenient: even with many blanks, it is easy to wave them through with “well, it isn't wrong.” So we decided in advance that “if blanks exceed 20%, the transcription is deficient.” And that safeguard actually tripped. We did not lower the ceiling.<sup class="fn">5</sup></p>
+<p>What needed fixing was not the scoring but the transcription. We added the instruction: “Before leaving a field blank, search once more in the experimental-methods section and the figure captions.” But we did not rewrite the scores of the finished round. We opened a <b>new round</b> and re-transcribed the same 35 papers from the beginning.</p>
+<p><b>Fourth.</b> ● 70 · ◐ 12 · ○ 2 · ✕ 1, 85 rows in total. Correct plus omitted 96.5%, wrong 1.2%, omitted 14.1%. This time all three conditions were met: <b>pass</b>. Both judges also caught every trap.<sup class="fn">5</sup></p>
+<p>However, we do not say “the new instruction reduced omissions.” This time the transcription was redone, and the judges' instructions also changed slightly. We cannot separate what produced the effect. The purpose of this round was to fill the map with more solid values. The thermal-conductivity points on the map were replaced with the 82 points from this passing round.</p>
+<h3>When both omit the same thing, no one notices</h3>
+<p>Something similar happened with the battery property. Two transcribing AIs read the same papers independently and extracted values, and there were conditions both had left blank, conditions clearly stated in the experimental-methods section of the original. Two answers being “the same” cannot catch that both “omitted the same thing.” Those blanks surfaced only in the scoring against the original.<sup class="fn">6</sup></p>
+<p>And we do not keep rerunning until it passes. We decided not to revise the same question paper more than three times. If you keep revising and rerunning until it works, that becomes not measuring but “fitting.”<sup class="fn">7</sup></p>
+</div>
+<div class="summary"><h3>Chapter summary</h3><ul>
+<li>The more properties we added, the more the pattern “the numbers are right; the fields describing them are wrong” repeated.</li>
+<li>In thermal conductivity, counting “wrong” and “omitted” separately revealed the real problem: 0 wrong numbers, 26% omitted → caught by the preset ceiling (20%), fail.</li>
+<li>Without lowering the criteria, the transcription was redone in a new round. Passed on the fourth (● 70 · ◐ 12 · ✕ 1 / 85 rows).</li>
+<li>We do not change criteria after seeing the results. When changing them, we save them anew before scoring and measure again.</li>
+</ul></div>
+<aside class="notes"><h4>Notes</h4><ol>
+<li>Wiki key summary item 00 (conductivity G2 69% · EMI 56/63 · errors concentrated in fact fields and boundaries).</li>
+<li><code>RESULT-P7-dspacing-2026-10-09.md</code> “one line” · “what is ✕” (● 166/367 = 45.2% · of Codex's 151 ✕, 142 were in the state field · value-side errors 2.2%).</li>
+<li>Same document §P7b (preregistration commit <code>437c2bda6</code> · ● 181 of 201 rows = 90.0%) · <code>how-judging-works.html</code> §5 “re-measured property.”</li>
+<li><code>RESULT-P14-thermal-conductivity-2026-10-09.md</code> throughout (P14 ● 56/84 · P14b ● 69/85, ✕ 16 = 18.8% · P14c ● 62 · ◐ 22 · ✕ 0 · ○ 1, ◐ 25.9%).</li>
+<li>Same document §P14c (“this ceiling was the safeguard for a rule favorable to us, and it actually tripped”) · common template v1.3. Fourth round: <code>RESULT-P14d-thermal-conductivity-2026-10-09.md</code> (● 70 · ◐ 12 · ○ 2 · ✕ 1 / 85 · ●+◐ 96.5% · ✕ 1.2% · ◐ 14.1% · both judges valid · map 84 → 82 points · card wording “do not read this as ‘the v1.3 rule works’”).</li>
+<li>Wiki timeline 2026-10-08 night P6 G2 entry (of the 27 ✕, 0 were wrong numbers · “agreement between two extractors cannot catch what both omitted”).</li>
+<li><code>RESULT-P14</code> §P14b (“the same card is not revised more than 3 times · avoids circularity”).</li>
+</ol></aside>
+</section>
+<!-- ===== 6장 ===== -->
+<section class="chapter" id="ch6">
+<div class="opener">
+<figure>
+<svg aria-label="Twelve MXene composition tiles arranged like a periodic table" role="img" viewbox="0 0 1000 380">
+<rect fill="#f6eed9" height="380" width="1000"></rect>
+<g font-family="Noto Serif KR,serif" font-weight="700" text-anchor="middle">
+<g>
+<rect fill="#2b3a67" height="140" rx="10" width="140" x="40" y="40"></rect><text fill="#fbfaf7" font-size="34" x="110" y="120">Ti₃C₂</text><text fill="#c9d0e6" font-family="Noto Sans KR,sans-serif" font-size="15" font-weight="400" x="110" y="160">the most</text>
+<rect fill="#4a5a8a" height="140" rx="10" width="140" x="195" y="40"></rect><text fill="#fbfaf7" font-size="32" x="265" y="120">Ti₂C</text>
+<rect fill="#1f7a72" height="140" rx="10" width="140" x="350" y="40"></rect><text fill="#fbfaf7" font-size="32" x="420" y="120">Nb₂C</text>
+<rect fill="#c8962a" height="140" rx="10" width="140" x="505" y="40"></rect><text fill="#fbfaf7" font-size="32" x="575" y="120">V₂C</text>
+<rect fill="#c8962a" height="140" rx="10" width="140" x="660" y="40"></rect><text fill="#fbfaf7" font-size="32" x="730" y="120">V₄C₃</text>
+<rect fill="#d2553f" height="140" rx="10" width="140" x="815" y="40"></rect><text fill="#fbfaf7" font-size="28" x="885" y="120">Mo₁.₃₃C</text>
+</g>
+<g>
+<rect fill="#d2553f" height="140" rx="10" width="140" x="40" y="200"></rect><text fill="#fbfaf7" font-size="32" x="110" y="280">Mo₂C</text>
+<rect fill="#e07a63" height="140" rx="10" width="140" x="195" y="200"></rect><text fill="#fbfaf7" font-size="26" x="265" y="280">Mo₂TiC₂</text>
+<rect fill="#5c5c6a" height="140" rx="10" width="140" x="350" y="200"></rect><text fill="#fbfaf7" font-size="30" x="420" y="280">Ta₄C₃</text>
+<rect fill="#5c5c6a" height="140" rx="10" width="140" x="505" y="200"></rect><text fill="#fbfaf7" font-size="28" x="575" y="280">W₁.₃₃C</text>
+<rect fill="#2b3a67" height="140" rx="10" width="140" x="660" y="200"></rect><text fill="#fbfaf7" font-size="24" x="730" y="270">Ti₃C₂₋ₓNₓ</text><text fill="#c9d0e6" font-family="Noto Sans KR,sans-serif" font-size="14" font-weight="400" x="730" y="302">carbon + nitrogen</text>
+<rect fill="#1f7a72" height="140" rx="10" width="140" x="815" y="200"></rect><text fill="#fbfaf7" font-size="21" x="885" y="270">TiVNbMoC₃</text><text fill="#cfe9e2" font-family="Noto Sans KR,sans-serif" font-size="14" font-weight="400" x="885" y="302">four metals mixed</text>
+</g>
+</g>
+</svg>
+<figcaption>Figure 6-1 · MXene compositions for which values actually entered the map. Besides titanium (Ti), niobium (Nb), vanadium (V), molybdenum (Mo), tantalum (Ta) and tungsten (W) came in.</figcaption>
+</figure>
+<div class="kicker">Chapter 6</div>
+<h2>What the map has gathered — ten properties</h2>
+<p class="hook">From the ability to store electricity to the ability to carry heat. Ten properties were collected and scored, each value with its original sentence attached.</p>
+</div>
+<div class="prose">
+<p>The first map started with one property and one MXene, Ti₃C₂: gravimetric capacitance. We collected 351 values from 81 papers. After that we added properties one at a time, and also MXenes other than titanium ones. When work function was added, the map's points (one value = one point) reached 1,952. How it grew further on 2026-10-09 is told in Chapter 7.<sup class="fn">1</sup></p>
+<p>The cards below explain the ten properties in plain words, with the scoring results attached. A green band means pass, red means fail, and grey means the sample was too small to judge.</p>
+</div>
+<div class="props">
+<div class="prop"><span class="tag ok">Pass</span><h4>Gravimetric capacitance</h4><p class="easy">How much electricity 1 g of MXene can hold.</p><p class="res">81 papers · 351 values · scored ● 146/150</p></div>
+<div class="prop thin"><span class="tag wait">Too few samples</span><h4>Volumetric capacitance</h4><p class="easy">How much electricity it holds in a given volume. The very value that made MXene famous.</p><p class="res">Of 84 open-access papers, directly measured values: 15 values in 7 papers · scored 10/10, but “insufficient evidence”</p></div>
+<div class="prop fail"><span class="tag no">Not passed</span><h4>Electrical conductivity</h4><p class="easy">How well electricity flows.</p><p class="res">84 papers · 227 values · scored 69% — split less on the numbers than on the “film? mixed with what?” fields</p></div>
+<div class="prop fail"><span class="tag no">Not passed</span><h4>EMI shielding</h4><p class="easy">How well it blocks electromagnetic waves.</p><p class="res">21 papers · 63 rows · ● 56/63 · 0 wrong numbers — 7 rows split on whether to treat the support film as a composite material</p></div>
+<div class="prop fail"><span class="tag no">Earlier stage not passed</span><h4>Battery anode capacity</h4><p class="easy">How much electricity it stores in a lithium battery.</p><p class="res">31 papers · scored ● 207/241 · however, agreement between the two AIs' transcriptions fell short of the criterion, so marked “earlier stage not passed”</p></div>
+<div class="prop"><span class="tag ok">Pass (re-measured)</span><h4>Interlayer spacing (d-spacing)</h4><p class="easy">The gap between sheets. Typically around 1 nm.</p><p class="res">Re-measured round ● 181/201 · 347 map points · marked “state not verified”</p></div>
+<div class="prop"><span class="tag ok">Pass</span><h4>Surface area (specific surface area)</h4><p class="easy">How many square metres 1 g of powder covers when fully spread out. Larger with more pores and wrinkles.</p><p class="res">175 papers · ● 370/380</p></div>
+<div class="prop"><span class="tag ok">Pass</span><h4>Photothermal conversion efficiency</h4><p class="easy">What % of laser light energy becomes heat. Used in therapies that kill cancer cells by heating them with light.</p><p class="res">46 papers · ● 60/66</p></div>
+<div class="prop"><span class="tag ok">Pass</span><h4>Work function</h4><p class="easy">The energy needed to remove one electron from the surface.</p><p class="res">45 papers · ● 79/90 · values that were only calculated were excluded</p></div>
+<div class="prop"><span class="tag ok">Pass (fourth round)</span><h4>Thermal conductivity</h4><p class="easy">How well it carries heat. Used to remove heat from devices.</p><p class="res">After three non-passes the transcription was redone: ● 70/85 · ◐ 12 · ✕ 1 · 82 map points</p></div>
+</div>
+<div class="prose">
+<figure class="span">
+<svg aria-label="Bar chart of the share of rows both judges called correct, by property, with an 80 percent line" role="img" viewbox="0 0 1000 520">
+<rect fill="#ffffff" height="520" width="1000"></rect>
+<text fill="#1d1d24" font-family="Noto Serif KR,serif" font-size="22" font-weight="700" x="40" y="42">Share of “both correct (●)” by property</text>
+<text fill="#55555f" font-family="Noto Sans KR,sans-serif" font-size="15" x="40" y="68">green = pass · red = fail · grey = too few samples · yellow = omitted (◐)</text>
+<g fill="#1d1d24" font-family="Noto Sans KR,sans-serif" font-size="16">
+<text x="40" y="111">Gravimetric capacitance</text><rect fill="#1f7a72" height="26" width="545.1" x="330" y="92"></rect><text x="882" y="111">146/150</text>
+<text x="40" y="151">Surface area</text><rect fill="#1f7a72" height="26" width="545.3" x="330" y="132"></rect><text x="882" y="151">370/380</text>
+<text x="40" y="191">Photothermal efficiency</text><rect fill="#1f7a72" height="26" width="509.1" x="330" y="172"></rect><text x="846" y="191">60/66</text>
+<text x="40" y="231">Interlayer spacing (re-run)</text><rect fill="#1f7a72" height="26" width="504.3" x="330" y="212"></rect><text x="841" y="231">181/201</text>
+<text x="40" y="271">Work function</text><rect fill="#1f7a72" height="26" width="491.6" x="330" y="252"></rect><text x="829" y="271">79/90</text>
+<text x="40" y="311">Battery anode capacity</text><rect fill="#d2553f" fill-opacity=".55" height="26" width="481.0" x="330" y="292"></rect><text x="818" y="311">207/241</text>
+<text x="40" y="351">EMI shielding</text><rect fill="#d2553f" height="26" width="497.8" x="330" y="332"></rect><text x="835" y="351">56/63</text>
+<text x="40" y="391">Thermal cond. (round 4)</text><rect fill="#1f7a72" height="26" width="461.2" x="330" y="372"></rect><rect fill="#c8962a" height="26" width="79.1" x="791.2" y="372"></rect><text x="877" y="391">70/85 + ◐12</text>
+<text x="40" y="431">Electrical conductivity</text><rect fill="#d2553f" height="26" width="386.4" x="330" y="412"></rect><text x="723" y="431">69%</text>
+<text x="40" y="471">Volumetric capacitance</text><rect fill="#c9c4b6" height="26" width="560" x="330" y="452"></rect><text x="897" y="471">10/10</text>
+<line stroke="#1d1d24" stroke-dasharray="5 4" x1="778" x2="778" y1="84" y2="488"></line><text fill="#55555f" font-size="14" x="738" y="508">● 80% line</text>
+</g>
+</svg>
+<figcaption>Figure 6-2 · Some bars are red even though they cross the 80% line. That is because passing requires meeting both “● 80% or more” and “✕ 10% or less.” EMI shielding was caught by its 7 ✕ rows. Thermal conductivity was caught by the omission ceiling in round 3 and passed in round 4 (bar = round 4). Volumetric capacitance had only 10 rows, so it was not judged even with a perfect score.</figcaption>
+</figure>
+<h3>How to read the numbers — with some care</h3>
+<p>A few interesting numbers show up. The <b>median</b> below is the value in the very middle when the values are lined up by size. However, every one of them was computed by mixing values measured under different conditions, so we can only say “this is roughly what is typically reported.” They are not values to compare against each other to say “which is better.”<sup class="fn">2</sup></p>
+<ul>
+<li><b>Work function.</b> The median of 40 rows of Ti₃C₂ not mixed with other materials is about 4.53 eV. But the range is 2.85–6.0 eV, spreading by more than 3 eV depending on the surface treatment. This very spread is the raw material for answering “made which way, what is the work function?”</li>
+<li><b>Surface area.</b> MXene not mixed with anything had a median of about 12.9 m²/g, and composites mixed with other materials about 43.5 m²/g. That does not mean “making a composite gives four times more.” Measurement temperature, gas and synthesis method all differed. The morphology field was also empty in as many as 86 of 152 rows.</li>
+<li><b>Photothermal conversion efficiency.</b> Median about 39% under 808 nm light, about 42% under 1064 nm light. Concentration, light intensity and the calculation formula differed from paper to paper.</li>
+<li><b>Gravimetric capacitance.</b> It also contains unusually large values such as 4,000–12,000 F/g. These are values converted from measurements of a very small spot on a single sheet. On the map they are recorded exactly as written in the original.</li>
+</ul>
+<blockquote class="pull t span">Do not read the number of points on the map as the amount of research.</blockquote>
+<p>The number of points must also be read with care. In the round that collected non-titanium MXenes, 62 rows of Nb₂C and 36 rows of Mo₁.₃₃C came in. But 84 of those rows came from just two papers. Many points do not mean “niobium and molybdenum MXenes have been studied a lot.”<sup class="fn">3</sup></p>
+<p>Still, considering that the first map started with “Ti₃C₂ alone,” the fact that the tiles in the figure above now sit together on one map is itself progress. MXenes mixing several metals, and MXenes using carbon and nitrogen together, also came in with their original sentences attached.<sup class="fn">4</sup></p>
+</div>
+<div class="summary"><h3>Chapter summary</h3><ul>
+<li>Ten properties were collected and scored. Six passed (thermal conductivity on the fourth round), three did not pass, and one could not be judged because the sample was too small.</li>
+<li>Besides Ti, Nb, V, Mo, Ta and W MXenes came in.</li>
+<li>The medians are values from mixed conditions. Read them not as comparisons but as “candidates to check against the originals.”</li>
+</ul></div>
+<aside class="notes"><h4>Notes</h4><ol>
+<li>First map: <code>PURPOSE-and-direction-2026-10-07.md</code> §2 (P2 v0, 351 values · 81 papers) · 1,952 map points: <code>RESULT-P13-workfunction-2026-10-09.md</code>. Scoring results by property: <code>how-judging-works.html</code> §6 · wiki timeline (P3-1 7 papers 15 values · P3-2 84 papers 227 values · P3-3 21 papers 63 rows · P6 31 papers) · <code>RESULT-P7</code> · <code>RESULT-P11-bet</code> (175 papers) · <code>RESULT-P12-photothermal</code> (46 papers) · <code>RESULT-P13</code> (45 papers) · <code>RESULT-P14</code> (84 points) → <code>RESULT-P14d</code> (pass · 82 points).</li>
+<li>Work function: <code>RESULT-P13</code> “numbers” · surface area: <code>RESULT-P11-bet-2026-10-09.md</code> “numbers” · photothermal: <code>RESULT-P12</code> “numbers” · 4,000–12,000 F/g (values converted from SECCM local single-layer measurements): wiki timeline 2026-10-07 P2 entry.</li>
+<li><code>RESULT-P10-nonTi-round4-2026-10-09.md</code> (PMC13029227 Nb₂C 48 rows · PMC12566924 Mo₁.₃₃C 36 rows).</li>
+<li>Composition list: <code>RESULT-P10</code> · <code>RESULT-P11</code> · <code>RESULT-P12</code> (W₁.₃₃C · high-entropy TiVNbMoC₃) · <code>RESULT-P13</code> (Mo₂C · Ti₃C₂₋ₓNₓ).</li>
+</ol></aside>
+</section>
+<!-- ===== 7장 (2026-10-09) ===== -->
+<section class="chapter" id="ch7">
+<div class="opener">
+<figure>
+<svg aria-label="Two paths: open-access papers retrieved by a program and papers downloaded by hand by a person enter the same scoring desk" role="img" viewbox="0 0 1000 380">
+<rect fill="#e3e9f6" height="380" width="1000"></rect>
+<!-- 위 갈래: 프로그램 -->
+<rect fill="#ffffff" height="110" rx="12" stroke="#c9cfe0" width="200" x="50" y="50"></rect>
+<g fill="#2b3a67"><rect height="10" rx="5" width="140" x="80" y="78"></rect><rect height="10" rx="5" width="110" x="80" y="100"></rect><rect height="10" rx="5" width="125" x="80" y="122"></rect></g>
+<text fill="#1d1d24" font-family="Noto Sans KR,sans-serif" font-size="18" text-anchor="middle" x="150" y="190">Open-access papers (by script)</text>
+<!-- 아래 갈래: 사람 손 -->
+<g transform="translate(60,230)">
+<rect fill="#c8962a" height="100" rx="8" width="80" x="0" y="0"></rect><rect fill="#d9ad4f" height="100" rx="8" width="80" x="22" y="-8"></rect><rect fill="#e9c878" height="100" rx="8" width="80" x="44" y="-16"></rect>
+</g>
+<text fill="#1d1d24" font-family="Noto Sans KR,sans-serif" font-size="18" text-anchor="middle" x="150" y="365">Retrieved by hand</text>
+<!-- 화살표 -->
+<g fill="none" stroke="#55555f" stroke-linecap="round" stroke-width="4">
+<path d="M265 105 C 400 105, 430 180, 540 190"></path><path d="M290 290 C 410 290, 430 210, 540 205"></path>
+<path d="M528 180 L545 192 L528 205"></path>
+</g>
+<!-- 채점 책상 -->
+<rect fill="#8a6a4a" height="20" rx="5" width="380" x="560" y="150"></rect>
+<circle cx="660" cy="95" fill="#2b3a67" r="32"></circle><path d="M610 150 Q610 120 660 120 Q710 120 710 150 Z" fill="#2b3a67"></path>
+<circle cx="840" cy="95" fill="#1f7a72" r="32"></circle><path d="M790 150 Q790 120 840 120 Q890 120 890 150 Z" fill="#1f7a72"></path>
+<rect fill="#c9c4b6" height="100" width="16" x="742" y="50"></rect>
+<g fill="#1d1d24" font-family="Noto Sans KR,sans-serif" font-size="18" text-anchor="middle">
+<text x="750" y="210">Same two judges · same traps · same criteria</text>
+</g>
+<g font-family="Noto Serif KR,serif" font-weight="900" text-anchor="middle">
+<text fill="#d2553f" font-size="56" x="750" y="290">361 → 669</text>
+<text fill="#55555f" font-family="Noto Sans KR,sans-serif" font-size="18" font-weight="400" x="750" y="330">points for non-titanium MXenes</text>
+</g>
+</svg>
+<figcaption>Figure 7-1 · Papers retrieved by the program and papers downloaded by hand go through exactly the same scoring. On that one day, the points for non-titanium MXenes grew from 361 to 669.</figcaption>
+</figure>
+<div class="kicker">Chapter 7</div>
+<h2>2026-10-09 — the map widens, and the map is tested</h2>
+<p class="hook">In one day the map widened twice. And for the first time it was tested on “does this map say things consistent with already-known facts?”</p>
+</div>
+<div class="prose">
+<p>Up to Chapter 6, most of the map's points were titanium (Ti) MXenes: 82.3% of all points. Only one side of the map was dense. So on 2026-10-09 the effort went into filling in MXenes of other metals such as niobium, vanadium and molybdenum.<sup class="fn">1</sup></p>
+<h3>The first batch — failed, but not one number was wrong</h3>
+<p>First we opened 27 not-yet-used papers among the open-access papers already retrieved by the program. Excluding 12 (papers that only calculate, papers without the desired properties, and so on) left 15. From these, 96 rows were transcribed.</p>
+<p>Scoring result: ● 81, ✕ 15. ✕ was 15.6%, above the 10% ceiling, so <b>not passed</b>. But on opening the 15 ✕ rows one by one, the number of rows with a wrong number was <b>0</b>. All were label problems: “which property is this value of?”</p>
+<ul>
+<li><b>6 rows</b> — the length of two sheets' worth (the c lattice parameter) was put in the “spacing between sheets” field. The instructions given to the transcribing AI said “allowed,” but the instructions given to the judges said nothing about it. Our two sets of instructions differed. Both judges said “wrong.”</li>
+<li><b>9 rows</b> — supercapacitor (a capacitor that charges very fast) values were put in the “battery capacity” field. We had not created a suitable field for those values. Only one judge said “wrong.”</li>
+</ul>
+<p>Still, the verdict was not changed. One can calculate “excluding these two causes, all 81 rows are correct,” but it is a number made after seeing the results, so it is not used as evidence (the envelope rule of Chapter 3). On the map, 80 points went up with the mark “round not passed · both judges say this row is correct.” And one rule was fixed: <b>the term definitions given to the judges are copied verbatim from the sentences given to the transcribing AI.</b><sup class="fn">2</sup></p>
+<h3>The second batch — papers downloaded by hand</h3>
+<p>There were 137 papers that could not be retrieved because publishers blocked the program. Those that could be opened legitimately were then retrieved by hand, one by one. After removing duplicates, 56 papers.</p>
+<p>Papers brought in by a person got no special treatment. They were screened, transcribed, mixed with traps and scored in exactly the same way. This time two new “property-name change” traps were added. Remaining: 29 papers, 253 rows.</p>
+<p>Result: <b>● 253/253</b>. Both ✕ and ◐ were 0. As said in Chapter 4, when it is too clean we suspect first. So we checked the judges again first. Both judges caught all 18 traps, including the newly added “property-name change.” They were not simply calling everything “correct.” However, why this differs so much from the first batch cannot be separated out: the instructions had been fixed, and the batch of papers itself was different.<sup class="fn">3</sup></p>
+<blockquote class="pull n span">“Correct (●)” means “the original was transcribed correctly.” It does not mean “the original is right.”<small>Example: a value whose unit looks odd (62.5 A h g⁻¹) was also “correct,” because it appears exactly so in the original. This value was not in a field that goes on the map, so it was not added.</small></blockquote>
+<p>From this batch, 234 points were added to the map. There are still gaps. 77 paywalled papers have not yet been obtained. Papers that can be obtained by hand are mostly “free to read” ones, so the set may be skewed in that direction.</p>
+<figure class="span">
+<svg aria-label="Points for non-titanium MXenes: 361, 441, 669. Titanium share: 82.3 percent, 79.2 percent, 71.5 percent" role="img" viewbox="0 0 1000 300">
+<rect fill="#ffffff" height="300" width="1000"></rect>
+<text fill="#1d1d24" font-family="Noto Serif KR,serif" font-size="22" font-weight="700" x="40" y="42">Points for non-titanium MXenes — within one day</text>
+<g fill="#1d1d24" font-family="Noto Sans KR,sans-serif" font-size="16">
+<text x="40" y="104">Before (morning)</text>
+<rect fill="#c9c4b6" height="38" width="323.8" x="230" y="80"></rect><text font-weight="700" x="242" y="105">361</text><text fill="#55555f" x="566" y="105">titanium share 82.3%</text>
+<text x="40" y="174">After batch 1</text>
+<rect fill="#4a5a8a" height="38" width="395.5" x="230" y="150"></rect><text fill="#fff" font-weight="700" x="242" y="175">441</text><text fill="#55555f" x="638" y="175">titanium share 79.2%</text>
+<text x="40" y="244">After batch 2</text>
+<rect fill="#1f7a72" height="38" width="600" x="230" y="220"></rect><text fill="#fff" font-weight="700" x="242" y="245">669</text><text fill="#11564f" font-weight="700" x="842" y="245">71.5%</text>
+<text fill="#55555f" font-size="14" x="40" y="286">Titanium share = points of all properties combined. It differs by property.</text>
+</g>
+</svg>
+<figcaption>Figure 7-2 · More points does not mean “that MXene has been studied a lot” (Chapter 6). But the map's one-sided skew decreased a little.</figcaption>
+</figure>
+<p>On the same day, thermal conductivity also passed in its fourth round, as noted at the end of Chapter 5.<sup class="fn">4</sup></p>
+<h3>17 “candidates for a second look”</h3>
+<p>We swept the whole map once with an eye to “the usual range.” 17 points came up that are exactly as in the original but far outside the common range: an interlayer spacing of 0.354 nm (usually around 1 nm), a work function of 1.7 eV, an electrical conductivity of 34,520 S/cm, a gravimetric capacitance of 4,000–12,000 F/g, and the like. By category: interlayer spacing 9, two-sheet length (c lattice parameter) 3, capacitance 2, battery 1, electrical conductivity 1, work function 1.</p>
+<p>This does not mean they are wrong. They may be values measured under very special conditions. For example, 4,000–12,000 F/g is a value converted from a measurement of a very small spot on a single sheet (Chapter 6). So instead of deleting them, we only attached a “candidate for a second look” mark. And these points were excluded from the test below.<sup class="fn">5</sup></p>
+<h3>Testing the map — 20 known answers</h3>
+<p>When you get a new navigation system, you first try a route you already know. If it suggests a wrong route, you cannot trust it for routes you don't know either. The map was tested the same way.</p>
+<p>From papers already established in this field, we picked 20 “known facts,” for example “etching with hydrochloric acid and lithium fluoride gives a wider interlayer spacing than etching with hydrofluoric acid.” They were chosen without looking at the map and checked down to the page in the original. The rules for comparing them with the map were also saved before seeing the map's numbers. And the test was run <b>exactly once</b>.</p>
+<figure class="span">
+<svg aria-label="Results for 20 known facts: agree 5, disagree 1, inconclusive 1, no answer 13" role="img" viewbox="0 0 1000 300">
+<rect fill="#ffffff" height="300" width="1000"></rect>
+<text fill="#1d1d24" font-family="Noto Serif KR,serif" font-size="22" font-weight="700" x="40" y="42">How the map answered 20 known facts</text>
+<g>
+<rect fill="#1f7a72" height="70" rx="8" width="80" x="40" y="70"></rect><rect fill="#1f7a72" height="70" rx="8" width="80" x="132" y="70"></rect><rect fill="#1f7a72" height="70" rx="8" width="80" x="224" y="70"></rect><rect fill="#1f7a72" height="70" rx="8" width="80" x="316" y="70"></rect><rect fill="#1f7a72" height="70" rx="8" width="80" x="408" y="70"></rect>
+<rect fill="#d2553f" height="70" rx="8" width="80" x="500" y="70"></rect><rect fill="#8a8a93" height="70" rx="8" width="80" x="592" y="70"></rect>
+<g fill="#fbfaf7" stroke="#c8962a" stroke-dasharray="7 5" stroke-width="3">
+<rect height="70" rx="8" width="80" x="684" y="70"></rect><rect height="70" rx="8" width="80" x="776" y="70"></rect><rect height="70" rx="8" width="80" x="868" y="70"></rect>
+<rect height="70" rx="8" width="80" x="40" y="152"></rect><rect height="70" rx="8" width="80" x="132" y="152"></rect><rect height="70" rx="8" width="80" x="224" y="152"></rect><rect height="70" rx="8" width="80" x="316" y="152"></rect><rect height="70" rx="8" width="80" x="408" y="152"></rect><rect height="70" rx="8" width="80" x="500" y="152"></rect><rect height="70" rx="8" width="80" x="592" y="152"></rect><rect height="70" rx="8" width="80" x="684" y="152"></rect><rect height="70" rx="8" width="80" x="776" y="152"></rect><rect height="70" rx="8" width="80" x="868" y="152"></rect>
+</g>
+</g>
+<g fill="#1d1d24" font-family="Noto Sans KR,sans-serif" font-size="16">
+<rect fill="#1f7a72" height="16" width="16" x="40" y="250"></rect><text x="62" y="264">Agree 5</text>
+<rect fill="#d2553f" height="16" width="16" x="160" y="250"></rect><text x="182" y="264">Disagree 1</text>
+<rect fill="#8a8a93" height="16" width="16" x="295" y="250"></rect><text x="317" y="264">Inconclusive 1</text>
+<rect fill="#fbfaf7" height="16" stroke="#c8962a" stroke-dasharray="4 3" stroke-width="2" width="16" x="460" y="250"></rect><text x="482" y="264">No answer 13 — almost no papers to compare against</text>
+</g>
+</svg>
+<figcaption>Figure 7-3 · The map could answer 7 of the 20. That fell short of the preset criterion (8), so this test was closed as “undetermined.”</figcaption>
+</figure>
+<p>Of the 7 it could answer, <b>5 agreed with the known facts.</b> The median interlayer spacing on the HCl/LiF-etched side was 13.7 Å, and on the HF-etched side 12.1 Å, exactly as known. The median electrical conductivity of the titanium and vanadium families was 3,612 S/cm, and of the niobium family 31 S/cm, also in the known direction.<sup class="fn">6</sup></p>
+<p><b>1 disagreed.</b> It asked how strongly a “film thin enough to be transparent” resists electricity (sheet resistance), but our map could not separate transparent thin films from thick films, so the two were mixed. It seems the conditions did not match, rather than the map's numbers being wrong. Even so, we did not fix it after seeing the results. <b>1 was inconclusive</b>, because our map put “polymers added as binders” and “materials mixed in to add function” into the same field.</p>
+<p>The remaining <b>13 could not be answered at all.</b> A comparison needs papers on both sides, but one side had only 0–3 papers. For example, for the capacitance of MXene etched with sodium hydroxide (NaOH) instead of hydrofluoric acid, the map has 0 papers.</p>
+<blockquote class="pull m span">The 13 unanswered are not failures. They are the list of what to fill next.</blockquote>
+<p>What this test showed is clear. The map's first weakness right now is not “wrong values” but “thin data for comparison.” Even the 5 that agreed go only as far as “no contradiction,” not “proven.” Conditions differ from paper to paper, and 7 is a small number. So showing the map to a leading authority in this field has been postponed. After filling the gaps, it will be tested again with <b>the same 20 questions and the same rules</b>. How far the 13 drops is the first yardstick for “has the map become useful?”</p>
+</div>
+<div class="summary"><h3>Chapter summary</h3><ul>
+<li>Points for non-titanium MXenes grew in one day from 361 → 669 (titanium share 82.3% → 71.5%). Papers retrieved by hand were scored in exactly the same way.</li>
+<li>The first batch did not pass, but 0 numbers were wrong; the cause was our instructions. The second batch was ● 253/253, so clean that we re-checked the judges first.</li>
+<li>Test with 20 known facts: of the 7 answerable, 5 agreed; 13 could not be answered for lack of data. Not a failure, but the list of what to fill next.</li>
+</ul></div>
+<aside class="notes"><h4>Notes</h4><ol>
+<li>Ti share 82.3%: <code>intelligence/mxene-atlas/RESULT-P16-nonTi-oa-2026-10-09.md</code> “map” (total points 2,036 → 2,116 · summed over all tabs).</li>
+<li>Same document “one line” · “figures” · “causes of the 15 ✕” (27 papers → included 15 · excluded 12 · 96 rows · ● 81 · ✕ 15 = 15.6% · c lattice 6 rows, wrong per both · supercapacitor mAh/g 9 rows, wrong per Claude only · “81/81 is not used as evidence” · map 80 · 1 row of PMC9561093 excluded · template v1.4 A4). Full audit of definition mismatches: <code>AUDIT-extract-vs-judge-definitions-2026-10-09.md</code>.</li>
+<li><code>RESULT-P17-nonTi-human-2026-10-09.md</code> (batch 1: 38 + batch 2: 19 · 1 duplicate = 56 papers · included 29 papers · 253 rows · ● 253/253 · tampered 8/8 · blank 4/4 · unchanged 6/6 · “a surprising result, so we checked the instruments first” · 62.5 A h g⁻¹ · map +234 · 77 papers remaining).  Point counts 361 → 441 → 669 · 82.3% → 79.2% → 71.5%: P16 · P17 “map.”</li>
+<li><code>RESULT-P14d-thermal-conductivity-2026-10-09.md</code>.</li>
+<li><code>audit_map_ranges_2026-10-09.json</code> (17 points · interlayer spacing Å 9 · c lattice Å 3 · F/g 2 · battery mAh/g 1 · S/cm 1 · work function eV 1) · wiki timeline 2026-10-09 afternoon U1 entry · excluded from U1: <code>CARD-U1-known-answer-usefulness-2026-10-09.md</code> row 12.</li>
+<li><code>RESULT-U1-known-answer-usefulness-2026-10-09.md</code> (answerable 7 &lt; criterion 8 · agree K03 · K05 · K10 · K17 · K19 · disagree K06 · inconclusive K04 · no answer 13) · known answers: <code>KNOWN-ANSWERS-canon-2026-10-09.json</code> · conversion table and calculation code committed <code>54629112c</code> (before seeing the map's numbers) · <code>u1_known_answers.py</code> run 1 time.</li>
+</ol></aside>
+</section>
+<!-- ===== 8장(10/9 오후 추가 · 규칙과 논문 고르기) ===== -->
+<section class="chapter" id="ch8">
+<div class="opener">
+<figure>
+<svg aria-label="On the left, an envelope of rules written in advance and sealed; in the middle, a test sheet; on the right, a new test sheet — the rules are written first, before the results are seen" role="img" viewbox="0 0 1000 380">
+<rect fill="#f3ead6" height="380" width="1000"></rect>
+<g transform="translate(90,90)">
+<rect fill="#ffffff" height="150" rx="10" stroke="#c8962a" stroke-width="3" width="220"></rect>
+<path d="M0 0 L110 85 L220 0" fill="none" stroke="#c8962a" stroke-width="3"></path>
+<circle cx="110" cy="85" fill="#d9534f" r="18"></circle>
+<text fill="#3d3d44" font-size="26" text-anchor="middle" x="110" y="200">① Write first, seal</text>
+</g>
+<g transform="translate(390,70)">
+<rect fill="#ffffff" height="230" rx="8" stroke="#2b3a67" stroke-width="3" width="200"></rect>
+<g stroke="#2b3a67" stroke-width="3"><path d="M30 50 H170"></path><path d="M30 90 H170"></path><path d="M30 130 H140"></path><path d="M30 170 H160"></path></g>
+<text fill="#3d3d44" font-size="26" text-anchor="middle" x="100" y="270">② Test</text>
+</g>
+<g transform="translate(680,70)">
+<rect fill="#ffffff" height="230" rx="8" stroke="#1f7a72" stroke-dasharray="10 6" stroke-width="3" width="200"></rect>
+<g stroke="#1f7a72" stroke-width="3"><path d="M30 50 H170"></path><path d="M30 90 H150"></path><path d="M30 130 H170"></path></g>
+<text fill="#3d3d44" font-size="26" text-anchor="middle" x="100" y="270">③ If it fails, a new sheet</text>
+</g>
+<g fill="none" stroke="#3d3d44" stroke-width="3"><path d="M320 165 H380"></path><path d="M600 185 H670"></path></g>
+</svg>
+<figcaption>The rules are written down and saved first, before the results are seen. If a test fails, we do not sit the same test again; we make a new test sheet.</figcaption>
+</figure>
+<div class="kicker">Chapter 8</div>
+<h2>When we changed the rules, when we chose the papers — the promises we kept</h2>
+<p class="hook">While building a map, there comes a moment when you want to change the rules: when you don't like the results. Change them then, and the map ends up showing only the answers we wanted. So we set ourselves a few promises.</p>
+</div>
+<div class="prose">
+<h3>How we chose the papers</h3>
+<p><b>Papers anyone can open, first.</b> Every number on the map carries its original sentence. Since other people must be able to check that sentence for themselves, at first we used only full texts that are freely available.<sup class="fn">1</sup></p>
+<p><b>Aimed at the places where the map is empty.</b> We chose papers to fill the spots that the usefulness test (Chapter 7) had flagged as “cannot answer — no data here.” For example, a spot such as “the capacitance of MXene etched with sodium hydroxide instead of HF.”</p>
+<p><b>Choosing by title alone misses.</b> At first we chose by the words in titles and abstracts. Then, while looking for “papers that etched with an alkali,” we caught “papers that etched with HF and then washed with an alkali.” Same words, different experiment. So nowadays we also check <b>whether the abstract actually states that condition</b>, and a person reads them once more to filter.<sup class="fn">2</sup></p>
+<p><b>The test's “answer papers” are kept out.</b> The usefulness test checks whether the map can rediscover 20 “known facts.” If the papers that first stated those facts were put into the map, the map would be getting the answers right by copying the answer key.</p>
+<p><b>Papers brought in by a person are scored the same way.</b> Papers retrieved through a browser include publisher full texts. Still, they are scored by the same method, and the results are reported separately for each “where it came from” stream. We do not throw data away, but we do not blur it by mixing, either.<sup class="fn">3</sup></p>
+<blockquote class="pull span">Write the rules first, before seeing the results. A rule changed after seeing the results gets the label “exploratory.”</blockquote>
+<h3>How we changed the rules</h3>
+<p><b>① Write it down and save it first.</b> Before running a test, we write “what will be counted · what score passes” in a file and save it (commit it). That way, no one can later change the story to “actually, the criterion was this.”</p>
+<p><b>② If it fails, we do not sit the same test again.</b> On 2026-10-09, while scoring the 45 papers a person had brought in, one judge missed two trap questions: it called rows whose name field had been deliberately left blank “correct.” Re-running the same test sheet would amount to running it until it passes. So that round was left as “undetermined,” and we re-took it with <b>a new test sheet with freshly drawn traps</b>. This time both judges caught all 18 traps, and 222 of 223 rows passed.<sup class="fn">4</sup></p>
+<p><b>③ A rule changed after seeing the results gets a label.</b> In the usefulness test, “a Ti₂C battery has a larger capacity than Ti₃C₂” disagreed. Looking into it, the Ti₃C₂ values in our map included many composites mixed with high-capacity materials such as silicon — whereas the answer paper compared pure MXenes with each other. So we changed the rule to “compare only samples with no mixed-in material.” But because it was changed after seeing the results, we labelled it <b>“exploratory”</b> and do not use it as evidence that the map is useful.<sup class="fn">5</sup></p>
+<p><b>④ Write what improved and what got worse side by side.</b> Re-measuring with the changed rule, the Ti₂C comparison turned into “agrees.” But “Nb₂C is larger than Ti₂C,” which had earlier been “agrees,” became “no answer”: there was only 1 paper with pure Nb₂C data. <b>That “agrees” had been leaning on composite values.</b> Writing only what improved would make the map look better than it is. So we wrote down both.</p>
+<p><b>⑤ The real evidence comes from new data.</b> The changed rule is now frozen, and we will test again with new papers obtained from here on. If it passes then, that will be the evidence that “the map is useful.”</p>
+</div>
+<div class="summary"><h3>Chapter summary</h3><ul>
+<li>Papers were chosen in the order “anyone can check · where the map is empty · the abstract states the condition,” and the test's answer papers were kept out.</li>
+<li>Rules are written and saved before the results are seen. A failed test is not sat again; a new test sheet is made.</li>
+<li>A rule changed after seeing the results is “exploratory.” We wrote down both what improved (the Ti₂C comparison) and the weakness it exposed (the Nb₂C comparison).</li>
+</ul></div>
+<aside class="notes"><h4>Notes</h4><ol>
+<li>Common template <code>intelligence/mxene-atlas/PREREG-TEMPLATE-common-2026-10-09.md</code> (v1.5 · open-access original text · person-supplied papers reported by source).</li>
+<li>P18 “alkali” miss: <code>RESULT-U1b-known-answer-after-P18-2026-10-09.md</code> “why only 2 of 13 were resolved” · abstract-condition filter: <code>p18_gaps/find_u1_needs.py</code> · human-eye filter (11 papers removed · including answer papers): <code>p18_gaps/u1_needs_curated.json</code>.</li>
+<li><code>CARD-P19-received-2026-10-09.md</code> (45 papers brought in by a person · per-stream reporting fields).</li>
+<li><code>RESULT-P19-received-2026-10-09.md</code> (undetermined · blank-name control 2/4) · <code>CARD-P19b-rejudge-2026-10-09.md</code> (26 new control rows · 0 overlap with P19) · <code>RESULT-P19b-and-U1b2-2026-10-09.md</code> (● 222/223).</li>
+<li><code>CARD-U1c-known-answer-rules-2026-10-09.md</code> (stakeholder flag · committed before running <code>6f155c989</code>) · <code>RESULT-U1c-known-answer-rules-2026-10-09.md</code> (K13 disagrees→agrees · K14 agrees→no answer).</li>
+</ol></aside>
+</section>
+<!-- ===== 9장 ===== -->
+<section class="chapter" id="ch9">
+<div class="opener">
+<figure>
+<svg aria-label="A folded map with dots, an empty gap region on it, a dotted path leading to the gap, and two people" role="img" viewbox="0 0 1000 380">
+<rect fill="#dff0ea" height="380" width="1000"></rect>
+<path d="M80 60 L320 40 L560 60 L800 40 L800 330 L560 350 L320 330 L80 350 Z" fill="#ffffff" stroke="#c9d9d2" stroke-width="2"></path>
+<path d="M320 40 L320 330 M560 60 L560 350" stroke="#e3e0d8" stroke-width="2"></path>
+<g fill="#1f7a72">
+<circle cx="130" cy="110" r="7"></circle><circle cx="160" cy="140" r="7"></circle><circle cx="190" cy="120" r="7"></circle><circle cx="150" cy="190" r="7"></circle><circle cx="210" cy="170" r="7"></circle><circle cx="240" cy="210" r="7"></circle><circle cx="130" cy="250" r="7"></circle><circle cx="270" cy="140" r="7"></circle><circle cx="200" cy="260" r="7"></circle><circle cx="260" cy="290" r="7"></circle>
+<circle cx="360" cy="110" r="7"></circle><circle cx="400" cy="160" r="7"></circle><circle cx="440" cy="120" r="7"></circle><circle cx="380" cy="230" r="7"></circle><circle cx="470" cy="200" r="7"></circle><circle cx="500" cy="270" r="7"></circle><circle cx="420" cy="300" r="7"></circle>
+</g>
+<g fill="#2b3a67"><circle cx="230" cy="100" r="7"></circle><circle cx="460" cy="160" r="7"></circle><circle cx="350" cy="280" r="7"></circle></g>
+<rect fill="none" height="150" rx="10" stroke="#d2553f" stroke-dasharray="10 8" stroke-width="4" width="170" x="590" y="110"></rect>
+<text fill="#d2553f" font-family="Noto Serif KR,serif" font-size="28" font-weight="900" text-anchor="middle" x="675" y="180">Gap</text>
+<text fill="#8f2f1f" font-family="Noto Sans KR,sans-serif" font-size="15" text-anchor="middle" x="675" y="212">measured by no one yet</text>
+<path d="M560 310 C 620 300, 640 270, 660 262" fill="none" stroke="#55555f" stroke-dasharray="4 8" stroke-width="3"></path>
+<g transform="translate(850,200)">
+<circle cx="0" cy="0" fill="#c8962a" r="24"></circle><path d="M-36 90 Q-36 34 0 34 Q36 34 36 90 Z" fill="#c8962a"></path>
+<circle cx="70" cy="10" fill="#2b3a67" r="22"></circle><path d="M38 96 Q38 44 70 44 Q102 44 102 96 Z" fill="#2b3a67"></path>
+</g>
+<text fill="#1d1d24" font-family="Noto Sans KR,sans-serif" font-size="16" text-anchor="middle" x="880" y="330">Human expert check</text>
+</svg>
+<figcaption>Figure 9-1 · A map is useful at two moments: when it shows a “gap” no one has measured yet, and when, after a human expert's check, it becomes trustworthy.</figcaption>
+</figure>
+<div class="kicker">Chapter 9</div>
+<h2>What we still don't know · what we will fill in when data arrive</h2>
+<p class="hook">This map is not yet “verified,” because both judges are AI. And there are questions closed as “undetermined.” They are not failures but places to fill when data arrive.</p>
+</div>
+<div class="prose">
+<div class="honest span"><strong>Not yet “verified” — both judges are AI.</strong> Even AIs from different companies can make the same kind of mistake together. So the map is marked “before human expert check.” We will write “verified” only after checks by colleagues and experts.<sup class="fn">1</sup></div>
+<h3>What we still don't know</h3>
+<p><b>Mostly only open-access papers were examined.</b> Nearly every round used only full texts that anyone can legally open. The papers retrieved by hand were also mostly free to read (Chapter 7). From the afternoon of 2026-10-09, 30 publisher full texts retrieved through a browser also came in, but most of it is still a story “within open-access papers.” Including paywalled papers could change the picture.<sup class="fn">2</sup></p>
+<p><b>Boundaries with ambiguous definitions remain.</b> For example: “is a chemical added to separate the sheets an etchant, or a substance that intercalates between the sheets?” One such question was answered by obtaining all 33 foundational papers of this field and consulting their original texts. Boundaries not yet answered carry only a “judgment deferred” mark.<sup class="fn">3</sup></p>
+<h3>To be supplemented — what we will fill in when data arrive</h3>
+<p>“Undetermined” does not mean “wrong.” It means “cannot be said yet with this data.” In such cases we did not lower the criteria to force an answer. Instead, we wrote down what was missing. Below is that list.</p>
+<ul class="fill">
+<li><b>Thickness and electrical conductivity.</b> Some films made by the same method had very different conductivities. We wanted to see whether thickness explained this, but of 300 open-access papers, only 4% reported thickness and conductivity together. The usable papers numbered 12, short of the preset 15. → Measure again when more papers reporting thickness have been gathered.<sup class="fn">4</sup></li>
+<li><b>The “description fields” of capacitance.</b> This round was “undetermined” not because of the number of papers but for another reason. The “correct rows” of the judge qualification test themselves had ambiguous definitions, so the two judges recognized only 4 and 3 of the 6 correct answers (Chapter 4). Since the judges could not be trusted, the results were not used either. → Re-select the correct rows and measure in a new round.<sup class="fn">5</sup></li>
+<li><b>The 13 unanswered in the known-facts test (11 when re-measured after filling the empty spots · Chapter 8).</b> The papers on the other side of the comparison numbered only 0–3. To fill: electrical conductivity of HF-made multilayer and powder samples · capacitance of MXene etched with an alkali such as sodium hydroxide · capacitance of composites mixed with a polymer (e.g. polypyrrole) · battery capacity of Ti₂C and Nb₂C · light-to-heat conversion of Ta₄C₃ · interlayer spacing of MXene made with another fluoride chemical (NH₄HF₂). → Find open-access papers, put them through the same scoring, then test again with the same 20 questions (Chapter 7).<sup class="fn">6</sup></li>
+<li><b>Splitting two fields of the map.</b> Split the “mixed-in material” field into “polymer added as a binder” and “material mixed in to add function.” Add a “transparent thin film” mark to the morphology field. These caused the two questions in the known-facts test that were inconclusive or disagreed.<sup class="fn">6</sup></li>
+<li><b>Volumetric capacitance.</b> The very value that made MXene famous, yet only 15 values in 7 open-access papers were directly measured. Even with a perfect score, “insufficient evidence.” → More papers with direct measurements are needed (Chapter 6).</li>
+<li><b>77 papers not yet obtained.</b> Papers blocked by publishers. → Find a way to obtain them by hand. Asking authors directly is an action that goes outside, so the person who commissioned this work decides.<sup class="fn">7</sup></li>
+</ul>
+<blockquote class="pull n span">The map is not a discovery. Discovery happens when a lab actually makes what a gap on the map points to.</blockquote>
+<h3>Gaps are starting to show</h3>
+<p>Building the map revealed a “gap” for the first time. For the capacitance of MXene made by exposing the sheets with molten salt (molten-salt etching), there were <b>0 papers</b> within the open-access papers we examined. Either no one has measured it, or if someone has, it is not in open-access papers. Finding and showing such gaps is what this map ultimately aims to do: to be “a place that helps discovery.”<sup class="fn">8</sup></p>
+<h3>Human checks — colleagues first, the leading authority last</h3>
+<p>If the two AI judges make the same mistake together, no one notices. So the final check is done by people. Rules to follow have been set as well.<sup class="fn">9</sup></p>
+<ul>
+<li><b>No one is asked about their own papers.</b> Values from papers the professor co-authored will not be sent to the professor for checking.</li>
+<li><b>The AI's answers are not shown.</b> So that the checker is not pulled along by the AI scoring.</li>
+<li><b>Keep the burden small.</b> 30–60 rows per property, three buttons: “correct · wrong · ambiguous.” If 60 rows are checked and none is wrong, we can say the actual error rate does not exceed about 5%.</li>
+</ul>
+<p>The check screen has already been built and stored. But as the test in Chapter 7 showed, now is the time to fill in comparison data first. Asking the leading authority is postponed until after that.</p>
+<h3>Next steps</h3>
+<ol>
+<li><b>Fill the gaps.</b> Find the data in the “to be supplemented” list above in open-access papers and add them through the same scoring.</li>
+<li><b>Split two fields.</b> Split “mixed-in material” in two, and add “transparent thin film” to morphology.</li>
+<li><b>Repeat the same test.</b> Ask the 20 known facts again with the same rules, and see how far “no answer 13” drops.</li>
+<li><b>Pair with calculated values.</b> Place the 4,488 computer-calculated structures side by side under the same composition names.</li>
+<li><b>A person decides on release.</b> Whether to release the map to the outside is decided by the person who commissioned this work. Originals are included only as short quotations and paper identifiers.</li>
+</ol>
+<p>We decided not to inflate the goal. The realistic goals are two: to become a <b>widely used tool</b>, and to become a <b>door to collaborative research</b>.<sup class="fn">10</sup></p>
+<p>There was already one small signal. That reply was a motivation for this work, not its purpose. The purpose is the same as at the start.<sup class="fn">11</sup></p>
+<blockquote class="pull c span">A map that answers “if I need this property, which MXene should I make, and how?”, with every single value confirmed by its original sentence.</blockquote>
+</div>
+<div class="summary"><h3>Chapter summary</h3><ul>
+<li>Not yet “verified.” Both judges are AI. That word will be used only after human checks (colleagues first, the leading authority last).</li>
+<li>What was closed as “undetermined” (thickness · capacitance description fields · 13 known facts · volumetric capacitance · 77 unobtained papers) is not failure but “to be supplemented.”</li>
+<li>Next: fill the gaps → split fields → repeat the same test → pair with calculated values. A person decides on release.</li>
+</ul></div>
+<aside class="notes"><h4>Notes</h4><ol>
+<li><code>how-judging-works.html</code> §7 closing warning · <code>PURPOSE-and-direction-2026-10-07.md</code> §5 principle 3 (“verified” only after independent checking).</li>
+<li><code>RESULT-P10</code> · <code>RESULT-P11</code> “remaining limitations” (open-access full text only) · wiki key summary item 4 · skew of the person-supplied papers: <code>RESULT-P17-nonTi-human-2026-10-09.md</code> “what this pass does not say.”</li>
+<li>Wiki timeline 2026-10-08 entry on the 33 “bible” papers (D22 · fluoride salt = part of etching · TMAOH = intercalant) · wiki key summary item 00 (D20 “judgment deferred”).</li>
+<li>Wiki timeline 2026-10-08 P4 · P5 entries (hypothesis not supported) · <code>RESULT-P8-thickness-2026-10-09.md</code> “one line” (12 of 300 papers = 4% · 12 eligible papers &lt; 15 · the population is not widened).</li>
+<li><code>RESULT-P9-capacitance-v15-2026-10-09.md</code> “one line” (tampered 12/12 · of the 6 left unchanged, Claude 4/6 · Codex 3/6 · criterion 5/6 · both judges invalid · cause = the control correct answers sat on a definitional boundary).</li>
+<li><code>RESULT-U1-known-answer-usefulness-2026-10-09.md</code> “next” items 1–4 (list of targeted rounds · split the “mixed” category in two · “transparent thin film” mark · retest with the same 20 statements).</li>
+<li><code>RESULT-P17-nonTi-human-2026-10-09.md</code> “next”</li>
+<li><code>PURPOSE</code> §2 table ④ (molten-salt-etching capacitance: 0 papers · OA scope).</li>
+<li><code>PURPOSE</code> §8 (G3 = colleagues + specialists in the field · conflict of interest · blinded · 30–60 rows · n=60 with 0 errors gives an upper bound of ~5% · check screen stored at <code>presentations/mxene-atlas-expert-check-2026-10-09/</code>) · contact kept on hold: <code>RESULT-U1</code> “what it says.”</li>
+<li><code>PURPOSE</code><code>PURPOSE</code> §2 table ③ (pairing with calculated values).</li>
+<li><code>PURPOSE</code> §1 motivation entry (3D explainer published · reply on 2026-10-06) · §3 ②.</li>
+</ol></aside>
+</section>
+<!-- ===== 10장(10/9 오후 · 맺음 · 태은이 확인 초안 반영) ===== -->
+<section class="chapter" id="ch10">
+<div class="opener">
+<figure>
+<svg aria-label="Lines running from four notebooks on the left to a map on the right, and small maps spreading out beyond it" role="img" viewbox="0 0 1000 380">
+<rect fill="#efe8f6" height="380" width="1000"></rect>
+<g fill="#ffffff" stroke="#5b4b8a" stroke-width="3">
+<rect height="120" rx="6" width="90" x="70" y="70"></rect><rect height="120" rx="6" width="90" x="90" y="90"></rect><rect height="120" rx="6" width="90" x="110" y="110"></rect><rect height="120" rx="6" width="90" x="130" y="130"></rect>
+</g>
+<path d="M230 190 C 330 190, 360 190, 440 190" fill="none" stroke="#5b4b8a" stroke-dasharray="8 6" stroke-width="3"></path>
+<g transform="translate(450,95)">
+<rect fill="#ffffff" height="190" rx="12" stroke="#1f7a72" stroke-width="3" width="230"></rect>
+<g fill="#1f7a72"><circle cx="50" cy="60" r="8"></circle><circle cx="110" cy="110" r="8"></circle><circle cx="170" cy="70" r="8"></circle><circle cx="80" cy="140" r="8"></circle><circle cx="185" cy="140" r="8"></circle></g>
+<g stroke="#1f7a72" stroke-width="2"><path d="M50 60 L110 110 L170 70"></path><path d="M80 140 L110 110 L185 140"></path></g>
+</g>
+<g fill="none" stroke="#c8962a" stroke-dasharray="4 6" stroke-width="2"><circle cx="830" cy="110" r="45"></circle><circle cx="880" cy="250" r="60"></circle><circle cx="760" cy="300" r="35"></circle></g>
+<path d="M690 160 L780 120 M690 210 L820 240" stroke="#c8962a" stroke-dasharray="4 6" stroke-width="2"></path>
+</svg>
+<figcaption>The methods learned in four research notes led to this map, and I hope the same methods will one day spread to other maps.</figcaption>
+</figure>
+<div class="kicker">Chapter 10</div>
+<h2>Where this map came from, and where it is going</h2>
+<p class="hook">The verification method of this map did not appear out of nowhere. It stands on four research notes I wrote earlier. And this map is not the end, either.</p>
+</div>
+<div class="prose">
+<h3>Where it came from — four research notes I wrote earlier</h3>
+<p>All four are preprints on arXiv. They share one theme: <b>how to check the work an AI has done so that it can be trusted</b>.<sup class="fn">1</sup></p>
+<p><b>CCR</b> — When an AI reviews text it produced <b>within the same conversation</b>, it is poor at catching its own mistakes. So I had it review <b>in a new conversation</b>, and it caught more. → This is where the map's design came from: separating the AI that extracts values from the AI that checks them, and not letting the checker see the extraction record.</p>
+<p><b>D-CCR</b> — Then does exchanging reviews over many rounds make things better? Instead, <b>false alarms increased</b> (the title is “More Rounds, More Noise”). → This is one of the reasons we promised “we do not sit the same test again until it passes” (Chapter 8).</p>
+<p><b>CCV (HCCA)</b> — I used the method of checking in a separate, isolated conversation to tell whether an AI gets test questions right by <b>memorizing</b> the answers. → It is the same idea as keeping the “answer papers” out of the map in the usefulness test.</p>
+<p><b>XMR</b> — When does it help to have <b>an AI from a different company</b> do the second check? → This is why the map has two judges, Claude and Codex.</p>
+<p>It was not carried over as is. The four papers dealt with errors in text and code; this map deals with scientific values. I only borrowed a few ideas. Conversely, what was newly learned from this map — <b>testing the judges first with trap questions, and writing down the rules before seeing the results</b> — can be given back to the next verification study. The two lines of work correct each other.</p>
+<blockquote class="pull span">Call a lake a sea, and you will find the sea in the lake; call a rock a jewel, and you will carve the jewel out of the rock.</blockquote>
+<h3>Where it is going — a dream</h3>
+<p>For now it is MXene alone. But the same method can be used for other thin-sheet materials (2D materials). Further out, could even far more complex subjects, such as the brain, be drawn as <b>3D maps that AI gathers and people check</b>? For now it is a dream — a dream to be pursued, as this book has shown, by honestly separating “verified” from “not yet” at every step.</p>
+<h3>Why do it</h3>
+<p>The words above are my own. They are the spirit of believing something is there, even though it may not be, and carving it out to the end. And one more thing — a stuck problem gets solved in an unexpected place. The numbers of a wholesale market, the numbers of a material, someday even a map of the brain: things that seem unrelated are connected like a spider's web. <b>Finding those connections is science, and it is the reason to keep trying.</b> That is also why I made “Songjarvis,” the AI colleague that built this map with me — not as a tool that only does what it is told, but as a colleague that looks widely and comes to realize things on its own.</p>
+<p>My heart in doing all of this is simple: <b>to leave traces that are useful to many people, and to be someone the next generation can look at without shame.</b></p>
+</div>
+<div class="summary"><h3>Chapter summary</h3><ul>
+<li>The verification method of this map was borrowed from four preprints I wrote earlier (CCR · D-CCR · CCV · XMR), and what was learned from the map can be given back to verification research.</li>
+<li>The dream: with the same method, 3D maps of other 2D materials and, someday, of subjects like the brain — separating “verified” from “not yet” at every step.</li>
+<li>The reason: the spirit of finding the sea in a lake, the work of finding connections woven like a spider's web, and traces useful to many people.</li>
+</ul></div>
+<aside class="notes"><h4>Notes</h4><ol>
+<li>arXiv 2603.12123 (CCR · Cross-Context Review) · 2603.16244 (D-CCR · More Rounds, More Noise) · 2603.21454 (CCV · Cross-Context Verification) · 2610.01471 (XMR · When Does a Second Model Help?) — titles and abstracts checked on arXiv on 2026-10-09 · motto “the lake and the rock” (2026-04-12) · </li>
+</ol></aside>
+<p style="margin-top:2rem;color:var(--ink3)">Made by: Tae-Eun Song · <a href="https://manus.mn">manus.mn</a></p>
+</section>
+<footer>© 2026 Tae-Eun Song · All rights reserved · No reproduction, redistribution or reuse of the source without the author's permission<br/>2026-10-09 afternoon · high-school reading-level edition</footer>
+</div>
+</body>
+</html>
