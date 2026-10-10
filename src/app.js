@@ -12,7 +12,7 @@
   const a = 3.07, c = 18.6;           // Ti3AlC2 lattice parameters (approx., Å)
   const zTi2 = 0.128, zC = 0.070;     // approximate fractional z of Ti(2) 4f and C 4f
   const N = 6;                        // supercell N x N
-  const SITE = { A: [0, 0], B: [1 / 3, 2 / 3], C: [2 / 3, 1 / 3] };
+  const SITE = { A: [0, 0], B: [1 / 3, 1 / 3], C: [2 / 3, 2 / 3] };   // hollow sites for the 60° basis used by xy() (fixed 2026-10-10: the old 120°-basis fractions sat off the hollows)
   const COL = { Ti: "#9aa7bd", C: "#3b3b44", Al: "#e3913f", O: "#d9473a", H: "#f2f2f2", F: "#8fd14f", Li: "#8a63e6" };
   const RAD = { Ti: 0.62, C: 0.38, Al: 0.6, O: 0.38, H: 0.22, F: 0.36, Li: 0.42 };
   const S3 = Math.sqrt(3) / 2;
