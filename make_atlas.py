@@ -39,7 +39,7 @@ for src, dst, lang, pairs in PLAN:
         t = t.replace(old, new)
     if lang == "en":   # the "한국어" button: point to the Korean page whatever the attribute order
         ko = "ko.html" if dst == "index.html" else "explore.ko.html"
-        t = re.sub(r'(<a[^>]*?)href="[^"]*"([^>]*>한국어</a>)', lambda m: m.group(1) + 'href="' + ko + '"' + m.group(2), t)
+        t = re.sub(r'(<a[^>]*?)href="[^"]*"([^>]*>한국어</a>)', lambda m: m.group(1) + 'href="' + ko + '"' + m.group(2), t)
     t, ns = STATUS_LINK.subn("", t)
     t, nm = MAKER.subn("", t)
     if "Song, T.-E. MXene Atlas" not in t:
