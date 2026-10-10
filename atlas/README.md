@@ -11,3 +11,5 @@ An evidence-linked map of MXene properties from open-access experimental papers 
 **Licence:** unlike the 3D explainers in this repository (MIT), the files in `atlas/` are © 2026 Tae-Eun Song, all rights reserved. Please do not copy or redistribute them without permission; linking is welcome.
 
 **How to cite:** Song, T.-E. *MXene Atlas* (2026). https://songt-50.github.io/mxene-3d/atlas/ (first published 2026-10-11)
+
+**Sources:** each value shows a short quoted sentence with its DOI so it can be checked against the original paper. Rights holders who would like a paper's sentences removed can open an issue in this repository; requests will be handled promptly.
