@@ -22,6 +22,8 @@ KO = [
     ("고고치 교수가 «그룹에 공유하고 수업에 쓰겠다」고 답했다", "이 분야를 이끄는 교수 한 분이 «그룹에 공유하고 수업에 쓰겠다」고 답했다"),
     ("G3 = 동료 + 고고치 교수", "G3 = 동료 + 이 분야 전문가"),
     ("(zip 1차 38", "(1차 38"),
+    ("교신저자 요청 = 결재", "교신저자 요청 = 승인 뒤"),
+    ("공개 = 결재,", "공개 = 승인 뒤,"),
 ]
 EN = [
     ("We handed that list to a colleague, who downloaded them one by one by hand and sent them back in two compressed archives.", "Those that could be opened legitimately were then retrieved by hand, one by one."),
