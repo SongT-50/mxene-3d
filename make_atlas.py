@@ -19,11 +19,13 @@ EXPLAINER = "https://songt-50.github.io/mxene-3d/"
 PLAN = [
     (os.path.join(EN, "index.en.html"), "index.html", "en", [
         ('href="explore.en.html"', 'href="explore.html"'), ('href="index.html">한국어', 'href="ko.html">한국어'),
+        ('src="explore.en.html?hero=1"', 'src="explore.html?hero=1"'),  # 10/13 3D first screen
         ('href="../mxene-explainer-en-2026-10-06/mxene-explainer.html"', 'href="' + EXPLAINER + '"')]),
     (os.path.join(EN, "explore.en.html"), "explore.html", "en", [
         ('href="explore.html">한국어', 'href="explore.ko.html">한국어'), ('href="index.en.html"', 'href="index.html"')]),
     (os.path.join(KO, "index.html"), "ko.html", "ko", [
         ('href="explore.html"', 'href="explore.ko.html"'), ('href="index.en.html"', 'href="index.html"'),
+        ('src="explore.html?hero=1"', 'src="explore.ko.html?hero=1"'),  # 10/13 3D first screen
         ('href="../mxene-atlas-book-2026-10-08/index.html"', 'href="book/index.html"'),
         ('href="../mxene-explainer-en-2026-10-06/mxene-explainer.html"', 'href="' + EXPLAINER + '"')]),
     (os.path.join(KO, "explore.html"), "explore.ko.html", "ko", [

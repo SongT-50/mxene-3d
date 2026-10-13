@@ -188,6 +188,7 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);font-si
 <li><span class="n">5</span><a href="#ch5">Wrong versus omitted</a></li>
 <li><span class="n">6</span><a href="#ch6">What the map has gathered — ten properties</a></li>
 <li><span class="n">7</span><a href="#ch7">2026-10-09 — the map widens, and the map is tested</a></li>
+<li><span class="n">7-2</span><a href="#ch7b">13 October — a colleague's remark fills an empty column</a></li>
 <li><span class="n">8</span><a href="#ch8">When we changed the rules, when we chose the papers — the promises we kept</a></li>
 <li><span class="n">9</span><a href="#ch9">What we still don't know · what we will fill in when data arrive</a></li>
 <li><span class="n">10</span><a href="#ch10">Where this map came from, and where it is going</a></li>
@@ -825,6 +826,60 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);font-si
 <li><code>RESULT-U1-known-answer-usefulness-2026-10-09.md</code> (answerable 7 &lt; criterion 8 · agree K03 · K05 · K10 · K17 · K19 · disagree K06 · inconclusive K04 · no answer 13) · known answers: <code>KNOWN-ANSWERS-canon-2026-10-09.json</code> · conversion table and calculation code committed <code>54629112c</code> (before seeing the map's numbers) · <code>u1_known_answers.py</code> run 1 time.</li>
 </ol></aside>
 </section>
+<!-- ===== 7-2 (10/13 · a colleague's advice · newer synthesis routes) ===== -->
+<section class="chapter" id="ch7b">
+<div class="opener">
+<figure>
+<svg aria-label="Bars of the map's etching routes: vapor-phase synthesis rises from 0 to 14 values, fluoride salts from 24 to 43" role="img" viewbox="0 0 1000 340">
+<rect fill="#eef1ea" height="340" width="1000"></rect>
+<g fill="#1d1d24" font-family="Noto Sans KR,sans-serif" font-size="17">
+<text x="60" y="70">Vapor-phase (CVD)</text><text x="60" y="160">Fluoride salts (NH₄HF₂ …)</text><text x="60" y="250">Molten salt</text>
+</g>
+<g>
+<rect fill="#9aa0aa" height="30" width="4" x="260" y="50"></rect><rect fill="#1f7a72" height="30" rx="6" width="140" x="260" y="50"></rect>
+<rect fill="#c9cfe0" height="30" rx="6" width="168" x="260" y="140"></rect><rect fill="#2b3a67" height="30" opacity=".85" rx="6" width="301" x="260" y="140"></rect>
+<rect fill="#c9cfe0" height="30" rx="6" width="469" x="260" y="230"></rect><rect fill="#2b3a67" height="30" opacity=".85" rx="6" width="504" x="260" y="230"></rect>
+</g>
+<g fill="#d2553f" font-family="Noto Serif KR,serif" font-size="26" font-weight="900">
+<text x="415" y="75">0 → 14</text><text x="575" y="165">24 → 43</text><text x="780" y="255">67 → 72</text>
+</g>
+<text fill="#55555f" font-family="Noto Sans KR,sans-serif" font-size="15" x="60" y="310">Number of values on the map · grey = that morning · dark = that evening</text>
+</svg>
+<figcaption>Figure 7-2 · Following a colleague's remark, we collected papers on newer synthesis routes — and the empty “vapor-phase” column got its first values.</figcaption>
+</figure>
+<div class="kicker">Chapter 7-2</div>
+<h2>13 October — a colleague's remark fills an empty column</h2>
+<p class="hook">“MXene is not made with HF only anymore.” One sentence from a materials researcher looking at the map with us pointed straight at its empty spots.</p>
+</div>
+<div class="prose">
+<p>The colleague listed the routes: molten salts, milder etching with chemicals such as ammonium chloride, organic and inorganic etchants. The map agreed. Almost everything that was not in the HF family sat in a single “other” column, and growing MXene directly from gases — vapor-phase synthesis — had zero values.<sup class="fn">1</sup></p>
+<h3>First, we split the columns</h3>
+<p>Looking again at the 105 “other” points, we found alkali etching (e.g. sodium hydroxide), fluoride-free etching with iodine or iron chloride, and electrochemical etching mixed together. So the map now has separate columns under three bands: fluoride-based · fluoride-free · bottom-up. Columns with zero values stay visible, because empty means “not collected yet”, not “does not exist”.</p>
+<h3>Then we collected papers</h3>
+<p>Two batches were scored that day: 27 papers the colleague sent, and 45 open-access papers found by searching for newer synthesis routes. The scoring is the same as in earlier chapters — two AIs from different companies score separately, and trap questions (rows changed on purpose) test the scorers first.</p>
+<ul>
+<li><b>The colleague's 27 papers</b>: 245 rows, ● 235 (96%). None of the 9 ✕ rows had a wrong number: 7 lost the “⁻¹” of “mA h g⁻¹” when text was pulled from the PDF, and in 2 the scorers disagreed whether a value is a “battery capacity” or a “supercapacitor capacity”.<sup class="fn">2</sup></li>
+<li><b>45 papers on newer routes</b>: only 14 reported a property as a measured number — synthesis papers mostly report structure and shape. From those 14: 98 rows, ● 93 (95%).<sup class="fn">3</sup></li>
+</ul>
+<p>And the vapor-phase column received its first 14 values: lattice spacing, battery capacity and capacitance of Ti₂CCl₂ and Ti₂NCl₂ grown directly from gases. Because these two papers use no etchant, their values first fell into “not stated”. We moved only those two papers, by name, after checking in the source sentences that they really are vapor-phase syntheses — not by widening a rule.<sup class="fn">4</sup></p>
+<blockquote class="pull n span">A map drawn alone only grows as far as its maker knows. Other people's eyes find the empty spots best.</blockquote>
+<h3>The way of working changed too</h3>
+<p>From this day the heavy work — reading papers, extracting values, scoring — is sent in batches instead of being asked for one by one in a conversation. The only step left to a person is checking by eye that the answers to the trap questions match the source, because the answer sheet that tests the scorers must come from someone who opened the original.<sup class="fn">5</sup></p>
+<p>To be honest: this was the first round run the new way, so one round cannot tell whether the new way changed the results. 77 papers whose publishers block automatic download are still missing. And both scorers are AI, so the map is still not “verified”.</p>
+</div>
+<div class="summary"><h3>Chapter summary</h3><ul>
+<li>Following a colleague's advice (“not HF only”), we split the map's etching columns and collected papers on newer routes.</li>
+<li>Both batches passed: the colleague's 27 papers ● 235/245, open-access papers on newer routes ● 93/98. The map grew from 2,606 to 2,918 values.</li>
+<li>The empty vapor-phase column got its first 14 values. The 77 blocked papers are the next list to fill.</li>
+</ul></div>
+<aside class="notes"><h4>Notes</h4><ol>
+<li>Conversation with a colleague (12 Oct) · etching columns split in <code>p2_map_build.py</code> (“other” re-split) · commit of 13 Oct.</li>
+<li>P21 result document (13 Oct) (judges valid: Claude traps 8/8 · blanks 3/4 · untouched 6/6 / Codex 8/8 · 4/4 · 6/6).</li>
+<li><code>RESULT-P22-synthesis-2026-10-13.md</code> (14/45 included · 98 rows · ● 93 · ✕ 1 · ◐ 1 · ○ 3).</li>
+<li>Same document, table “how far the colleague's advice reached the map” · the two papers moved by name = Science 2023 · Nat. Commun. 2024.</li>
+<li><code>api_route/round_api.py</code> · <code>run_round.py</code> · log = <code>api_route/cost_log.jsonl</code>.</li>
+</ol></aside>
+</section>
 <!-- ===== 8장(10/9 오후 추가 · 규칙과 논문 고르기) ===== -->
 <section class="chapter" id="ch8">
 <div class="opener">
@@ -924,6 +979,7 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);font-si
 <li><b>The “description fields” of capacitance.</b> This round was “undetermined” not because of the number of papers but for another reason. The “correct rows” of the judge qualification test themselves had ambiguous definitions, so the two judges recognized only 4 and 3 of the 6 correct answers (Chapter 4). Since the judges could not be trusted, the results were not used either. → Re-select the correct rows and measure in a new round.<sup class="fn">5</sup></li>
 <li><b>The 13 unanswered in the known-facts test (11 when re-measured after filling the empty spots · Chapter 8).</b> The papers on the other side of the comparison numbered only 0–3. To fill: electrical conductivity of HF-made multilayer and powder samples · capacitance of MXene etched with an alkali such as sodium hydroxide · capacitance of composites mixed with a polymer (e.g. polypyrrole) · battery capacity of Ti₂C and Nb₂C · light-to-heat conversion of Ta₄C₃ · interlayer spacing of MXene made with another fluoride chemical (NH₄HF₂). → Find open-access papers, put them through the same scoring, then test again with the same 20 questions (Chapter 7).<sup class="fn">6</sup></li>
 <li><b>Splitting two fields of the map.</b> Split the “mixed-in material” field into “polymer added as a binder” and “material mixed in to add function.” Add a “transparent thin film” mark to the morphology field. These caused the two questions in the known-facts test that were inconclusive or disagreed.<sup class="fn">6</sup></li>
+<li><b>Routes of synthesis (13 October).</b> When we first built the map, only the hydrofluoric-acid (HF) family had its own columns; everything else went into “other”. A researcher in the field then pointed out that MXene is no longer made with HF alone — molten salts, milder etching with ammonium chloride, organic and inorganic etchants are all in use. So we split the 105 “other” points again: alkali (e.g. sodium hydroxide) 38 · fluoride-free etching such as iodine or iron chloride 14 · electrochemical etching 4. Growing MXene directly from gases (vapor-phase synthesis) had no values at first; that evening, 45 open-access papers on newer routes went through the same checks and the first 14 vapor-phase values (Ti₂CCl₂, Ti₂NCl₂) came in. Most of the 27 papers received that day also used the HF family. → We will collect more papers that measure MXenes made by the newer routes.</li>
 <li><b>Volumetric capacitance.</b> The very value that made MXene famous, yet only 15 values in 7 open-access papers were directly measured. Even with a perfect score, “insufficient evidence.” → More papers with direct measurements are needed (Chapter 6).</li>
 <li><b>77 papers not yet obtained.</b> Papers blocked by publishers. → Find a way to obtain them by hand. Asking authors directly is an action that goes outside, so the person who commissioned this work decides.<sup class="fn">7</sup></li>
 </ul>
