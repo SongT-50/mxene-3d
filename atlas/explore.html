@@ -68,6 +68,13 @@ footer{padding:10px 16px 18px;font-size:11.5px;color:var(--fg-dim);border-top:1p
 #nbOpen small{color:var(--yellow);margin-left:3px}
 .pact{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}
 .pbtn{background:var(--bg-card2);color:var(--fg);border:1px solid var(--border);border-radius:14px;padding:4px 11px;font:inherit;font-size:12px;cursor:pointer}
+.pact.ptop{position:sticky;top:-12px;z-index:2;background:rgba(21,21,34,.98);margin:-12px -14px 10px;padding:10px 14px;border-bottom:1px solid var(--border)}
+.ptop .pbtn{font-size:13.5px;padding:7px 14px}
+#pclose{z-index:4}
+.pact.ptop{padding-right:40px}
+.ptop .pbtn[data-act="atom"]{background:#3b82f6;border-color:#3b82f6;color:#fff;font-weight:700}
+.ptop .pbtn[data-act="atom"]:hover{filter:brightness(1.12)}
+.ptop .pbtn[data-act="note"]{border-color:#f5b14c;color:#f5b14c}
 .pbtn:hover{border-color:var(--accent)}
 .pbtn.saved{border-color:var(--green);color:var(--green)}
 .pv{border-top:1px solid var(--border);padding:5px 0}
@@ -1388,7 +1395,8 @@ document.getElementById("chips").addEventListener("click",e=>{const b=e.target.c
 const panel=document.getElementById("panel"), pbody=document.getElementById("pbody");
 let curNote="";
 function openPanel(html,note,extra){curNote=note||"";
-  if(note||extra)html+='<div class="pact">'+(extra||"")+(note?'<button class="pbtn" type="button" data-act="note">📒 Add to notes</button>':'')+'</div>';
+  // 10/13 태은이 «원자 구조 보기·노트에 담기가 안쪽에 있어 안 보인다» → 창 맨 위 · 스크롤해도 따라오는 줄
+  if(note||extra)html='<div class="pact ptop">'+(extra||"")+(note?'<button class="pbtn" type="button" data-act="note">📒 Add to notes</button>':'')+'</div>'+html;
   pbody.innerHTML=html;panel.classList.add("open");panel.scrollTop=0;
   if(window.matchMedia("(max-width:760px)").matches){const stage=document.getElementById("stage");setTimeout(()=>panel.scrollIntoView({behavior:"smooth",block:"start"}),50);}}
 document.getElementById("pclose").onclick=()=>panel.classList.remove("open");
