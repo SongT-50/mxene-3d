@@ -1512,6 +1512,15 @@ pbody.addEventListener("click",e=>{
 const pick=document.getElementById("pick");
 compList.forEach(c=>{const o=document.createElement("option");o.value=c.name;o.textContent=c.name+" ("+c.all+")";pick.appendChild(o);});
 pick.onchange=()=>{if(pick.value)showComp(comps[pick.value]);};
+// 10/14 태은이 «주기율표 3D 에서 조성을 눈에 띄는 곳에 더 크게 — 쉽게 눌러 들어가게» — 3D 위 왼쪽에 큰 조성 단추(값이 많은 순 · Ti 밖 먼저 섞어 보이게)
+(()=>{const st=document.getElementById("stage");if(!st||new URLSearchParams(location.search).has("hero"))return;const css=document.createElement("style");
+ css.textContent="#compbar{position:absolute;left:12px;top:12px;z-index:4;max-width:min(560px,60%);display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:rgba(10,12,22,.72);border:1px solid #2a3150;border-radius:12px;padding:8px 10px;backdrop-filter:blur(4px)}#compbar b{color:#e8e8f0;font-size:14px;margin-right:4px}#compbar button{font:inherit;font-size:15px;font-weight:600;color:#e8e8f0;background:#1b2340;border:1px solid #3a4266;border-radius:999px;padding:5px 12px;cursor:pointer}#compbar button:hover,#compbar button:focus{background:#2b3866;outline:2px solid #7aa2ff}#compbar button small{font-weight:400;color:#9aa0b8;margin-left:5px;font-size:12px}#compbar .more{font-size:13px;font-weight:400;background:transparent}@media(max-width:760px){#compbar{max-width:calc(100% - 24px)}#compbar button{font-size:13px;padding:4px 9px}}";
+ document.head.appendChild(css);const bar=document.createElement("div");bar.id="compbar";
+ const real=compList.filter(c=>c.tile!=="MIX"&&c.tile!=="UNK"&&c.all>0);const ti=real.filter(c=>c.tile==="Ti"),non=real.filter(c=>c.tile!=="Ti");
+ const pickTop=[...ti.slice(0,3),...non.slice(0,7)];let all=false;
+ const draw=()=>{const L=all?real:pickTop;bar.innerHTML="<b>조성 바로가기</b>"+L.map(c=>'<button type="button" data-c="'+esc(c.name)+'">'+esc(c.name)+"<small>"+c.all+"</small></button>").join("")+'<button type="button" class="more">'+(all?"접기":"전부 보기 ("+real.length+")")+"</button>"};
+ bar.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(b.classList.contains("more")){all=!all;draw();return}const c=comps[b.dataset.c];if(c){showComp(c);pick.value=c.name}});
+ draw();st.appendChild(bar)})();
 
 // ---------- intro ----------
 const intro=document.getElementById("intro");
