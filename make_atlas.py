@@ -20,16 +20,21 @@ PLAN = [
     (os.path.join(EN, "index.en.html"), "index.html", "en", [
         ('href="explore.en.html"', 'href="explore.html"'), ('href="index.html">한국어', 'href="ko.html">한국어'),
         ('src="explore.en.html?hero=1"', 'src="explore.html?hero=1"'),  # 10/13 3D first screen
-        ('href="../mxene-explainer-en-2026-10-06/mxene-explainer.html"', 'href="' + EXPLAINER + '"')]),
+        ('href="../mxene-explainer-en-2026-10-06/mxene-explainer.html"', 'href="' + EXPLAINER + '"'),
+        ('href="flow.en.html"', 'href="flow.html"')]),
     (os.path.join(EN, "explore.en.html"), "explore.html", "en", [
         ('href="explore.html">한국어', 'href="explore.ko.html">한국어'), ('href="index.en.html"', 'href="index.html"')]),
     (os.path.join(KO, "index.html"), "ko.html", "ko", [
         ('href="explore.html"', 'href="explore.ko.html"'), ('href="index.en.html"', 'href="index.html"'),
         ('src="explore.html?hero=1"', 'src="explore.ko.html?hero=1"'),  # 10/13 3D first screen
         ('href="../mxene-atlas-book-2026-10-08/index.html"', 'href="book/index.html"'),
-        ('href="../mxene-explainer-en-2026-10-06/mxene-explainer.html"', 'href="' + EXPLAINER + '"')]),
+        ('href="../mxene-explainer-en-2026-10-06/mxene-explainer.html"', 'href="' + EXPLAINER + '"'),
+        ('href="flow.html"', 'href="flow.ko.html"')]),
     (os.path.join(KO, "explore.html"), "explore.ko.html", "ko", [
         ('href="explore.en.html"', 'href="explore.html"'), ('href="index.html"', 'href="ko.html"')]),
+    # 10/14 흐름 보기 시험판(flow_build.py) — 내부 칸 없음(값·금속·식각·층 분리·형태·성질·PMCID 만)
+    (os.path.join(KO, "flow.en.html"), "flow.html", "en", [('href="index.en.html"', 'href="index.html"')]),
+    (os.path.join(KO, "flow.html"), "flow.ko.html", "ko", [('href="index.html"', 'href="ko.html"')]),
 ]
 STATUS_LINK = re.compile(r'<a [^>]*href="(status/index\.en\.html|\.\./mxene-atlas-status-2026-10-07/index\.html)"[^>]*>.*?</a>\s*(·\s*)?', re.S)
 MAKER = re.compile(r"(Made by terminal|제작 터미널):?\s*MXENE-T1\s*·?\s*")
@@ -56,6 +61,6 @@ for src, dst, lang, pairs in PLAN:
         if o in t:
             t = t.replace(o, o + '<a class="lang" href="guide.html">📖 How to use</a>')
     open(os.path.join(DST, dst), "w", encoding="utf-8").write(t)
-    local = sorted(set(re.findall(r'href="([^"#]*\.html)"', t)) - {"index.html", "ko.html", "explore.html", "explore.ko.html", "guide.html", "book/index.html", "book/index.en.html"})
+    local = sorted(set(re.findall(r'href="([^"#]*\.html)"', t)) - {"index.html", "ko.html", "explore.html", "explore.ko.html", "guide.html", "book/index.html", "book/index.en.html", "flow.html", "flow.ko.html"})
     local = [h for h in local if not h.startswith("http")]
     print(dst, "status links removed", ns, "maker", nm, "cite", nc, "| other local links:", local)
