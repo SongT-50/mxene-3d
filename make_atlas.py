@@ -21,7 +21,7 @@ PLAN = [
         ('href="explore.en.html"', 'href="explore.html"'), ('href="index.html">한국어', 'href="ko.html">한국어'),
         ('src="explore.en.html?hero=1"', 'src="explore.html?hero=1"'),  # 10/13 3D first screen
         ('href="../mxene-explainer-en-2026-10-06/mxene-explainer.html"', 'href="' + EXPLAINER + '"'),
-        ('href="flow.en.html"', 'href="flow.html"')]),
+        ('href="flow.en.html"', 'href="flow.html"'), ("T('flow.html','flow.en.html')", "T('flow.ko.html','flow.html')")]),
     (os.path.join(EN, "explore.en.html"), "explore.html", "en", [
         ('href="explore.html">한국어', 'href="explore.ko.html">한국어'), ('href="index.en.html"', 'href="index.html"')]),
     (os.path.join(KO, "index.html"), "ko.html", "ko", [
@@ -29,7 +29,7 @@ PLAN = [
         ('src="explore.html?hero=1"', 'src="explore.ko.html?hero=1"'),  # 10/13 3D first screen
         ('href="../mxene-atlas-book-2026-10-08/index.html"', 'href="book/index.html"'),
         ('href="../mxene-explainer-en-2026-10-06/mxene-explainer.html"', 'href="' + EXPLAINER + '"'),
-        ('href="flow.html"', 'href="flow.ko.html"')]),
+        ('href="flow.html"', 'href="flow.ko.html"'), ("T('flow.html','flow.en.html')", "T('flow.ko.html','flow.html')")]),
     (os.path.join(KO, "explore.html"), "explore.ko.html", "ko", [
         ('href="explore.en.html"', 'href="explore.html"'), ('href="index.html"', 'href="ko.html"')]),
     # 10/14 흐름 보기 시험판(flow_build.py) — 내부 칸 없음(값·금속·식각·층 분리·형태·성질·PMCID 만)
