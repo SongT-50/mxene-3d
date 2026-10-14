@@ -125,6 +125,7 @@ body.hero{background:transparent;overflow:hidden}
   #panel.open{display:block}
   #legend{font-size:10.5px}
 }
+mark.hn{background:#ffe066;color:#111;padding:0 2px;border-radius:3px;font-weight:700}.val .fbx{margin-top:3px;font-size:11.5px}.val .fbx a{color:var(--accent,#8fa8ff)}.val .fbx .fbn{opacity:.7}
 </style>
 </head>
 <body>
@@ -1400,10 +1401,17 @@ function openPanel(html,note,extra){curNote=note||"";
   pbody.innerHTML=html;panel.classList.add("open");panel.scrollTop=0;
   if(window.matchMedia("(max-width:760px)").matches){const stage=document.getElementById("stage");setTimeout(()=>panel.scrollIntoView({behavior:"smooth",block:"start"}),50);}}
 document.getElementById("pclose").onclick=()=>panel.classList.remove("open");
+// 10/14 열린 참여 — 첫 지도와 같은 질문: «이 문장에서 이 숫자를 제대로 골랐나」(실험값의 참거짓은 묻지 않는다) · 답 = 공개 저장소 GitHub 이슈 미리 채운 링크
+function numToks(t,loose){const re=loose?/(?<![\w.])(\d{1,3}(?:[, \u2009\u202f]\d{3})+(?!\d)|\d+|(?=\.\d))(\.\d+)?(?:\s*[eE]([-+\u2212]?\d+)|\s*[x\u00d7]\s*10\s*\^?\s*([-+\u2212\u2013]?)\s*(\d+)(?![\d.]))?/g:/(?<![\w.])(\d{1,3}(?:[,\u2009\u202f]\d{3})+(?!\d)|\d+|(?=\.\d))(\.\d+)?(?:\s*[eE]([-+\u2212]?\d+)|\s*[x\u00d7]\s*10\s*\^?\s*([-+\u2212\u2013]?)\s*(\d+)(?![\d.]))?/g;const out=[];let m;while((m=re.exec(t))){let val=Number(m[1].replace(/[, \u2009\u202f]/g,'')+(m[2]||''));if(m[3]!=null)val*=Math.pow(10,Number(m[3].replace('\u2212','-')));if(m[5]!=null)val*=Math.pow(10,(/[-\u2212\u2013]/.test(m[4])?-1:1)*Number(m[5]));const pre=t.slice(Math.max(0,m.index-4),m.index);if(/[A-Za-z][-\u2212]$/.test(pre))continue;if(/[-\u2212]$/.test(pre)&&!/[\d)%.][-\u2212]$/.test(pre))val=-val;out.push({i:m.index,len:m[0].length,val})}return out}
+function numHit(t,v){const x=Number(v);if(!isFinite(x))return null;const eq=k=>k.val===x||Math.abs(k.val-x)<=1e-9*Math.abs(x);const a=numToks(t).find(eq);if(a)return a;const b=numToks(t,1).find(eq);return b?Object.assign(b,{loose:1}):null}
+function qSnip(q,v){const t=String(q||'');const k=numHit(t,v);if(!k||k.i<200)return t.slice(0,240);return '…'+t.slice(k.i-120,k.i+k.len+120)+'…'}
+function exHi(d){const t=String(d.q||'');const k=numHit(t,d.v);if(!k)return{h:esc(t),f:false};return{h:esc(t.slice(0,k.i))+'<mark class="hn">'+esc(t.slice(k.i,k.i+k.len))+'</mark>'+esc(t.slice(k.i+k.len)),f:true}}
+function exUrl(d,ok){const val=vtxt(d);const title=(ok?'✅ matches the sentence':'❌ differs from the sentence')+' — '+val+' — '+String(d.l||'').slice(0,60);const body=['Vote: '+(ok?'✅ the value matches the source sentence':'❌ the value differs from the source sentence (number, sample or condition)'),'Value: '+val,'Sample: '+(d.l||''),'Etching: '+(d.et||d.e||'-'),'Paper: '+(d.d?'https://doi.org/'+d.d:(d.p||'')),'Quote: '+qSnip(d.q,d.v),'Note: -','','(from the MXene Atlas explore page)'].join('\n');return 'https://github.com/SongT-50/mxene-3d/issues/new?title='+encodeURIComponent(title)+'&body='+encodeURIComponent(body)}
 function valHTML(d){
   const doi=d.d?'<a href="https://doi.org/'+esc(d.d)+'" target="_blank" rel="noopener">doi:'+esc(d.d)+'</a>':(d.p?esc(d.p):"");
   return '<div class="val"><span class="num">● '+esc(vtxt(d))+'</span> <span class="meta">'+esc(PNAME[d.u]||d.u)+(d.l?' · 시료: '+esc(d.l):'')+(d.fm?' · '+esc(d.fm):'')+'</span>'+
-   '<q>'+esc(d.q)+'</q><div class="meta">약품: '+esc(d.et||ETN[d.e]||d.e||"모름")+' · '+doi+'</div></div>';
+   '<q>'+exHi(d).h+'</q><div class="meta">약품: '+esc(d.et||ETN[d.e]||d.e||"모름")+' · '+doi+'</div>'+
+   '<div class="meta fbx">'+(exHi(d).f?'':'⚠ 이 숫자를 문장에서 그대로 못 찾았어요(단위 환산일 수 있어요) · ')+'노란 숫자를 문장에서 제대로 골랐나요? <a href="'+esc(exUrl(d,1))+'" target="_blank" rel="noopener">✅ 맞아요</a> · <a href="'+esc(exUrl(d,0))+'" target="_blank" rel="noopener">❌ 달라요</a> <span class="fbn">(GitHub · 공개)</span></div></div>';
 }
 let lastComp=null, panelKind="";
 function showComp(c){
