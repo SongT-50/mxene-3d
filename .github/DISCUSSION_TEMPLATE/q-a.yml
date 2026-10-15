@@ -1,0 +1,19 @@
+title: "[Q] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Answers draw only on the papers collected and checked so far in the MXene Atlas. The atlas does not cover all MXene research, and values are not "verified" until a person has checked them. Replies may take a few days.
+        지도에 모아 확인한 논문 안에서만 답합니다. MXene 연구 전부가 들어 있지는 않습니다.
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question (질문)
+      placeholder: "e.g. Which etching route gave the highest conductivity for Nb2C films?"
+    validations:
+      required: true
+  - type: input
+    id: topic
+    attributes:
+      label: MXene / property it concerns, if any (관련 물질·성질)
+      placeholder: "e.g. Ti3C2Tx · capacitance (F/g)"
