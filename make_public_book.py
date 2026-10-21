@@ -41,8 +41,9 @@ REGEX = [  # both languages: internal paths and maker tag
     (r"(동료 부탁 목록|List sent to the colleague):\s*(<[^>]+>)*\s*p16_nonti_oa/REQUEST-colleague-nonTi-137-ordered\.md\s*(</[^>]+>)*\s*\.", ""),
     (r"(초안|draft)\s*(<[^>]+>)*\s*intelligence/mxene-atlas/DRAFT-book-closing-chapter-2026-10-09\.md\s*(</[^>]+>)*\s*\.", ""),
     (r"(제작 터미널|Made by terminal):\s*MXENE-T1\s*·\s*", ""),
+    (r"\s*<code>(intelligence/mxene-atlas/)?north_star/[^<]*</code>", ""),  # 2026-10-21: internal round paths in notes
 ]
-CHECK = re.compile(r"압축|zip|REQUEST-colleague|DRAFT-book|MXENE-T1|고고치|Gogotsi|colleague who|동료에게 건넸|C:\\\\Users", re.I)
+CHECK = re.compile(r"압축|zip|REQUEST-colleague|DRAFT-book|MXENE-T1|north_star|고고치|Gogotsi|colleague who|동료에게 건넸|C:\\\\Users", re.I)
 
 
 def build(src, pairs, out):
