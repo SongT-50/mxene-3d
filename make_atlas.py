@@ -21,7 +21,8 @@ PLAN = [
         ('href="explore.en.html"', 'href="explore.html"'), ('href="index.html">한국어', 'href="ko.html">한국어'),
         ('src="explore.en.html?hero=1"', 'src="explore.html?hero=1"'),  # 10/13 3D first screen
         ('href="../mxene-explainer-en-2026-10-06/mxene-explainer.html"', 'href="' + EXPLAINER + '"'),
-        ('href="flow.en.html"', 'href="flow.html"'), ("T('flow.html','flow.en.html')", "T('flow.ko.html','flow.html')")]),
+        ('href="flow.en.html"', 'href="flow.html"'), ("T('flow.html','flow.en.html')", "T('flow.ko.html','flow.html')"),
+        ('href="islands.en.html"', 'href="islands.html"')]),  # 10/23 MOF·COF islands
     (os.path.join(EN, "explore.en.html"), "explore.html", "en", [
         ('href="explore.html">한국어', 'href="explore.ko.html">한국어'), ('href="index.en.html"', 'href="index.html"')]),
     (os.path.join(KO, "index.html"), "ko.html", "ko", [
@@ -29,7 +30,8 @@ PLAN = [
         ('src="explore.html?hero=1"', 'src="explore.ko.html?hero=1"'),  # 10/13 3D first screen
         ('href="../mxene-atlas-book-2026-10-08/index.html"', 'href="book/index.html"'),
         ('href="../mxene-explainer-en-2026-10-06/mxene-explainer.html"', 'href="' + EXPLAINER + '"'),
-        ('href="flow.html"', 'href="flow.ko.html"'), ("T('flow.html','flow.en.html')", "T('flow.ko.html','flow.html')")]),
+        ('href="flow.html"', 'href="flow.ko.html"'), ("T('flow.html','flow.en.html')", "T('flow.ko.html','flow.html')"),
+        ('href="islands.html"', 'href="islands.ko.html"')]),  # 10/23 MOF·COF islands
     (os.path.join(KO, "explore.html"), "explore.ko.html", "ko", [
         ('href="explore.en.html"', 'href="explore.html"'), ('href="index.html"', 'href="ko.html"')]),
     # 10/14 흐름 보기 시험판(flow_build.py) — 내부 칸 없음(값·금속·식각·층 분리·형태·성질·PMCID 만)
@@ -61,6 +63,6 @@ for src, dst, lang, pairs in PLAN:
         if o in t:
             t = t.replace(o, o + '<a class="lang" href="guide.html">📖 How to use</a>')
     open(os.path.join(DST, dst), "w", encoding="utf-8").write(t)
-    local = sorted(set(re.findall(r'href="([^"#]*\.html)"', t)) - {"index.html", "ko.html", "explore.html", "explore.ko.html", "guide.html", "book/index.html", "book/index.en.html", "flow.html", "flow.ko.html"})
+    local = sorted(set(re.findall(r'href="([^"#]*\.html)"', t)) - {"index.html", "ko.html", "explore.html", "explore.ko.html", "guide.html", "book/index.html", "book/index.en.html", "flow.html", "flow.ko.html", "islands.html", "islands.ko.html"})
     local = [h for h in local if not h.startswith("http")]
     print(dst, "status links removed", ns, "maker", nm, "cite", nc, "| other local links:", local)
