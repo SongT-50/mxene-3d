@@ -3,7 +3,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Answers draw only on the papers collected and checked so far in the MXene Atlas. The atlas does not cover all MXene research, and values are not "verified" until a person has checked them. Replies may take a few days.
+        Answers draw only on the papers collected and checked so far in the MXene Atlas (MXene, plus a first version for MOF and COF). The atlas does not cover all of this research, and values are not "verified" until a person has checked them. Replies may take a few days.
         지도에 모아 확인한 논문 안에서만 답합니다. MXene 연구 전부가 들어 있지는 않습니다.
   - type: textarea
     id: question
