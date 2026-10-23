@@ -24,7 +24,8 @@ PLAN = [
         ('href="flow.en.html"', 'href="flow.html"'), ("T('flow.html','flow.en.html')", "T('flow.ko.html','flow.html')"),
         ('href="islands.en.html"', 'href="islands.html"'), ('href="galaxy.en.html"', 'href="galaxy.html"')]),  # 10/23 MOF·COF islands · galaxy band
     (os.path.join(EN, "explore.en.html"), "explore.html", "en", [
-        ('href="explore.html">한국어', 'href="explore.ko.html">한국어'), ('href="index.en.html"', 'href="index.html"')]),
+        ('href="explore.html">한국어', 'href="explore.ko.html">한국어'), ('href="index.en.html"', 'href="index.html"'),
+        ('href="index.en.html#', 'href="index.html#')]),  # 10/23 태은이 404: «How it grew»(#tl) · «지도에서 보기»(#u=) 가 옛 이름에 걸려 있었다
     (os.path.join(KO, "index.html"), "ko.html", "ko", [
         ('href="explore.html"', 'href="explore.ko.html"'), ('href="index.en.html"', 'href="index.html"'),
         ('src="explore.html?hero=1"', 'src="explore.ko.html?hero=1"'),  # 10/13 3D first screen
@@ -33,7 +34,8 @@ PLAN = [
         ('href="flow.html"', 'href="flow.ko.html"'), ("T('flow.html','flow.en.html')", "T('flow.ko.html','flow.html')"),
         ('href="islands.html"', 'href="islands.ko.html"'), ('href="galaxy.html"', 'href="galaxy.ko.html"')]),  # 10/23 MOF·COF islands · galaxy band
     (os.path.join(KO, "explore.html"), "explore.ko.html", "ko", [
-        ('href="explore.en.html"', 'href="explore.html"'), ('href="index.html"', 'href="ko.html"')]),
+        ('href="explore.en.html"', 'href="explore.html"'), ('href="index.html"', 'href="ko.html"'),
+        ('href="index.html#', 'href="ko.html#')]),  # 10/23: 한국어 탐험의 «걸어온 길»·«지도에서 보기»가 영어 지도로 건너가던 것
     # 10/14 흐름 보기 시험판(flow_build.py) — 내부 칸 없음(값·금속·식각·층 분리·형태·성질·PMCID 만)
     (os.path.join(KO, "flow.en.html"), "flow.html", "en", [('href="index.en.html"', 'href="index.html"')]),
     (os.path.join(KO, "flow.html"), "flow.ko.html", "ko", [('href="index.html"', 'href="ko.html"')]),
