@@ -71,16 +71,17 @@ for src, dst, lang, pairs in PLAN:
     local = [h for h in local if not h.startswith("http")]
     print(dst, "status links removed", ns, "maker", nm, "cite", nc, "| other local links:", local)
 
-# 11/6 A3: 지도(영·한)가 원문 문장을 gxq-<해시>.js 로 페이지가 뜬 뒤 불러온다 → atlas/ 에 같은 파일 · 옛 이름은 지운다(공개 사본)
-for _old in glob.glob(os.path.join(DST, "gxq-*.js")):
-    os.remove(_old)
-_refs = {_p: set(re.findall(r"gxq-[0-9a-f]{10}\.js", open(os.path.join(DST, _p), encoding="utf-8").read())) for _p in ("index.html", "ko.html")}
-if not any(_refs.values()):  # A3_SPLIT=0 (되돌리기) 빌드 = 원문이 페이지 안에 있다 → 옆 파일 없음이 정상(Codex 11/6)
-    print("gxq: inline mode (no sidecar)")
-else:
+# 11/6 A3: 지도(영·한)가 원문 문장(gxq-<해시>.js) · 만든 법 설명(hwq-<해시>.js · 2단계)을 페이지가 뜬 뒤 불러온다 → atlas/ 에 같은 파일 · 옛 이름은 지운다(공개 사본)
+for _pre in ("gxq", "hwq"):
+    for _old in glob.glob(os.path.join(DST, _pre + "-*.js")):
+        os.remove(_old)
+    _refs = {_p: set(re.findall(_pre + r"-[0-9a-f]{10}\.js", open(os.path.join(DST, _p), encoding="utf-8").read())) for _p in ("index.html", "ko.html")}
+    if not any(_refs.values()):  # A3_SPLIT=0 (되돌리기) 빌드 = 페이지 안에 있다 → 옆 파일 없음이 정상(Codex 11/6)
+        print(_pre + ": inline mode (no sidecar)")
+        continue
     _need = set().union(*_refs.values())
-    assert len(_need) == 1 and all(_refs.values()), f"gxq: pages disagree on the sidecar {_refs} — rebuild the map and the share package"
+    assert len(_need) == 1 and all(_refs.values()), f"{_pre}: pages disagree on the sidecar {_refs} — rebuild the map and the share package"
     _src = os.path.join(KO, _need.pop())
-    assert os.path.exists(_src), f"gxq: {os.path.basename(_src)} missing in the map folder — rebuild the map"
+    assert os.path.exists(_src), f"{_pre}: {os.path.basename(_src)} missing in the map folder — rebuild the map"
     shutil.copy(_src, DST)
-    print("gxq:", os.path.basename(_src), "copied")
+    print(_pre + ":", os.path.basename(_src), "copied")
