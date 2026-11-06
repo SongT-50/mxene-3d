@@ -4,8 +4,10 @@ internal presentations (only the maker tag is internal there). Book = make_publi
 Layout: index.html (EN map) · explore.html (EN) · ko.html (KO map) · explore.ko.html (KO) · guide.html (kept, not rebuilt) · book/
 Adds noindex, "How to cite", fixes cross-links, removes status-board links (the status board is an internal work log).
 """
+import glob
 import os
 import re
+import shutil
 
 EN = r"C:\Users\samsung\2026\02\share-DRAFT\mxene-atlas-public-full"
 KO = r"C:\Users\samsung\2026\02\monet\presentations\mxene-atlas-p2-map-2026-10-07"
@@ -68,3 +70,17 @@ for src, dst, lang, pairs in PLAN:
     local = sorted(set(re.findall(r'href="([^"#]*\.html)"', t)) - {"index.html", "ko.html", "explore.html", "explore.ko.html", "guide.html", "book/index.html", "book/index.en.html", "flow.html", "flow.ko.html", "islands.html", "islands.ko.html", "galaxy.html", "galaxy.ko.html"})
     local = [h for h in local if not h.startswith("http")]
     print(dst, "status links removed", ns, "maker", nm, "cite", nc, "| other local links:", local)
+
+# 11/6 A3: 지도(영·한)가 원문 문장을 gxq-<해시>.js 로 페이지가 뜬 뒤 불러온다 → atlas/ 에 같은 파일 · 옛 이름은 지운다(공개 사본)
+for _old in glob.glob(os.path.join(DST, "gxq-*.js")):
+    os.remove(_old)
+_refs = {_p: set(re.findall(r"gxq-[0-9a-f]{10}\.js", open(os.path.join(DST, _p), encoding="utf-8").read())) for _p in ("index.html", "ko.html")}
+if not any(_refs.values()):  # A3_SPLIT=0 (되돌리기) 빌드 = 원문이 페이지 안에 있다 → 옆 파일 없음이 정상(Codex 11/6)
+    print("gxq: inline mode (no sidecar)")
+else:
+    _need = set().union(*_refs.values())
+    assert len(_need) == 1 and all(_refs.values()), f"gxq: pages disagree on the sidecar {_refs} — rebuild the map and the share package"
+    _src = os.path.join(KO, _need.pop())
+    assert os.path.exists(_src), f"gxq: {os.path.basename(_src)} missing in the map folder — rebuild the map"
+    shutil.copy(_src, DST)
+    print("gxq:", os.path.basename(_src), "copied")
