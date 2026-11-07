@@ -85,3 +85,9 @@ for _pre in ("gxq", "hwq"):
     assert os.path.exists(_src), f"{_pre}: {os.path.basename(_src)} missing in the map folder — rebuild the map"
     shutil.copy(_src, DST)
     print(_pre + ":", os.path.basename(_src), "copied")
+
+# 11/7 A3 1단계: islands.html lazy-loads phosphorene (bp·bpher·bpoer) from islands_bp.json after the page — fixed name (ko/en share it, values only)
+_bpj = os.path.join(KO, "islands_bp.json")
+if os.path.exists(_bpj):
+    shutil.copy(_bpj, DST)
+    print("islands_bp.json: copied")
