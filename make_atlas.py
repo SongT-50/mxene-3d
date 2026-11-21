@@ -14,8 +14,8 @@ KO = r"C:\Users\samsung\2026\02\monet\presentations\mxene-atlas-p2-map-2026-10-0
 DST = os.path.join(os.path.dirname(os.path.abspath(__file__)), "atlas")
 NOINDEX = '<meta name="robots" content="noindex, nofollow">'
 URL = "https://songt-50.github.io/mxene-3d/atlas/"
-CITE_EN = " · How to cite: Song, T.-E. MXene Atlas (2026), " + URL
-CITE_KO = " · 인용: Song, T.-E. MXene Atlas (2026), " + URL
+CITE_EN = " · How to cite: Song, T.-E. Evidence-Linked Materials Map (MXene Atlas) (2026), " + URL
+CITE_KO = " · 인용: Song, T.-E. Evidence-Linked Materials Map (MXene Atlas) (2026), " + URL
 EXPLAINER = "https://songt-50.github.io/mxene-3d/"
 
 PLAN = [
@@ -55,7 +55,7 @@ for src, dst, lang, pairs in PLAN:
         t = re.sub(r'(<a[^>]*?)href="[^"]*"([^>]*>한국어</a>)', lambda m: m.group(1) + 'href="' + ko + '"' + m.group(2), t)
     t, ns = STATUS_LINK.subn("", t)
     t, nm = MAKER.subn("", t)
-    if "Song, T.-E. MXene Atlas" not in t:
+    if "Song, T.-E. Evidence-Linked Materials Map" not in t:  # 11/22 이름 바꿈(옛 문구로 보면 새 인용을 또 붙인다)
         t, nc = COPY.subn(lambda m: m.group(1) + (CITE_EN if lang == "en" else CITE_KO), t)
     else:
         nc = 0
